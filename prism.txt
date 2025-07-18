@@ -8,3 +8,5 @@ production:"scripts": {
   },
 
 ?pgbouncer=true&connect_limit=1 in DATABASE_URL
+npx prisma migrate reset
+ npx prisma migrate dev --name clothingallschemas

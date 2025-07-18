@@ -15,8 +15,135 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  email String @unique
-  name String?
+model Product {
+  id             Int               @id @default(autoincrement())
+  name           String
+  description    String
+  price          Decimal
+  stockQty       Int
+  discount       Decimal?
+  categoryId     Int
+  brand          String
+  material       String
+  originCountry  String
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  category       Category          @relation(fields: [categoryId], references: [id])
+  sizes          ProductSize[]
+  colors         ProductColor[]
+  features       ProductFeature[]
+  reviews        Review[]
+  cartItems      CartItem[]
+  wishlistItems  WishlistItem[]
+}
+
+model ProductSize {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  size       String
+  stockQty   Int
+  product    Product  @relation(fields: [productId], references: [id])
+}
+
+model ProductColor {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  color      String
+  hexCode    String?
+  product    Product  @relation(fields: [productId], references: [id])
+}
+
+model ProductFeature {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  key        String
+  value      String
+
+  product    Product  @relation(fields: [productId], references: [id])
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  customerId Int
+  rating     Int
+  comment    String
+  createdAt  DateTime     @default(now())
+
+  product    Product  @relation(fields: [productId], references: [id])
+  customer   Customer @relation(fields: [customerId], references: [id])
+}
+
+ //CATEGORY SECTION
+
+enum GenderCategory {
+  male
+  female
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        GenderCategory
+  description String
+
+  products    Product[]
+}
+
+// CUSTOMER SECTION
+model Customer {
+  id            Int             @id @default(autoincrement())
+  name          String?
+  email         String?         @unique
+  password      String?
+  provider      String?
+  providerId    String?
+  updatedAt     DateTime        @updatedAt
+  createdAt     DateTime        @default(now())
+
+  reviews       Review[]
+  carts         Cart[]
+  wishlistItems WishlistItem[]
+}
+
+// CART SECTION
+model Cart {
+  id         Int        @id @default(autoincrement())
+  customerId Int
+  name       String
+
+  customer   Customer   @relation(fields: [customerId], references: [id])
+  items      CartItem[]
+}
+
+model CartItem {
+  cartId       Int
+  productId    Int
+  itemQty      Int
+  updatedAt  DateTime        @updatedAt
+
+  cart         Cart     @relation(fields: [cartId], references: [id])
+  product      Product  @relation(fields: [productId], references: [id])
+
+  @@id([cartId, productId])
+}
+
+// WISHLIST SECTION
+model WishlistItem {
+  id          Int       @id @default(autoincrement())
+  customerId  Int
+  productId   Int
+  createdAt     DateTime  @default(now())
+
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id])
+}
+
+// ADMIN SECTION
+model Admin {
+  id         Int       @id @default(autoincrement())
+  name       String
+  email      String    @unique
+  password   String
+  createdAt  DateTime  @default(now())
 }
