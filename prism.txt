@@ -2,6 +2,9 @@
  npx prisma init
  Transaction pooler && Session pooler
 development: npx prisma migrate dev --name init
-production:npx prisma migrate deploy
+production:"scripts": {
+    "build": "prisma generate && prisma migrate deploy && next build",
+    "lint": "next lint --no-error-on-warn"
+  },
 
 ?pgbouncer=true&connect_limit=1 in DATABASE_URL
