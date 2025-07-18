@@ -6,76 +6,89 @@
 
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model Product {
-  id             Int               @id @default(autoincrement())
-  name           String
-  description    String
-  price          Decimal
-  stockQty       Int
-  discount       Decimal?
-  categoryId     Int
-  brand          String
-  material       String
-  originCountry  String
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  description   String
+  price         Decimal
+  stockQty      Int
+  discount      Decimal?
+  categoryId    String
+  brand         String
+  material      String
+  originCountry String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  category       Category          @relation(fields: [categoryId], references: [id])
-  sizes          ProductSize[]
-  colors         ProductColor[]
-  features       ProductFeature[]
-  reviews        Review[]
-  cartItems      CartItem[]
-  wishlistItems  WishlistItem[]
+  category      Category         @relation(fields: [categoryId], references: [id])
+  sizes         ProductSize[]
+  colors        ProductColor[]
+  features      ProductFeature[]
+  reviews       Review[]
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+  images        ProductImage[]
+  orderItems    OrderItem[]
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  url       String // e.g., Cloudinary or Supabase storage URL
+  alt       String? // optional image description
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model ProductSize {
-  id         Int      @id @default(autoincrement())
-  productId  Int
-  size       String
-  stockQty   Int
-  product    Product  @relation(fields: [productId], references: [id])
+  id String @id @default(cuid())
+
+  productId String
+  size      String
+  stockQty  Int
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model ProductColor {
-  id         Int      @id @default(autoincrement())
-  productId  Int
-  color      String
-  hexCode    String?
-  product    Product  @relation(fields: [productId], references: [id])
+  id String @id @default(cuid())
+
+  productId String
+  color     String
+  hexCode   String?
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model ProductFeature {
-  id         Int      @id @default(autoincrement())
-  productId  Int
-  key        String
-  value      String
+  id String @id @default(cuid())
 
-  product    Product  @relation(fields: [productId], references: [id])
+  productId String
+  key       String
+  value     String
+
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model Review {
-  id         Int      @id @default(autoincrement())
-  productId  Int
-  customerId Int
+  id String @id @default(cuid())
+
+  productId  String
+  customerId String
   rating     Int
   comment    String
-  createdAt  DateTime     @default(now())
+  createdAt  DateTime @default(now())
 
-  product    Product  @relation(fields: [productId], references: [id])
-  customer   Customer @relation(fields: [customerId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
 }
 
- //CATEGORY SECTION
+//CATEGORY SECTION
 
 enum GenderCategory {
   male
@@ -83,67 +96,102 @@ enum GenderCategory {
 }
 
 model Category {
-  id          Int       @id @default(autoincrement())
+  id String @id @default(cuid())
+
   name        GenderCategory
   description String
 
-  products    Product[]
+  products Product[]
 }
 
 // CUSTOMER SECTION
 model Customer {
-  id            Int             @id @default(autoincrement())
-  name          String?
-  email         String?         @unique
-  password      String?
-  provider      String?
-  providerId    String?
-  updatedAt     DateTime        @updatedAt
-  createdAt     DateTime        @default(now())
+  id         String   @id @default(cuid())
+  name       String?
+  email      String?  @unique
+  password   String?
+  provider   String?
+  providerId String?
+  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
 
   reviews       Review[]
   carts         Cart[]
   wishlistItems WishlistItem[]
+  orders        Order[]
 }
 
 // CART SECTION
 model Cart {
-  id         Int        @id @default(autoincrement())
-  customerId Int
+  id String @id @default(cuid())
+
+  customerId String
   name       String
 
-  customer   Customer   @relation(fields: [customerId], references: [id])
-  items      CartItem[]
+  customer Customer   @relation(fields: [customerId], references: [id])
+  items    CartItem[]
 }
 
 model CartItem {
-  cartId       Int
-  productId    Int
-  itemQty      Int
-  updatedAt  DateTime        @updatedAt
+  cartId    String
+  productId String
+  itemQty   Int
+  updatedAt DateTime @updatedAt
 
-  cart         Cart     @relation(fields: [cartId], references: [id])
-  product      Product  @relation(fields: [productId], references: [id])
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@id([cartId, productId])
 }
 
 // WISHLIST SECTION
 model WishlistItem {
-  id          Int       @id @default(autoincrement())
-  customerId  Int
-  productId   Int
-  createdAt     DateTime  @default(now())
+  id String @id @default(cuid())
 
-  customer    Customer  @relation(fields: [customerId], references: [id])
-  product     Product   @relation(fields: [productId], references: [id])
+  customerId String
+  productId  String
+  createdAt  DateTime @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
 }
 
 // ADMIN SECTION
 model Admin {
-  id         Int       @id @default(autoincrement())
-  name       String
-  email      String    @unique
-  password   String
-  createdAt  DateTime  @default(now())
+  id String @id @default(cuid())
+
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  customerId  String
+  totalAmount Decimal
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+
+  customer Customer    @relation(fields: [customerId], references: [id])
+  items    OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }

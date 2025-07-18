@@ -9,4 +9,17 @@ production:"scripts": {
 
 ?pgbouncer=true&connect_limit=1 in DATABASE_URL
 npx prisma migrate reset
+npx prisma validate
  npx prisma migrate dev --name clothingallschemas
+
+
+ And you don’t want to create a migration yet, you can just run:
+npx prisma db push
+
+seed data push
+"prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"commonjs\"} prisma/seed.ts"
+  }
+npx prisma db seed
+
+prisma gives u type build on nodemodules as modelnameCreateInput
