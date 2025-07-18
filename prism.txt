@@ -1,0 +1,7 @@
+ npm install prisma typescript tsx @types/node --save-dev
+ npx prisma init
+ Transaction pooler && Session pooler
+development: npx prisma migrate dev --name init
+production:npx prisma migrate deploy
+
+?pgbouncer=true&connect_limit=1 in DATABASE_URL
