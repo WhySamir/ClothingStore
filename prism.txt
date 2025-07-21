@@ -23,3 +23,6 @@ seed data push
 npx prisma db seed
 
 prisma gives u type build on nodemodules as modelnameCreateInput
+
+
+npm install @supabase/auth-helpers-nextjs @supabase/supabase-js
