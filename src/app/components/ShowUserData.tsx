@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utlis/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export default function ShowUserData() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {

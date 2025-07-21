@@ -1,4 +1,4 @@
-// Session exchange and cookie management in the server
+// app/auth/callback/route.ts
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   
   if (!code) {
     return NextResponse.redirect(
-      `${requestUrl.origin}/login?error=Missing authentication code`
+      `${requestUrl.origin}/auth?error=Missing authentication code`
     )
   }
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
   } catch (error:any) {
     console.error('Authentication error:', error)
     return NextResponse.redirect(
-      `${requestUrl.origin}/login?error=${encodeURIComponent(error.message)}`
+      `${requestUrl.origin}/auth?error=${encodeURIComponent(error.message)}`
     )
   }
 }

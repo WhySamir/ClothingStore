@@ -4,7 +4,6 @@ import { createClient } from "@/utlis/supabase/client";
 import { useState } from "react";
 
 export default function SignInButton() {
-  const [datas, setdatas] = useState<any>(null);
   const handleGoogleLogin = async () => {
     const supabase = createClient();
 
@@ -24,7 +23,6 @@ export default function SignInButton() {
     if (error) {
       console.error("Error during sign-in:", error);
     } else {
-      setdatas(data);
       console.log("Sign-in initiated:", data);
     }
   };
