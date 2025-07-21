@@ -47,10 +47,10 @@ export async function GET(request: NextRequest) {
     
     return response
     
-  } catch (error:any) {
+  } catch (error:unknown) {
     console.error('Authentication error:', error)
     return NextResponse.redirect(
-      `${requestUrl.origin}/auth?error=${encodeURIComponent(error.message)}`
+      `${requestUrl.origin}/auth?error=${encodeURIComponent((error as Error).message)}`
     )
   }
 }

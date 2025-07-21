@@ -1,7 +1,6 @@
 "use client";
 //could not use server action here because it is a client component
 import { createClient } from "@/utlis/supabase/client";
-import { useState } from "react";
 
 export default function SignInButton() {
   const handleGoogleLogin = async () => {
