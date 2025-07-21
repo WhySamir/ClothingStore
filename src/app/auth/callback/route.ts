@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   
   if (!code) {
     return NextResponse.redirect(
-      `${requestUrl.origin}/auth?error=Missing authentication code`
+      `${requestUrl.origin}/login?error=Missing authentication code`
     )
   }
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
   } catch (error:unknown) {
     console.error('Authentication error:', error)
     return NextResponse.redirect(
-      `${requestUrl.origin}/auth?error=${encodeURIComponent((error as Error).message)}`
+      `${requestUrl.origin}/login?error=${encodeURIComponent((error as Error).message)}`
     )
   }
 }

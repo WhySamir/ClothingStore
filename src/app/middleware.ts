@@ -51,6 +51,7 @@ export async function updateSession(request: NextRequest) {
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
+    // If no user is found and you're not already on a login/auth route, it redirects the user to /login
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
@@ -67,6 +68,15 @@ export async function updateSession(request: NextRequest) {
   //    return myNewResponse
   // If this is not done, you may be causing the browser and server to go out
   // of sync and terminate the user's session prematurely!
+
+  if (user && request.nextUrl.pathname.startsWith('/admin')) {
+    const role = user.user_metadata?.role
+    if (role !== 'admin') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/' // Or redirect to unauthorized page
+      return NextResponse.redirect(url)
+    }
+  }
 
   return supabaseResponse
 }

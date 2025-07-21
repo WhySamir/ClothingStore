@@ -4,19 +4,20 @@ import { createClient } from "@/utlis/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
 export default function ShowUserData() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null | undefined>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       const supabase = createClient();
       const { data, error } = await supabase.auth.getUser();
-      if (error) console.error(error);
-      else setUser(data.user);
+      if (error) {
+        setUser(null);
+      } else setUser(data.user ?? null);
     };
     fetchUser();
   }, []);
-
-  if (!user) return <p>Loading user...</p>;
+  if (user === undefined) return <p>Loading user...</p>;
+  if (user === null) return <p className="text-red-500">Not logged in</p>;
 
   return (
     <div>
