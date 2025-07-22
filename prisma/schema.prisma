@@ -106,14 +106,14 @@ model Category {
 
 // CUSTOMER SECTION
 model Customer {
-  id         String   @id @default(cuid())
-  name       String?
-  email      String?  @unique
-  password   String?
-  provider   String?
-  providerId String?
-  updatedAt  DateTime @updatedAt
-  createdAt  DateTime @default(now())
+  id            String   @id
+  name          String?
+  email         String?  @unique
+  userAvatarUrl String?
+  provider      String?
+  providerId    String?
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
 
   reviews       Review[]
   carts         Cart[]

@@ -4,9 +4,10 @@ const prisma = new PrismaClient()
 
 const customers: Prisma.CustomerCreateInput[] = [
     {
+      id: "1",
       name: "John Doe",
       email: "john.doe@example.com",
-      password: "password123",
+      userAvatarUrl: "https://example.com/avatar.jpg",
     }
   ]
   const categories:Prisma.CategoryCreateInput[] = [{

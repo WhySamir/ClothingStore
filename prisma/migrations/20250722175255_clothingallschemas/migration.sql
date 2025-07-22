@@ -88,7 +88,7 @@ CREATE TABLE "Customer" (
     "id" TEXT NOT NULL,
     "name" TEXT,
     "email" TEXT,
-    "password" TEXT,
+    "userAvatarUrl" TEXT,
     "provider" TEXT,
     "providerId" TEXT,
     "updatedAt" TIMESTAMP(3) NOT NULL,

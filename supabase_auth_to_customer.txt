@@ -1,0 +1,41 @@
+after sucesful login auth.users data stored
+so moving users to customer became essential
+
+so created a trigger function in sql
+
+CREATE OR REPLACE FUNCTION auth_to_customer()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public."Customer" (
+    id,
+    email,
+    "createdAt",
+    "updatedAt"
+  )
+  VALUES (
+    NEW.id,
+    NEW.email,
+    NOW(),
+    NOW()
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+this can also done by manually by going into db functions and triggers
+then created trigger for user creation for customerDROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION auth_to_customer();  -- this uses public schema by default
+
+
+also check by adding into auth.users
+INSERT INTO auth.users (id, email) 
+VALUES ('f47ac10d-58cc-4372-a567-0e02b2c3d479', 'dummy4@example.com');
+
+and for updatedAt 
+ALTER TABLE "Customer"
+ALTER COLUMN "updatedAt" SET DEFAULT now();
+
