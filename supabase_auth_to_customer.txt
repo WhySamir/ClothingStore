@@ -31,11 +31,90 @@ FOR EACH ROW
 EXECUTE FUNCTION auth_to_customer();  -- this uses public schema by default
 
 
-also check by adding into auth.users
-INSERT INTO auth.users (id, email) 
-VALUES ('f47ac10d-58cc-4372-a567-0e02b2c3d479', 'dummy4@example.com');
 
-and for updatedAt 
-ALTER TABLE "Customer"
-ALTER COLUMN "updatedAt" SET DEFAULT now();
 
+created trigger for auth to admin also 
+so updated a little triger for customer first 
+CREATE OR REPLACE FUNCTION auth_to_customer()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Only insert if the email does not already exist
+  IF NOT EXISTS (
+    SELECT 1 FROM public."Customer" WHERE email = NEW.email
+  ) THEN
+    INSERT INTO public."Customer" (
+      id,
+      name,
+      "userAvatarUrl",
+      email,
+      provider,
+      "providerId",
+      "createdAt",
+      "updatedAt"
+    ) VALUES (
+      NEW.id,
+      NEW.raw_user_meta_data->>'full_name',
+      NEW.raw_user_meta_data->>'avatar_url',
+      NEW.email,
+      NEW.raw_app_meta_data->>'provider',
+      NEW.raw_user_meta_data->>'provider_id',
+      NOW(),
+      NOW()
+    );
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, auth;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION auth_to_customer();  -- this uses public schema by default
+ 
+ then trigger 
+ CREATE OR REPLACE FUNCTION auth_to_admin()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.raw_user_meta_data->>'role' = 'admin'
+     AND NOT EXISTS (
+       SELECT 1 FROM public."Admin" WHERE id = NEW.id::text
+     ) THEN
+
+    INSERT INTO public."Admin" (
+      id,
+      name,
+      email,
+      "createdAt"
+    ) VALUES (
+      NEW.id::text,
+      NEW.raw_user_meta_data->>'full_name',
+      NEW.email,
+      NOW()
+    );
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, auth;
+
+DROP TRIGGER IF EXISTS on_auth_admin_created ON auth.users;
+
+CREATE TRIGGER on_auth_admin_created
+AFTER INSERT OR UPDATE ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION auth_to_admin();  -- this uses public schema by default
+
+atlas
+
+UPDATE auth.users
+SET raw_user_meta_data = jsonb_set(raw_user_meta_data, '{role}', '"admin"', true)
+WHERE email = 'csit23081025_samir@achsnepal.edu.np';
+
+select *
+from auth.users
+where raw_user_meta_data ->> 'role' = 'admin';

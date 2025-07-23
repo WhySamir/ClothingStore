@@ -1,4 +1,4 @@
 
-export async function GET(req:Request){
+export async function GET(){
     return Response.json("hello from products route");
 }
