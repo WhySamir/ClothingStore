@@ -1,6 +1,7 @@
 import {  type NextRequest } from 'next/server'
 import { updateSession } from '@/app/middleware'
 
+
 export async function middleware(request: NextRequest) {
   console.log('Middleware triggered for request:', request.url)
   return await updateSession(request)
