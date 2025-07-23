@@ -1,4 +1,6 @@
 // app/auth/callback/route.ts
+import { googleAvatartoCloud } from '@/app/lib/googleAvatar'
+import { prisma } from '@/app/lib/prisma'
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
@@ -39,12 +41,19 @@ export async function GET(request: NextRequest) {
       }
     )
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const {data, error } = await supabase.auth.exchangeCodeForSession(code)
     
     if (error) {
       throw new Error(`Supabase error: ${error.message}`)
     }
-    
+    const userId = data.session.user.id; 
+     const customer = await prisma.customer.findUnique({ where: { id: userId } })
+
+    if (customer) {
+      // Upload avatar to Cloudinary if needed
+      await googleAvatartoCloud(customer)
+    }
+
     return response
     
   } catch (error:unknown) {
