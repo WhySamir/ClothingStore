@@ -1,65 +1,46 @@
-// app/auth/callback/route.ts
-import { googleAvatartoCloud } from '@/app/lib/googleAvatar'
-import { prisma } from '@/app/lib/prisma'
-import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { googleAvatartoCloud } from '@/app/lib/googleAvatar';
+import { prisma } from '@/app/lib/prisma';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { NextResponse, type NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get('code');
   
   if (!code) {
     return NextResponse.redirect(
       `${requestUrl.origin}/login?error=Missing authentication code`
-    )
+    );
   }
 
   try {
-    const response = NextResponse.redirect(`${requestUrl.origin}/dashboard`)
-    
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          // Use the new getAll method
-          getAll() {
-            return request.cookies.getAll().map(cookie => ({
-              name: cookie.name,
-              value: cookie.value
-            }))
-          },
-          // Use the new setAll method
-          setAll(cookies) {
-            cookies.forEach(({ name, value, ...options }) => {
-              // Set cookie on both request and response
-              request.cookies.set({ name, value, ...options })
-              response.cookies.set({ name, value, ...options })
-            })
-          }
-        }
-      }
-    )
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({
+      cookies: () => cookieStore
+    });
 
-    const {data, error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     
     if (error) {
-      throw new Error(`Supabase error: ${error.message}`)
+      throw new Error(`Supabase error: ${error.message}`);
     }
-    const userId = data.session.user.id; 
-     const customer = await prisma.customer.findUnique({ where: { id: userId } })
-
-    if (customer) {
-      // Upload avatar to Cloudinary if needed
-      await googleAvatartoCloud(customer)
-    }
-
-    return response
     
-  } catch (error:unknown) {
-    console.error('Authentication error:', error)
+    const userId = data.session?.user.id; 
+
+    if (userId) {
+      const customer = await prisma.customer.findUnique({ where: { id: userId } });
+      if (customer) {
+        await googleAvatartoCloud(customer);
+      }
+    }
+    
+    return NextResponse.redirect(`${requestUrl.origin}/dashboard`);
+    
+  } catch (error: unknown) {
+    console.error('Authentication error:', error);
     return NextResponse.redirect(
       `${requestUrl.origin}/login?error=${encodeURIComponent((error as Error).message)}`
-    )
+    );
   }
 }

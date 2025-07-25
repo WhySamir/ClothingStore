@@ -1,7 +1,7 @@
 import { uploadFromUrlToCloudinary } from "@/utlis/uploadonCloudinary";
 import { Customer } from "@prisma/client";
 import { prisma } from "@/app/lib/prisma";
-import { ApiResponds } from "@/utlis/Apis/ApiResponds";
+import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
 
 export const googleAvatartoCloud = async (customer:Customer) => {
   // Upload avatars for all customers who have userAvatarUrl but it's not yet on Cloudinary
