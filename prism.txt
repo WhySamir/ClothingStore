@@ -8,6 +8,9 @@ production:"scripts": {
   },
 
 ?pgbouncer=true&connect_limit=1 in DATABASE_URL
+any change in prisma
+npx prisma generate
+
 npx prisma migrate reset
 npx prisma validate
  npx prisma migrate dev --name clothingallschemas
@@ -21,7 +24,7 @@ seed data push
     "seed": "ts-node --compiler-options {\"module\":\"commonjs\"} prisma/seed.ts"
   }
 npx prisma db seed
-
+npx prisma migrate dev --name add-main-image-to-product
 prisma gives u type build on nodemodules as modelnameCreateInput
 
 

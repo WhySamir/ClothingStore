@@ -1,9 +1,25 @@
-//many products have one categories like many men clothes in men category
-//admin can CRUD products , customer read 
+import { prisma } from "@/app/lib/prisma";
+import { ApiError } from "@/utlis/ApiResponders/ApiError";
+import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
 
+export async function GET() {
+  try {
+    const products = await prisma.product.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        brand: true,
+        mainImgUrl: true,
+        category: {
+          select: { name: true }
+        },
+      },
+    });
+    return ApiResponds(200, "Products got successfully", products);
+  } catch (error) {
+    return ApiError(500, error);
+  }
 
-
-
-export async function GET(){
-    return Response.json("hello from products route");
 }

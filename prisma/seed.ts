@@ -23,6 +23,7 @@ const customers: Prisma.CustomerCreateInput[] = [
     {
       name: "T-Shirt",
       description: "A cool t-shirt",
+      mainImgUrl:"https://res.cloudinary.com/dcfrlqakq/image/upload/v1753473129/image_1_lapjpe.png",
       price: 19.99,
       stockQty: 100,
       category: {
