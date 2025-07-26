@@ -41,11 +41,13 @@ model Product {
 }
 
 model ProductImage {
-  id        Int     @id @default(autoincrement())
-  url       String // e.g., Cloudinary or Supabase storage URL
-  alt       String? // optional image description
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
+  id             Int           @id @default(autoincrement())
+  url            String // e.g., Cloudinary or Supabase storage URL
+  alt            String? // optional image description
+  productId      String
+  product        Product       @relation(fields: [productId], references: [id])
+  ProductColor   ProductColor? @relation(fields: [productColorId], references: [id])
+  productColorId String?
 }
 
 model ProductSize {
@@ -63,7 +65,8 @@ model ProductColor {
   productId String
   color     String
   hexCode   String?
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product        @relation(fields: [productId], references: [id])
+  images    ProductImage[]
 }
 
 model ProductFeature {
