@@ -4,8 +4,9 @@
 import { prisma } from "@/app/lib/prisma";
 import { isUserAdmin } from "@/app/server/controllers/admin.controllers";
 import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
+import { NextRequest } from "next/server";
 
-export async function GET(req:Request){
+export async function GET(req:NextRequest){
     const isAdmin = await isUserAdmin(req);
     if(!isAdmin){
 return ApiResponds(403,"user is not admin")

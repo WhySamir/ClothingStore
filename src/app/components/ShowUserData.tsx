@@ -1,32 +1,36 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utlis/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import type { Session, User } from "@supabase/supabase-js";
 
 export default function ShowUserData() {
-  const [user, setUser] = useState<User | null | undefined>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.getUser();
+    const supabase = createClient();
+
+    supabase.auth.getSession().then(({ data, error }) => {
       if (error) {
-        setUser(null);
+        console.error("Error fetching session:", error.message);
+        setSession(null);
       } else {
-        setUser(data.user ?? null);
+        setSession(data.session);
       }
-    };
-    fetchUser();
+      setLoading(false);
+    });
   }, []);
 
-  if (user === undefined) return <p>Loading user...</p>;
-  if (user === null) return <p className="text-red-500">Not logged in</p>;
+  if (loading) return <p>Loading session...</p>;
+  if (!session) return <p className="text-red-500">Not logged in</p>;
+
+  const user: User = session.user;
 
   return (
     <div>
       <p className="text-green-400">Logged in as: {user.email}</p>
-      <p className="text-black">id:{user.id}</p>
-      <pre className="text-black">{JSON.stringify(user, null, 2)}</pre>
+      <p className="text-black">User ID: {user.id}</p>
+      <pre className="text-black">{JSON.stringify(session, null, 2)}</pre>
     </div>
   );
 }

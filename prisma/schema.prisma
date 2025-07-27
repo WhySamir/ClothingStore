@@ -90,9 +90,11 @@ model Review {
 
   product  Product  @relation(fields: [productId], references: [id])
   customer Customer @relation(fields: [customerId], references: [id])
+
+  @@unique([productId, customerId])
 }
 
-//CATEGORY SECTION
+//CATEGORY 
 
 enum GenderCategory {
   male
@@ -108,7 +110,7 @@ model Category {
   products Product[]
 }
 
-// CUSTOMER SECTION
+// CUSTOMER 
 model Customer {
   id            String   @id
   name          String?
@@ -125,7 +127,7 @@ model Customer {
   orders        Order[]
 }
 
-// CART SECTION
+// CART 
 model Cart {
   id String @id @default(cuid())
 
@@ -148,7 +150,7 @@ model CartItem {
   @@id([cartId, productId])
 }
 
-// WISHLIST SECTION
+// WISHLIST 
 model WishlistItem {
   id String @id @default(cuid())
 
@@ -158,9 +160,11 @@ model WishlistItem {
 
   customer Customer @relation(fields: [customerId], references: [id])
   product  Product  @relation(fields: [productId], references: [id])
+
+  @@unique([customerId, productId])
 }
 
-// ADMIN SECTION
+// ADMIN 
 model Admin {
   id            String   @id @default(cuid())
   name          String

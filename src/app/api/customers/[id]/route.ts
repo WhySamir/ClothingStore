@@ -1,21 +1,19 @@
 import { prisma } from "@/app/lib/prisma";
 import { ApiError } from "@/utlis/ApiResponders/ApiError";
 import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
-import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+
+import { verifyUser } from "@/utlis/verifyUser";
+import { NextRequest } from "next/server";
 // import { ApiResponds } from "@/utlis/Apis/ApiResponds";
 // getCustomerById
 // only admin or customer itself
-export async function GET(req:Request, {params}:{params:Promise<{id:string}>}){
+export async function GET(req:NextRequest, {params}:{params:Promise<{id:string}>}){
     const {id } = await params;
     if(!id){
         return  ApiError(400, "Customer ID is required");
     } 
     
-    const supabase = createServerComponentClient({ cookies });
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+   const user = await verifyUser(req)
   
     if (!user) {
       return ApiError(401, "Unauthorized: User not logged in");

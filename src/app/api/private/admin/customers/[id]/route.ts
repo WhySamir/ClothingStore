@@ -2,6 +2,7 @@ import { prisma } from "@/app/lib/prisma";
 import { isUserAdmin } from "@/app/server/controllers/admin.controllers";
 import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
 import { createClient } from "@supabase/supabase-js";
+import { NextRequest } from "next/server";
 
 // delete a specific customer
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -9,7 +10,7 @@ const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const supabaseAdmin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 export async function DELETE(
-  req: Request,
+  req: NextRequest,
   {params}:{params:Promise<{id:string}>}
 ) {
   const { id } = await params;

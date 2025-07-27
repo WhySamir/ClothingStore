@@ -1,11 +1,9 @@
 import { prisma } from "@/app/lib/prisma";
-import { createSupabaseServerClient } from "@/utlis/supabase/server";
+import { verifyUser } from "@/utlis/verifyUser";
+import { NextRequest } from "next/server";
 
-export async function GET() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export async function GET(req:NextRequest) {
+    const user = await verifyUser(req)
 
   if (!user) {
     return new Response("Unauthorized", { status: 401 });

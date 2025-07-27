@@ -1,13 +1,11 @@
 //validation for admin 
 
 import { prisma } from "@/app/lib/prisma";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-export async function isUserAdmin (_req: Request): Promise<boolean> {
-    const supabase = createServerComponentClient({cookies});
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+import { verifyUser } from "@/utlis/verifyUser";
+
+import { NextRequest } from "next/server";
+export async function isUserAdmin (req: NextRequest): Promise<boolean> {
+    const user =await verifyUser(req)
   
     if (!user) return false
   
