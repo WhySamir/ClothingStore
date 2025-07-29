@@ -84,7 +84,7 @@ model Review {
 
   productId  String
   customerId String
-  rating     Int
+  rating     Float
   comment    String
   createdAt  DateTime @default(now())
 
