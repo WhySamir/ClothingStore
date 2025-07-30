@@ -9,6 +9,7 @@ export default function DashboardPage() {
   const supabase = createClient();
 
   const handleLogout = async () => {
+    await fetch("/logout", { method: "POST" });
     await supabase.auth.signOut();
     router.push("/login");
   };
