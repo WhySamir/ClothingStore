@@ -1,11 +1,6 @@
-"use client";
-
-import { motion, AnimatePresence } from "framer-motion";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
-import { Announcement } from "./components/Announcement";
-import { useState } from "react";
+import { AnnounceWithNav } from "./components/AnounceWithNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,21 +22,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [showAnnouncement, setShowAnnouncement] = useState(true);
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <motion.div layout transition={{ duration: 0.6, ease: "easeInOut" }}>
-          <AnimatePresence mode="popLayout">
-            {showAnnouncement && (
-              <Announcement setShow={() => setShowAnnouncement(false)} />
-            )}
-          </AnimatePresence>
-
-          <Navbar />
-        </motion.div>
+        <AnnounceWithNav />
         {children}
       </body>
     </html>
