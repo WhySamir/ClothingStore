@@ -1,0 +1,1 @@
+export  const globalLayoutCss = `max-w-7xl mx-auto flex justify-between items-center p-5 md:py-6 md:px-6`
