@@ -1,3 +1,9 @@
+import LandingPage from "./components/Landingpage";
+
 export default function Home() {
-  return <>{/* <Customer /> */}</>;
+  return (
+    <>
+      <LandingPage />
+    </>
+  );
 }

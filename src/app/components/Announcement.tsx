@@ -28,7 +28,7 @@ export function Announcement({ setShow }: AnnouncementProps) {
         paddingTop: 0, // remove vertical padding
         paddingBottom: 0,
       }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
       style={{ transformOrigin: "top" }}
       className="w-full overflow-hidden bg-orange-950 text-white"
     >
@@ -45,7 +45,7 @@ export function Announcement({ setShow }: AnnouncementProps) {
           <li className="cursor-pointer">
             Sign up and <span className="font-semibold"> GET 25% OFF </span>
             for your first order.
-            <span className="underline ml-1 text-[#f8fc80] underline-offset-4">
+            <span className="underline ml-1 text-[#F6BE63] underline-offset-4">
               Sign up now
             </span>
           </li>
