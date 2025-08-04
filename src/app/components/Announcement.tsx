@@ -1,12 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
+import SignInButton from "./SignInButton";
+import { useEffect } from "react";
+import { createClient } from "@/utlis/supabase/client";
 
 interface AnnouncementProps {
   setShow: (show: boolean) => void;
 }
 
 export function Announcement({ setShow }: AnnouncementProps) {
+  useEffect(() => {
+    const supabase = createClient();
+    const checkSignIn = async () => {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+      if (user) {
+        setShow(false); // User is logged in
+      }
+    };
+
+    checkSignIn();
+  }, []);
   return (
     <motion.div
       layout
@@ -23,12 +40,12 @@ export function Announcement({ setShow }: AnnouncementProps) {
         paddingBottom: 16,
       }}
       exit={{
-        opacity: 0,
+        // opacity: 40,
         height: 0, // collapse height
         paddingTop: 0, // remove vertical padding
         paddingBottom: 0,
       }}
-      transition={{ duration: 0.4, ease: "easeInOut" }}
+      transition={{ duration: 0.7, ease: "easeInOut" }}
       style={{ transformOrigin: "top" }}
       className="w-full overflow-hidden bg-orange-950 text-white"
     >
@@ -45,10 +62,8 @@ export function Announcement({ setShow }: AnnouncementProps) {
           <li className="cursor-pointer">
             Sign up and <span className="font-semibold"> GET 25% OFF </span>
             for your first order.
-            <span className="underline ml-1 text-[#F6BE63] underline-offset-4">
-              Sign up now
-            </span>
           </li>
+          <SignInButton />
         </ul>
 
         <div className="cursor-pointer">

@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const code = url.searchParams.get('code')
 
   if (!code) {
-    return NextResponse.redirect(`${url.origin}/login?error=Missing authentication code`)
+    return NextResponse.redirect(`${url.origin}?error=Missing authentication code`)
   }
 
   try {
@@ -41,6 +41,6 @@ export async function GET(request: NextRequest) {
     return response
   } catch (err) {
     console.error('Callback error:', err)
-    return NextResponse.redirect(`${url.origin}/login?error=${encodeURIComponent((err as Error).message)}`)
+    return NextResponse.redirect(`${url.origin}?error=${encodeURIComponent((err as Error).message)}`)
   }
 }

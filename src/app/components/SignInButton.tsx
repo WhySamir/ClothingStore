@@ -1,6 +1,7 @@
 "use client";
 //could not use server action here because it is a client component
 import { createClient } from "@/utlis/supabase/client";
+import { redirect } from "next/dist/server/api-utils";
 
 export default function SignInButton() {
   const handleGoogleLogin = async () => {
@@ -17,7 +18,6 @@ export default function SignInButton() {
         },
       },
     });
-    // Supabase redirected the user to Google → and then Google redirected back to your app with a URL like:
 
     if (error) {
       console.error("Error during sign-in:", error);
@@ -27,8 +27,13 @@ export default function SignInButton() {
   };
 
   return (
-    <button onClick={handleGoogleLogin} className="border py-4 px-2">
-      Login with Google
-    </button>
+    <>
+      <button
+        onClick={handleGoogleLogin}
+        className="underline ml-1 text-[#F6BE63] underline-offset-4"
+      >
+        Sign in up now
+      </button>
+    </>
   );
 }

@@ -11,11 +11,11 @@ export default function DashboardPage() {
   const handleLogout = async () => {
     await fetch("/logout", { method: "POST" });
     await supabase.auth.signOut();
-    router.push("/login");
+    router.push("/");
   };
 
   return (
-    <div className="p-6 text-white">
+    <div className="p-6 text-white  overflow-auto">
       <h1 className="text-3xl font-bold">Welcome to Dashboard</h1>
       <button onClick={handleLogout} className="mx-3 border">
         Logout

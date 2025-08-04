@@ -60,10 +60,10 @@ export async function middleware(request: NextRequest) {
   const { data: { user }, error } = await supabase.auth.getUser()
 
   // If user is not logged in, redirect to login
-  const isLoginRoute = request.nextUrl.pathname === '/login' || request.nextUrl.pathname.startsWith('/login')
+  const isLoginRoute = request.nextUrl.pathname === '/' 
   if (error || !user) {
     if (!isLoginRoute) {
-      return NextResponse.redirect(new URL('/login', request.url))
+      return NextResponse.redirect(new URL('/', request.url))
     }
     return response
   }
