@@ -2,14 +2,15 @@
 
 import { motion } from "framer-motion";
 import SignInButton from "./SignInButton";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createClient } from "@/utlis/supabase/client";
 
 interface AnnouncementProps {
   setShow: (show: boolean) => void;
 }
-
+//64
 export function Announcement({ setShow }: AnnouncementProps) {
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const supabase = createClient();
     const checkSignIn = async () => {
@@ -24,32 +25,43 @@ export function Announcement({ setShow }: AnnouncementProps) {
 
     checkSignIn();
   }, []);
+  useLayoutEffect(() => {
+    if (ref.current) {
+      console.log(ref.current.offsetHeight);
+    }
+  }, []);
+
   return (
     <motion.div
+      ref={ref}
       layout
       initial={{
         opacity: 1,
         height: "auto",
         paddingTop: 16,
         paddingBottom: 16,
+        // scaleY: 1,
       }}
       animate={{
         opacity: 1,
         height: "auto",
         paddingTop: 16,
         paddingBottom: 16,
+        // scaleY: 1,
       }}
       exit={{
-        // opacity: 40,
+        // opacity: 0,
+        paddingBottom: 1,
         height: 0, // collapse height
         paddingTop: 0, // remove vertical padding
-        paddingBottom: 0,
+        // scaleY: 0,
+        transformOrigin: "top",
       }}
-      transition={{ duration: 0.7, ease: "easeInOut" }}
+      transition={{ duration: 0.8, ease: "easeInOut" }}
       style={{ transformOrigin: "top" }}
       className="w-full overflow-hidden bg-orange-950 text-white"
     >
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-5 md:px-6">
+      <div className=" max-w-7xl mx-auto flex justify-between items-center px-5 md:px-6">
         {/* contact */}
         <div className="flex items-center gap-2">
           <div className="text-lg font-medium text-white">Support</div>

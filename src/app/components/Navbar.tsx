@@ -4,7 +4,7 @@ import { globalLayoutCss } from "../globalcss";
 import Menu from "./Menu";
 import { useState } from "react";
 import { motion } from "framer-motion";
-
+//80
 export default function Navbar() {
   const [isRotated, setIsRotated] = useState(false);
   const [show, setShow] = useState(false);
@@ -14,7 +14,7 @@ export default function Navbar() {
       layout
       //   initial={{ opacity: 1, y: 0 }}
       //   animate={{ y: announcementClosed ? -10 : 0 }}
-      transition={{ duration: 0.6, ease: "easeInOut" }}
+      transition={{ duration: 0.8, ease: "easeInOut" }}
       className="w-full  bg-white"
     >
       <div className={`${globalLayoutCss}`}>

@@ -9,8 +9,8 @@ export function AnnounceWithNav() {
 
   return (
     <>
-      <motion.div layout transition={{ duration: 0.6, ease: "easeInOut" }}>
-        <AnimatePresence mode="popLayout">
+      <motion.div layout transition={{ duration: 0.8, ease: "easeInOut" }}>
+        <AnimatePresence mode="wait">
           {showAnnouncement && (
             <Announcement setShow={() => setShowAnnouncement(false)} />
           )}

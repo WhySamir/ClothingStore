@@ -47,7 +47,7 @@ export default function LandingPage() {
               <img
                 src="/heroine.png"
                 alt="Model with sunglasses"
-                className="w-full h-full    md:max-w-[31.25rem] "
+                className="w-full h-full    md:max-w-[32rem] "
               />
             </div>
             {/* Callout Circle */}
