@@ -64,7 +64,7 @@ export function Announcement({ setShow }: AnnouncementProps) {
       <div className=" max-w-7xl mx-auto flex justify-between items-center px-5 md:px-6">
         {/* contact */}
         <div className="flex items-center gap-2">
-          <div className="text-lg font-medium text-white">Support</div>
+          <div className="font-medium  text-white">Support</div>
           <div>(977)</div>
           <p>9768445916</p>
         </div>
@@ -72,7 +72,7 @@ export function Announcement({ setShow }: AnnouncementProps) {
         {/* Main Text */}
         <ul className="hidden md:flex">
           <li className="cursor-pointer">
-            Sign up and <span className="font-semibold"> GET 25% OFF </span>
+            Sign up and <span className="font-medium"> GET 25% OFF </span>
             for your first order.
           </li>
           <SignInButton />

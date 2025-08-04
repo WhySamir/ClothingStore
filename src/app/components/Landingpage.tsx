@@ -3,7 +3,7 @@ import React from "react";
 export default function LandingPage() {
   return (
     <>
-      <section className="relative bg-[#F6F6F6]  min-h-[88dvh]  flex items-center ">
+      <section className="relative bg-[#F6F6F6] min-h-[86dvh]   flex items-center ">
         {/* Dotted Background Decorations */}
         <img
           src="/dts"
@@ -16,13 +16,13 @@ export default function LandingPage() {
           className="absolute bottom-0 left-1/4 translate-y-1/2 w-32 h-16"
         />
 
-        <div className="max-w-7xl mx-auto px-6 pt-4  grid grid-cols-1 md:grid-cols-2  items-center">
+        <div className="max-w-7xl mx-auto px-6 pt-4  grid grid-cols-1 md:grid-cols-2 2xl: gap-5   items-center">
           <div>
-            <div className="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full shadow">
-              <span className="text-xl font-semibold text-yellow-800">
+            <div className="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full ">
+              <span className="text-lg font-semibold text-yellow-800">
                 50% OFF
               </span>
-              <span className="text-xl  text-black">Summer Super Sale</span>
+              <span className="text-lg  text-black">Summer Super Sale</span>
             </div>
 
             <h1 className="mt-6 max-w-112 text-4xl font-bold leading-tight tracking-tight text-gray-900">
@@ -43,11 +43,11 @@ export default function LandingPage() {
 
           {/* Right Image & Callout */}
           <div className="relative">
-            <div className="relative flex items-center justify-end md:h-[86dvh] w-full">
+            <div className="relative flex items-center md:items-end   justify-end    xl:h-[86dvh]   w-full">
               <img
                 src="/heroine.png"
                 alt="Model with sunglasses"
-                className="w-full h-full    md:max-w-[32rem] "
+                className="w-full h-full   lg:max-w-[32rem] 2xl:max-w-full  object-contain "
               />
             </div>
             {/* Callout Circle */}
