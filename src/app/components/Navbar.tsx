@@ -2,12 +2,24 @@
 import Image from "next/image";
 import { globalLayoutCss } from "../globalcss";
 import Menu from "./Menu";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 //80
 export default function Navbar() {
   const [isRotated, setIsRotated] = useState(false);
   const [show, setShow] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const ulRef = useRef<HTMLUListElement | null>(null);
+  const toggleSearch = () => setSearchOpen((s: boolean) => !s);
+
+  useEffect(() => {
+    if (ulRef.current) {
+      const width = ulRef.current.offsetWidth;
+      const height = ulRef.current.offsetHeight;
+      console.log("UL width:", width);
+      console.log("UL height:", height);
+    }
+  }, []);
 
   return (
     <motion.nav
@@ -15,7 +27,7 @@ export default function Navbar() {
       //   initial={{ opacity: 1, y: 0 }}
       //   animate={{ y: announcementClosed ? -10 : 0 }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="w-full  bg-white"
+      className="w-full  bg-white relative"
     >
       <div className={`${globalLayoutCss}`}>
         {/* Logo */}
@@ -27,28 +39,68 @@ export default function Navbar() {
             Clothing<span className="text-[#4b2e1a]">.</span>
           </span>
         </div>
-
-        {/* Menu Links */}
-        <ul className="hidden md:flex space-x-8 text-gray-800 font-medium">
-          <li className="cursor-pointer hover:text-[#4b2e1a]">Home</li>
-          <li className="cursor-pointer hover:text-[#4b2e1a]">Shop</li>
-          <li className="cursor-pointer hover:text-[#4b2e1a]">Women</li>
-          <li className="cursor-pointer hover:text-[#4b2e1a]">Men</li>
-          <li className="cursor-pointer hover:text-[#4b2e1a]">About Us</li>
-        </ul>
+        {!searchOpen ? (
+          /* Menu Links */
+          <motion.ul
+            ref={ulRef}
+            className="hidden md:flex space-x-8 text-gray-800 font-medium"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <li className="cursor-pointer hover:text-[#4b2e1a]">Home</li>
+            <li className="cursor-pointer hover:text-[#4b2e1a]">Shop</li>
+            <li className="cursor-pointer hover:text-[#4b2e1a]">Women</li>
+            <li className="cursor-pointer hover:text-[#4b2e1a]">Men</li>
+            <li className="cursor-pointer hover:text-[#4b2e1a]">About Us</li>
+          </motion.ul>
+        ) : (
+          <>
+            <AnimatePresence>
+              {/* Search Input */}
+              <motion.div
+                key="input"
+                initial={{ x: 200, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+                className=" hidden md:flex items-center h-6  w-fit md:w-full md:max-w-[372px]"
+              >
+                <input
+                  type="text"
+                  placeholder="Search clothes..."
+                  className=" border border-gray-300 px-1 md:px-4 md:py-1 rounded-md w-full outline-none"
+                />
+              </motion.div>
+            </AnimatePresence>
+          </>
+        )}
 
         {/* Icons */}
         <div className="flex items-center gap-x-3 md:gap-x-6 text-gray-700 text-xl">
-          <button className=" h-6 w-6 ">
-            <Image src="./search.svg" alt="" height={24} width={24} />
-          </button>
+          {!searchOpen ? (
+            <button
+              key="open"
+              onClick={toggleSearch}
+              className="h-6 w-6 transition duration-200 flex items-center"
+            >
+              <Image src="/search.svg" alt="Search" width={24} height={24} />
+            </button>
+          ) : (
+            <button
+              onClick={toggleSearch}
+              className="h-6 transition duration-200 w-6 flex justify-end md:justify-start  items-center"
+            >
+              ✕
+            </button>
+          )}
           <button className="hidden md:flex  h-6 w-6">
             <Image src="./heart.svg" alt="" height={24} width={24} />
           </button>
-          <button className=" h-6 w-6">
+          <button className="hidden md:flex  h-6 w-6">
             <Image src="./cart.svg" alt="" height={24} width={24} />
           </button>
-          <button className=" h-6 w-6">
+          <button className="hidden md:flex h-6 w-6">
             <Image src="./user.svg" alt="" height={24} width={24} />
           </button>
 
@@ -63,10 +115,9 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-
-        {/* md-devices */}
-        {/* <div className="iconify-slide"></div> */}
       </div>
+      {/* md-devices */}
+      {/* <div className="iconify-slide"></div> */}
     </motion.nav>
   );
 }

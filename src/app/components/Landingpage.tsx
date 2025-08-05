@@ -3,7 +3,7 @@ import React from "react";
 export default function LandingPage() {
   return (
     <>
-      <section className="relative bg-[#F6F6F6] min-h-[86dvh]   flex items-center ">
+      <section className="relative bg-[#F6F6F6] md:min-h-[86dvh]   flex items-center ">
         {/* Dotted Background Decorations */}
         <img
           src="/dts"
@@ -19,16 +19,16 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 pt-4  grid grid-cols-1 md:grid-cols-2 2xl: gap-5   items-center">
           <div>
             <div className="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full ">
-              <span className="text-lg font-semibold text-yellow-800">
+              <span className="md:text-lg font-semibold text-yellow-800">
                 50% OFF
               </span>
-              <span className="text-lg  text-black">Summer Super Sale</span>
+              <span className="md:text-lg  text-black">Summer Super Sale</span>
             </div>
 
-            <h1 className="mt-6 max-w-112 text-4xl font-bold leading-tight tracking-tight text-gray-900">
+            <h1 className="mt-3 md:mt-6 max-w-112 text-2xl md:text-4xl font-bold leading-8  lg:leading-tight tracking-tight text-gray-900">
               Step into Style: Your
             </h1>
-            <h1 className="my-2 text-4xl font-bold leading-tight tracking-tight text-gray-900">
+            <h1 className="md:my-2 text-2xl md:text-4xl font-bold  leading-8 md:leading-tight  tracking-tight text-gray-900">
               Ultimate Fashion Destination{" "}
             </h1>
 
@@ -43,11 +43,11 @@ export default function LandingPage() {
 
           {/* Right Image & Callout */}
           <div className="relative">
-            <div className="relative flex items-center md:items-end   justify-end    xl:h-[86dvh]   w-full">
+            <div className="relative flex items-center justify-center md:items-end   md:justify-end  h-[432px] xl:h-[86dvh]   w-full">
               <img
                 src="/heroine.png"
                 alt="Model with sunglasses"
-                className="w-full h-full   lg:max-w-[32rem] 2xl:max-w-full  object-contain "
+                className="w-full h-full max-w-[24rem]    lg:max-w-[32rem] 2xl:max-w-full  lg:object-contain "
               />
             </div>
             {/* Callout Circle */}
@@ -62,7 +62,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      <article className="h-[80vh] bg-black"></article>
+      {/* <article className="h-[80vh] bg-black"></article> */}
     </>
   );
 }
