@@ -2,38 +2,11 @@
 
 import { motion } from "framer-motion";
 import SignInButton from "./SignInButton";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { createClient } from "@/utlis/supabase/client";
 
-interface AnnouncementProps {
-  setShow: (show: boolean) => void;
-}
 //64
-export function Announcement({ setShow }: AnnouncementProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const supabase = createClient();
-    const checkSignIn = async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-      if (user) {
-        setShow(false); // User is logged in
-      }
-    };
-
-    checkSignIn();
-  }, []);
-  useLayoutEffect(() => {
-    if (ref.current) {
-      console.log(ref.current.offsetHeight);
-    }
-  }, []);
-
+export function Announcement({ setShow }: { setShow: () => void }) {
   return (
     <motion.div
-      ref={ref}
       layout
       initial={{
         opacity: 1,
@@ -79,7 +52,7 @@ export function Announcement({ setShow }: AnnouncementProps) {
         </ul>
 
         <div className="cursor-pointer">
-          <span className="text-lg font-bold" onClick={() => setShow(false)}>
+          <span className="text-lg font-bold" onClick={setShow}>
             ✕
           </span>
         </div>

@@ -5,6 +5,8 @@ interface MenuProps {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   isRotated: boolean;
   setIsRotated: React.Dispatch<React.SetStateAction<boolean>>;
+  searchSmOpen: boolean;
+  setSmSearchOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Menu: React.FC<MenuProps> = ({
@@ -12,6 +14,8 @@ const Menu: React.FC<MenuProps> = ({
   setShow,
   isRotated,
   setIsRotated,
+  searchSmOpen,
+  setSmSearchOpen,
 }) => {
   useEffect(() => {
     const handleResize = () => {
@@ -27,15 +31,21 @@ const Menu: React.FC<MenuProps> = ({
     };
   }, [setIsRotated]);
 
+  const handleStateOffOn = () => {
+    {
+      if (searchSmOpen) {
+        setTimeout(() => {
+          setSmSearchOpen(false);
+        }, 800);
+      }
+      setIsRotated(!isRotated);
+      setShow(!show);
+    }
+  };
+
   return (
     <>
-      <div
-        className="w-full box-border  "
-        onClick={() => {
-          setIsRotated(!isRotated);
-          setShow(!show);
-        }}
-      >
+      <div className="w-full box-border  " onClick={() => handleStateOffOn()}>
         <div
           className={`space-y-2 relative box-border transform transition-transform duration-500 ${
             isRotated ? "translate-y-1.5 " : "translate-y-0"

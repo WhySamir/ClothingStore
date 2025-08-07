@@ -2,59 +2,68 @@
 import Image from "next/image";
 import { globalLayoutCss } from "../globalcss";
 import Menu from "./Menu";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { SmNav } from "./SmNavbar";
 import { SmSearch } from "./SmSearch";
+// import { useRouter } from "next/router";
 //80
 export default function Navbar() {
+  // const router = useRouter();
   const [isRotated, setIsRotated] = useState(false);
   const [show, setShow] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchSmOpen, setSmSearchOpen] = useState(false);
   const [smNavbar, setSmNavbar] = useState(false);
-  const navRef = useRef<HTMLUListElement | null>(null);
-  const ulRef = useRef<HTMLUListElement | null>(null);
+
   const toggleSearch = () => {
     if (smNavbar) {
+      console.log(true);
       setSearchOpen(false);
       setSmSearchOpen((s: boolean) => !s);
+      if (show) {
+        setShow(false);
+        setIsRotated(false);
+      }
+    } else {
+      setSearchOpen((s: boolean) => !s);
+      setSmSearchOpen(false);
     }
-    !smNavbar && setSearchOpen((s: boolean) => !s);
   };
   useEffect(() => {
-    if (navRef.current) {
-      const width = navRef.current.offsetWidth;
-      const height = navRef.current.offsetHeight;
-      console.log("UL width:", width);
-      console.log("UL height:", height);
-      if (width < 768) {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
         setSmNavbar(true);
+      } else {
+        setSmNavbar(false);
       }
-    }
+    };
 
-    if (ulRef.current) {
-      const width = ulRef.current.offsetWidth;
-      const height = ulRef.current.offsetHeight;
-      console.log("UL width:", width);
-      console.log("UL height:", height);
-    }
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
     <>
       <motion.nav
-        ref={navRef}
         layout
         //   initial={{ opacity: 1, y: 0 }}
         //   animate={{ y: announcementClosed ? -10 : 0 }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
-        className="w-full  bg-white relative"
+        className="w-full  bg-white relative z-20"
       >
         <div className={`${globalLayoutCss}`}>
           {/* Logo */}
-          <div className="flex items-center gap-2">
+          <div
+            className="flex items-center gap-2"
+            // onClick={() => router.push("/")}
+          >
             <div className="w-6 h-6 md:w-8 md:h-8 bg-orange-950 rounded-full flex items-center justify-center text-white font-bold text-lg">
               C
             </div>
@@ -65,7 +74,6 @@ export default function Navbar() {
           {!searchOpen ? (
             /* Menu Links */
             <motion.ul
-              ref={ulRef}
               className="hidden md:flex space-x-8 text-gray-800 font-medium"
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -89,11 +97,26 @@ export default function Navbar() {
                   transition={{ duration: 0.4 }}
                   className=" hidden md:flex items-center h-6  w-fit md:w-full md:max-w-[372px]"
                 >
-                  <input
-                    type="text"
-                    placeholder="Search clothes..."
-                    className=" border border-gray-300 px-1 md:px-4 md:py-1 rounded-md w-full outline-none"
-                  />
+                  <div className="flex items-center bg-[#F6F6F6] rounded-full flex-1 px-4 md:py-2">
+                    <Image
+                      src="/search.svg"
+                      alt="Search"
+                      width={16}
+                      height={16}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Search clothes..."
+                      // value={search}
+                      // onChange={(e) => setSearch(e.target.value)}
+                      // onKeyDown={(e) => {
+                      //   if (e.key === "Enter" && search.trim()) {
+                      //     handleSearch(search.trim());
+                      //   }
+                      // }}
+                      className="   md:ml-2 rounded-md w-full bg-transparent outline-none"
+                    />
+                  </div>
                 </motion.div>
               </AnimatePresence>
             </>
@@ -101,7 +124,7 @@ export default function Navbar() {
 
           {/* Icons */}
           <div className="flex items-center gap-x-3 md:gap-x-6 text-gray-700 text-xl">
-            {!searchOpen ? (
+            {!searchOpen || smNavbar ? (
               <button
                 key="open"
                 onClick={toggleSearch}
@@ -110,14 +133,12 @@ export default function Navbar() {
                 <Image src="/search.svg" alt="Search" width={24} height={24} />
               </button>
             ) : (
-              !smNavbar && (
-                <button
-                  onClick={toggleSearch}
-                  className="h-6 transition duration-200 w-6 flex justify-end md:justify-start  items-center"
-                >
-                  ✕
-                </button>
-              )
+              <button
+                onClick={toggleSearch}
+                className="h-6 transition duration-200 w-6 flex justify-end md:justify-start  items-center"
+              >
+                ✕
+              </button>
             )}
             <button className="hidden md:flex  h-6 w-6">
               <Image src="./heart.svg" alt="" height={24} width={24} />
@@ -136,6 +157,8 @@ export default function Navbar() {
                   setShow={setShow}
                   isRotated={isRotated}
                   setIsRotated={setIsRotated}
+                  searchSmOpen={searchSmOpen}
+                  setSmSearchOpen={setSmSearchOpen}
                 />
               </div>
             </div>
@@ -145,19 +168,21 @@ export default function Navbar() {
         {/* <div className="iconify-slide"></div> */}
       </motion.nav>
       <AnimatePresence>
+        {searchSmOpen && (
+          <SmSearch
+            key="sm-search"
+            searchSmOpen={searchSmOpen}
+            setSmSearchOpen={setSmSearchOpen}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
         {show && (
           <SmNav
             key="sm-nav"
             show={show}
             setShow={setShow}
             setIsRotated={setIsRotated}
-          />
-        )}
-        {searchSmOpen && (
-          <SmSearch
-            key="sm-search"
-            searchSmOpen={searchSmOpen}
-            setSmSearchOpen={setSmSearchOpen}
           />
         )}
       </AnimatePresence>

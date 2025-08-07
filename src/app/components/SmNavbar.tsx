@@ -41,7 +41,7 @@ export const SmNav: React.FC<Props> = ({ show, setShow, setIsRotated }) => {
         transition={{ duration: 0.5, ease: "easeInOut" }}
         className={`${
           closing ? "closing-animation" : ""
-        } lg:hidden   w-full max-w-sm  fixed z-50 right-0 top-[10vh] px-[4vh] sm:px-[8vh]  bg-slate-100  h-full overflow-hidden`}
+        } lg:hidden   w-full max-w-sm  fixed z-10 right-0 top-[10vh] px-[4vh] sm:px-[8vh]  bg-slate-100  h-full overflow-hidden`}
       >
         <div className="flex flex-col pt-[16vh] sm:pt-[7.125rem] justify-between gap-[4vh]  mb-8">
           <Link
