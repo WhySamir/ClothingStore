@@ -48,7 +48,7 @@ export function Announcement({ setShow }: { setShow: () => void }) {
             Sign up and <span className="font-medium"> GET 25% OFF </span>
             for your first order.
           </li>
-          <SignInButton />
+          <SignInButton buttonText="Sign in up now" />
         </ul>
 
         <div className="cursor-pointer">

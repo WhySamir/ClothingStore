@@ -4,6 +4,8 @@ import React from "react";
 import { motion } from "framer-motion";
 // import { useRouter } from "next/router";
 import Image from "next/image";
+import { PopularSearch } from "./PopularSearch";
+import { RecentSearch } from "./RecentSearch";
 
 interface Props {
   searchSmOpen: boolean;
@@ -95,43 +97,12 @@ export const SmSearch: React.FC<Props> = ({ setSmSearchOpen }) => {
             Cancel
           </button>
         </div>
-
-        <div className="mb-6">
-          <p className="text-sm text-gray-500 mb-3">Popular Search Terms</p>
-          <div className="flex flex-wrap gap-3">
-            {popularSearchTerms.map((term) => (
-              <button
-                key={term}
-                onClick={() => handleSearch(term)}
-                className="bg-gray-100 text-sm px-4 py-2 rounded-full"
-              >
-                {term}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {recentSearches.length > 0 && (
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-3">
-              <p className="text-sm text-gray-500">Recent Searches</p>
-              <button onClick={clearRecent} className="text-xl text-gray-600">
-                X
-              </button>
-            </div>
-            <div className="space-y-2">
-              {recentSearches.map((term, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleSearch(term)}
-                  className="block text-left text-black text-base"
-                >
-                  {term}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        <PopularSearch terms={popularSearchTerms} onSearch={handleSearch} />
+        <RecentSearch
+          terms={recentSearches}
+          onSearch={handleSearch}
+          onClear={clearRecent}
+        />
       </motion.div>
     </>
   );

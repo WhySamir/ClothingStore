@@ -6,16 +6,33 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { SmNav } from "./SmNavbar";
-import { SmSearch } from "./SmSearch";
-// import { useRouter } from "next/router";
+import { SmSearch } from "./search/SmSearch";
+import { DesktopSearch } from "./search/DesktopSearch";
+import Link from "next/link";
+import { createClient } from "@/utlis/supabase/client";
+import { useAuth } from "../auth-context";
+import SignInButton from "./SignInButton";
+
 //80
 export default function Navbar() {
-  // const router = useRouter();
   const [isRotated, setIsRotated] = useState(false);
   const [show, setShow] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchSmOpen, setSmSearchOpen] = useState(false);
   const [smNavbar, setSmNavbar] = useState(false);
+
+  const [userDropdown, setUserDropdown] = useState(false);
+
+  const supabase = createClient();
+  const { user } = useAuth();
+
+  const handleLogout = async () => {
+    setUserDropdown(false);
+    if (user) {
+      await fetch("/logout", { method: "POST" });
+    }
+    await supabase.auth.signOut();
+  };
 
   const toggleSearch = () => {
     if (smNavbar) {
@@ -53,24 +70,19 @@ export default function Navbar() {
     <>
       <motion.nav
         layout
-        //   initial={{ opacity: 1, y: 0 }}
-        //   animate={{ y: announcementClosed ? -10 : 0 }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
         className="w-full  bg-white relative z-20"
       >
         <div className={`${globalLayoutCss}`}>
           {/* Logo */}
-          <div
-            className="flex items-center gap-2"
-            // onClick={() => router.push("/")}
-          >
+          <Link href={"/"} className="flex items-center gap-2">
             <div className="w-6 h-6 md:w-8 md:h-8 bg-orange-950 rounded-full flex items-center justify-center text-white font-bold text-lg">
               C
             </div>
             <span className="md:text-xl font-semibold">
               Clothing<span className="text-[#4b2e1a]">.</span>
             </span>
-          </div>
+          </Link>
           {!searchOpen ? (
             /* Menu Links */
             <motion.ul
@@ -79,11 +91,21 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <li className="cursor-pointer hover:text-[#4b2e1a]">Home</li>
-              <li className="cursor-pointer hover:text-[#4b2e1a]">Shop</li>
-              <li className="cursor-pointer hover:text-[#4b2e1a]">Women</li>
-              <li className="cursor-pointer hover:text-[#4b2e1a]">Men</li>
-              <li className="cursor-pointer hover:text-[#4b2e1a]">About Us</li>
+              <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
+                Home
+              </Link>
+              <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
+                Shop
+              </Link>
+              <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
+                Women
+              </Link>
+              <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
+                Men
+              </Link>
+              <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
+                About Us
+              </Link>
             </motion.ul>
           ) : (
             <>
@@ -97,26 +119,7 @@ export default function Navbar() {
                   transition={{ duration: 0.4 }}
                   className=" hidden md:flex items-center h-6  w-fit md:w-full md:max-w-[372px]"
                 >
-                  <div className="flex items-center bg-[#F6F6F6] rounded-full flex-1 px-4 md:py-2">
-                    <Image
-                      src="/search.svg"
-                      alt="Search"
-                      width={16}
-                      height={16}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Search clothes..."
-                      // value={search}
-                      // onChange={(e) => setSearch(e.target.value)}
-                      // onKeyDown={(e) => {
-                      //   if (e.key === "Enter" && search.trim()) {
-                      //     handleSearch(search.trim());
-                      //   }
-                      // }}
-                      className="   md:ml-2 rounded-md w-full bg-transparent outline-none"
-                    />
-                  </div>
+                  <DesktopSearch />
                 </motion.div>
               </AnimatePresence>
             </>
@@ -140,15 +143,35 @@ export default function Navbar() {
                 ✕
               </button>
             )}
-            <button className="hidden md:flex  h-6 w-6">
+            <Link href={"/wishlists"} className="hidden md:flex  h-6 w-6">
               <Image src="./heart.svg" alt="" height={24} width={24} />
-            </button>
-            <button className="hidden md:flex  h-6 w-6">
+            </Link>
+            <Link href={"/carts"} className="hidden md:flex  h-6 w-6">
               <Image src="./cart.svg" alt="" height={24} width={24} />
-            </button>
-            <button className="hidden md:flex h-6 w-6">
-              <Image src="./user.svg" alt="" height={24} width={24} />
-            </button>
+            </Link>
+            <div className="relative ">
+              <button
+                onClick={() => {
+                  setUserDropdown((prev: boolean) => !prev);
+                }}
+                className="hidden md:flex h-6 w-6"
+              >
+                <Image src="./user.svg" alt="" height={24} width={24} />
+              </button>
+              {userDropdown &&
+                (user ? (
+                  <button
+                    onClick={handleLogout}
+                    className="md:block absolute  hidden -left-4 mt-2 min-w-fit bg-white shadow-lg rounded-lg p-2 z-50"
+                  >
+                    <p className="text-sm text-gray-500 cursor-pointer hover:text-black">
+                      Logout
+                    </p>
+                  </button>
+                ) : (
+                  <SignInButton buttonText="Login" />
+                ))}
+            </div>
 
             <div className="icon_small flex  md:hidden">
               <div className="flex ">
