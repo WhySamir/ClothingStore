@@ -2,12 +2,15 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  createClientComponentClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
 
 interface AuthContextType {
-  user: any | null;
+  user: User | null;
   loading: boolean;
-  setUser: React.Dispatch<React.SetStateAction<any | null>>;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,7 +19,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const supabase = createClientComponentClient();
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

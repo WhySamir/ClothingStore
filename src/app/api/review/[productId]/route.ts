@@ -63,10 +63,9 @@ export async function DELETE(req:NextRequest, context: { params: Promise<{ produ
     }
 
 
-    const review = await prisma.review.delete({
-  where: { id: existingReview.id },
-    }
-    );
+     await prisma.review.delete({
+      where: { id: existingReview.id },
+    });
 
     return ApiResponds(200, "Review deleted successfully");
   } catch (error) {

@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, message: "Cache cleared" });
-  } catch (err) {
-    return NextResponse.json({ success: false, message: "Error clearing cache" }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ success: false, message: "Error clearing cache", error }, { status: 500 });
   }
 }

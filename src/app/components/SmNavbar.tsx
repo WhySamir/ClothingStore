@@ -21,8 +21,9 @@ export const SmNav: React.FC<Props> = ({ show, setShow, setIsRotated }) => {
   };
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setShow(!show); // Hide when screen size is `lg` or larger
+      if (window.innerWidth < 768) {
+        setShow((prev) => !prev); // Hide when screen size is `lg` or larger
+        setIsRotated((prev) => !prev);
       }
     };
     handleResize();
@@ -31,7 +32,7 @@ export const SmNav: React.FC<Props> = ({ show, setShow, setIsRotated }) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [setShow]);
+  }, []);
   return (
     <>
       <motion.div
