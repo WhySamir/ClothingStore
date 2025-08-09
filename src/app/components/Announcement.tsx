@@ -36,15 +36,15 @@ export function Announcement({ setShow }: { setShow: () => void }) {
     >
       <div className=" max-w-7xl mx-auto flex justify-between items-center px-5 md:px-6">
         {/* contact */}
-        <div className="flex items-center gap-2">
+        <div className="flex text-xs md:text-sm items-center gap-2">
           <div className="font-medium  text-white">Support</div>
           <div>(977)</div>
           <p>9768445916</p>
         </div>
 
         {/* Main Text */}
-        <ul className="hidden md:flex">
-          <li className="cursor-pointer">
+        <ul className="flex">
+          <li className="hidden md:flex cursor-pointer">
             Sign up and <span className="font-medium"> GET 25% OFF </span>
             for your first order.
           </li>

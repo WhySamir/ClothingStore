@@ -37,7 +37,7 @@ export default function SignInButton({ buttonText }: OAuthButtonProps) {
       {buttonText === "Login" ? (
         <button
           onClick={handleGoogleLogin}
-          className="md:block absolute  hidden -left-4 mt-2 min-w-fit bg-white shadow-lg rounded-lg p-2 z-50"
+          className="md:block  absolute  hidden -left-4 mt-2 min-w-fit bg-white shadow-lg rounded-lg p-2 z-50"
         >
           <p className="text-sm text-gray-500 cursor-pointer hover:text-black">
             {buttonText}
@@ -46,7 +46,7 @@ export default function SignInButton({ buttonText }: OAuthButtonProps) {
       ) : (
         <button
           onClick={handleGoogleLogin}
-          className="underline ml-1 text-[#F6BE63] underline-offset-4"
+          className="text-xs md:text-sm underline ml-1 text-[#F6BE63] underline-offset-4"
         >
           {buttonText}
         </button>

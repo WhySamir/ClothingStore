@@ -7,14 +7,15 @@ import { createClient } from "@/utlis/supabase/client";
 
 export function AnnounceWithNav() {
   const [mounted, setMounted] = useState(false);
-  const [showAnnouncement, setShowAnnouncement] = useState(true); // Default to true for SSR
+  const [showAnnouncement, setShowAnnouncement] = useState(false); // Default to true for SSR
 
   useEffect(() => {
-    setMounted(true);
-
+    // Only run on client side
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     setShowAnnouncement(!isLoggedIn);
+    setMounted(true);
 
+    // Listen for storage events (when localStorage changes in other tabs)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "isLoggedIn") {
         setShowAnnouncement(!e.newValue);
