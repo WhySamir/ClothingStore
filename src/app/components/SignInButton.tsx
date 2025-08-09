@@ -21,6 +21,9 @@ export default function SignInButton({ buttonText }: OAuthButtonProps) {
         },
       },
     });
+    if (!error) {
+      localStorage.setItem("isLoggedIn", "true");
+    }
 
     if (error) {
       console.error("Error during sign-in:", error);

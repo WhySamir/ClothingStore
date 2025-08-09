@@ -6,31 +6,34 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/utlis/supabase/client";
 
 export function AnnounceWithNav() {
-  const [showAnnouncement, setShowAnnouncement] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  const [showAnnouncement, setShowAnnouncement] = useState(true); // Default to true for SSR
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        setShowAnnouncement(false);
-      }
+    setMounted(true);
 
-      if (!user) {
-        setShowAnnouncement(true);
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    setShowAnnouncement(!isLoggedIn);
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "isLoggedIn") {
+        setShowAnnouncement(!e.newValue);
       }
     };
 
-    checkAuth();
+    window.addEventListener("storage", handleStorageChange);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   return (
     <>
       <motion.div layout transition={{ duration: 0.8, ease: "easeInOut" }}>
         <AnimatePresence mode="wait">
-          {showAnnouncement && (
+          {mounted && showAnnouncement && (
             <Announcement setShow={() => setShowAnnouncement(false)} />
           )}
         </AnimatePresence>

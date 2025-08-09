@@ -11,9 +11,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = NextResponse.redirect(`${url.origin}/dashboard`)
+    const response = NextResponse.redirect(`${url.origin}/post-auth-loading`)
 
-    // ✅ Only write cookies to response
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

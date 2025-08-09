@@ -28,6 +28,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     setUserDropdown(false);
+    localStorage.removeItem("isLoggedIn");
     if (user) {
       await fetch("/logout", { method: "POST" });
     }

@@ -2,10 +2,8 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import {
-  createClientComponentClient,
-  User,
-} from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utlis/supabase/client";
 
 interface AuthContextType {
   user: User | null;
@@ -18,7 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
