@@ -1,3 +1,7 @@
+"use client";
+
+import Image from "next/image";
+
 const FashionCategories = () => {
   const features = [
     {
@@ -53,17 +57,23 @@ const FashionCategories = () => {
 
       {/* Categories Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Women's Section */}
-        <div className="relative bg-gradient-to-br from-orange-50 to-pink-50 rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-100/30 to-pink-100/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div className="relative z-10">
+        {/* Womens Section */}
+        <div
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80')",
+          }}
+          className="object-cover object-right-bottom relative bg-gradient-to-br from-orange-50 to-pink-50 rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
+        >
+          {/* <div className="absolute inset-0 bg-gradient-to-br from-orange-100/30 to-pink-100/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div> */}
+          <div className="z-10 flex-1 max-w-lg">
             <div className="mb-4">
               <span className="text-sm font-medium text-orange-600 bg-orange-100 px-3 py-2 rounded-full">
                 2500+ Items
               </span>
             </div>
 
-            <h2 className="text-3xl font-bold text-gray-900 mb-4  transition-colors duration-300">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 transition-colors duration-300">
               For Women&apos;s
             </h2>
 
@@ -90,8 +100,8 @@ const FashionCategories = () => {
           </div>
 
           {/* Decorative Image Placeholder */}
-          <div className="absolute -right-4 -bottom-4 w-48 h-48 bg-gradient-to-br from-orange-200 to-pink-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
-          <div className="absolute -right-8 top-4 w-24 h-24 bg-gradient-to-br from-pink-200 to-orange-200 rounded-full opacity-15 group-hover:scale-125 transition-transform duration-700"></div>
+          <div className="absolute -left-4 -bottom-4 w-40 h-40 bg-gradient-to-br from-orange-200 to-pink-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
+          <div className="absolute -right-4 -bottom-4 w-40 h-40 bg-gradient-to-br from-orange-200 to-pink-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
         </div>
 
         {/* Men's and Accessories Container */}
@@ -99,28 +109,35 @@ const FashionCategories = () => {
           {/* Men's Section */}
           <div className="relative bg-gradient-to-br from-blue-50 to-gray-50 rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-gray-100/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="mb-4">
-                <span className="text-sm font-medium text-blue-600 bg-blue-100 px-3 py-2 rounded-full">
-                  1500+ Items
-                </span>
+            <div className="relative flex space-x-4 z-10">
+              <div className="flex flex-col w-1/2">
+                <div className="mb-4">
+                  <span className="text-sm font-medium text-blue-600 bg-blue-100 px-3 py-2 rounded-full">
+                    1500+ Items
+                  </span>
+                </div>
+
+                <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">
+                  For Men&apos;s
+                </h2>
+
+                <ul className="space-y-3">
+                  {menCategories.map((category, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center text-gray-700 hover:text-blue-600 cursor-pointer transition-colors duration-200"
+                    >
+                      <div className="w-2 h-2 bg-blue-400 rounded-full mr-3 opacity-70"></div>
+                      <span className="font-medium">{category}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-
-              <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">
-                For Men&apos;s
-              </h2>
-
-              <ul className="space-y-3">
-                {menCategories.map((category, index) => (
-                  <li
-                    key={index}
-                    className="flex items-center text-gray-700 hover:text-blue-600 cursor-pointer transition-colors duration-200"
-                  >
-                    <div className="w-2 h-2 bg-blue-400 rounded-full mr-3 opacity-70"></div>
-                    <span className="font-medium">{category}</span>
-                  </li>
-                ))}
-              </ul>
+              <img
+                src="/ai.png"
+                className="object-cover h-60 object-right"
+                alt=""
+              />
             </div>
 
             {/* Decorative Elements */}

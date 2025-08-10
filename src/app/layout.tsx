@@ -3,6 +3,8 @@ import "./globals.css";
 import { AnnounceWithNav } from "./components/AnounceWithNav";
 import { AuthProvider } from "./auth-context";
 import { createClient } from "@/utlis/supabase/server";
+import GoogleOneTap from "./components/GoogleOneTap";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +37,11 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="afterInteractive"
+        />
+        <GoogleOneTap />
         <AuthProvider initialUser={user ?? null}>
           <AnnounceWithNav />
           {children}

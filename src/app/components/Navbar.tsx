@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { globalLayoutCss } from "../globalcss";
 import Menu from "./Menu";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { SmNav } from "./SmNavbar";
@@ -20,6 +20,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchSmOpen, setSmSearchOpen] = useState(false);
   const [smNavbar, setSmNavbar] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const [userDropdown, setUserDropdown] = useState(false);
 
@@ -28,7 +29,6 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     setUserDropdown(false);
-    localStorage.removeItem("isLoggedIn");
     if (user) {
       await fetch("/logout", { method: "POST" });
     }
@@ -64,6 +64,21 @@ export default function Navbar() {
 
     return () => {
       window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setUserDropdown(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -161,16 +176,20 @@ export default function Navbar() {
               </button>
               {userDropdown &&
                 (user ? (
-                  <button
-                    onClick={handleLogout}
-                    className="md:block absolute  hidden -left-4 mt-2 min-w-fit bg-white shadow-lg rounded-lg p-2 z-50"
-                  >
-                    <p className="text-sm text-gray-500 cursor-pointer hover:text-black">
-                      Logout
-                    </p>
-                  </button>
+                  <div ref={dropdownRef}>
+                    <button
+                      onClick={handleLogout}
+                      className="md:block absolute  hidden -left-4 mt-2 min-w-fit bg-white shadow-lg rounded-lg p-2 z-50"
+                    >
+                      <p className="text-sm text-gray-500 cursor-pointer hover:text-black">
+                        Logout
+                      </p>
+                    </button>
+                  </div>
                 ) : (
-                  <SignInButton buttonText="Login" />
+                  <div ref={dropdownRef}>
+                    <SignInButton buttonText="Login" />
+                  </div>
                 ))}
             </div>
 
