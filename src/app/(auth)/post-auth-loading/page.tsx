@@ -1,4 +1,3 @@
-// This is a Server Component
 import { createClient } from "@/utlis/supabase/server";
 import { redirect } from "next/navigation";
 

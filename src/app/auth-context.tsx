@@ -22,8 +22,15 @@ export const AuthProvider = ({
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
+      async (_event, session) => {
+        if (session) {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser(); // validate with Supabase Auth
+          setUser(user);
+        } else {
+          setUser(null);
+        }
       }
     );
 

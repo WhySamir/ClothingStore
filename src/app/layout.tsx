@@ -26,16 +26,16 @@ export default async function RootLayout({
 }>) {
   const supabase = createClient();
   const {
-    data: { session },
-  } = await (await supabase).auth.getSession();
-  console.log(session);
+    data: { user },
+  } = await (await supabase).auth.getUser();
+  // console.log(session);
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider initialUser={session?.user ?? null}>
+        <AuthProvider initialUser={user ?? null}>
           <AnnounceWithNav />
           {children}
         </AuthProvider>
