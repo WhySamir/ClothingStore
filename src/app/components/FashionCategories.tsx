@@ -64,11 +64,11 @@ const FashionCategories = () => {
             </div>
 
             <h2 className="text-3xl font-bold text-gray-900 mb-4  transition-colors duration-300">
-              For Women's
+              For Women&apos;s
             </h2>
 
             <p className="text-gray-600 mb-6 leading-relaxed">
-              Discover our curated collection of women's fashion, featuring
+              Discover our curated collection of women&apos;s fashion, featuring
               <span className="font-medium text-gray-800">
                 {" "}
                 contemporary styles
@@ -107,7 +107,7 @@ const FashionCategories = () => {
               </div>
 
               <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">
-                For Men's
+                For Men&apos;s
               </h2>
 
               <ul className="space-y-3">

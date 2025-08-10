@@ -1,11 +1,16 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+// This is a Server Component
+import { createClient } from "@/utlis/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function PostAuthLoading() {
-  const router = useRouter();
-  useEffect(() => {
-    router.replace("/dashboard");
-  }, [router]);
-  return <p>Signing you in...</p>;
+export default async function PostAuthLoading() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await (await supabase).auth.getSession();
+
+  if (!session) {
+    redirect("/");
+  }
+
+  redirect("/dashboard");
 }

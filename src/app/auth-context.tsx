@@ -1,35 +1,26 @@
-// auth-context.tsx
 "use client";
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@supabase/auth-helpers-nextjs";
 import { createClient } from "@/utlis/supabase/client";
 
 interface AuthContextType {
   user: User | null;
-  loading: boolean;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+export const AuthProvider = ({
   children,
+  initialUser,
+}: {
+  children: React.ReactNode;
+  initialUser: User | null;
 }) => {
   const supabase = createClient();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(initialUser);
 
   useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      setLoading(false);
-    };
-    getUser();
-
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
@@ -42,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [supabase]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, setUser }}>
+    <AuthContext.Provider value={{ user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
