@@ -1,5 +1,10 @@
 export {};
 
+interface CredentialResponse {
+  credential: string;
+  select_by?: string;
+  state?: string;
+}
 declare global {
   interface Window {
     google?: {
@@ -7,7 +12,7 @@ declare global {
         id: {
           initialize: (options: {
             client_id: string;
-            callback: (response: any) => void;
+            callback: (response: CredentialResponse) => void;
             auto_select?: boolean;
             cancel_on_tap_outside?: boolean;
             context?: string;

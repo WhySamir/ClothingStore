@@ -8,7 +8,7 @@ interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setIsRotated: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export const SmNav: React.FC<Props> = ({ show, setShow, setIsRotated }) => {
+export const SmNav: React.FC<Props> = ({ setShow, setIsRotated }) => {
   const [closing, setClosing] = useState(false);
   const [activePath, setActivePath] = useState(location.pathname);
   const handleSetActive = (path: string) => {
