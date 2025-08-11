@@ -34,7 +34,7 @@ const FashionCategories = () => {
   const accessoryCategories = ["Handbags", "Watches", "Sunglasses", "Hat"];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className=" max-w-7xl mx-auto px-4 py-8">
       {/* Features Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
         {features.map((feature, index) => (
@@ -61,7 +61,8 @@ const FashionCategories = () => {
         <div
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80')",
+              "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen,e_saturation:30/v1754908581/photo-1483985988355-763728e1935b_icxxqo.jpg')",
+            // "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto/q_auto/w_650/c_fill/g_auto/e_sharpen/v1754909322/3080381c-1ed1-42f2-beda-b4edf3f331f0-converted_q3iius.png')",
           }}
           className="object-cover object-right-bottom relative bg-gradient-to-br from-orange-50 to-pink-50 rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
         >
@@ -105,77 +106,51 @@ const FashionCategories = () => {
         </div>
 
         {/* Men's and Accessories Container */}
-        <div className="flex flex-col gap-8">
-          {/* Men's Section */}
-          <div className="relative bg-gradient-to-br from-blue-50 to-gray-50 rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-gray-100/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative flex space-x-4 z-10">
-              <div className="flex flex-col w-1/2">
-                <div className="mb-4">
-                  <span className="text-sm font-medium text-blue-600 bg-blue-100 px-3 py-2 rounded-full">
-                    1500+ Items
-                  </span>
-                </div>
-
-                <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">
-                  For Men&apos;s
-                </h2>
-
-                <ul className="space-y-3">
-                  {menCategories.map((category, index) => (
-                    <li
-                      key={index}
-                      className="flex items-center text-gray-700 hover:text-blue-600 cursor-pointer transition-colors duration-200"
-                    >
-                      <div className="w-2 h-2 bg-blue-400 rounded-full mr-3 opacity-70"></div>
-                      <span className="font-medium">{category}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <img
-                src="/ai.png"
-                className="object-cover h-60 object-right"
-                alt=""
-              />
-            </div>
-
-            {/* Decorative Elements */}
-            <div className="absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br from-blue-200 to-gray-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
-          </div>
-
-          {/* Accessories Section */}
-          <div className="relative bg-gradient-to-br from-amber-50 to-yellow-50 rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500">
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-100/30 to-yellow-100/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
+        {/* Men's Section */}
+        <div
+          style={{
+            background:
+              "url(https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_700,c_fill,g_auto,e_sharpen/three-piece-suit_jv521c.jpg)",
+          }}
+          className="relative bg-gradient-to-br from-blue-50 to-gray-50 rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-gray-100/30 opacity-0  transition-opacity duration-500"></div>
+          <div className="relative flex space-x-4 z-10">
+            <div className="flex flex-col w-1/2">
               <div className="mb-4">
-                <span className="text-sm font-medium text-amber-600 bg-amber-100 px-3 py-2 rounded-full">
-                  800+ Items
+                <span className="text-sm font-medium text-blue-600 bg-blue-100 px-3 py-2 rounded-full">
+                  1500+ Items
                 </span>
               </div>
 
-              <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-amber-600 transition-colors duration-300">
-                Accessories
+              <h2 className="text-3xl font-bold text-gray-900 mb-4  transition-colors duration-300">
+                For Men&apos;s
               </h2>
 
               <ul className="space-y-3">
-                {accessoryCategories.map((category, index) => (
+                {menCategories.map((category, index) => (
                   <li
                     key={index}
-                    className="flex items-center text-gray-700 hover:text-amber-600 cursor-pointer transition-colors duration-200"
+                    className="flex items-center text-gray-700 hover:text-blue-600 cursor-pointer transition-colors duration-200"
                   >
-                    <div className="w-2 h-2 bg-amber-400 rounded-full mr-3 opacity-70"></div>
+                    <div className="w-2 h-2 bg-blue-400 rounded-full mr-3 opacity-70"></div>
                     <span className="font-medium">{category}</span>
                   </li>
                 ))}
               </ul>
             </div>
-
-            {/* Decorative Elements */}
-            <div className="absolute -right-4 -bottom-4 w-28 h-28 bg-gradient-to-br from-amber-200 to-yellow-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
-            <div className="absolute -left-4 -top-4 w-20 h-20 bg-gradient-to-br from-yellow-200 to-amber-200 rounded-full opacity-15 group-hover:scale-125 transition-transform duration-700"></div>
+            {/* <img
+              src="/men.png"
+              className="object-cover h-90 object-right"
+              alt=""
+            /> */}
           </div>
+
+          {/* Decorative Elements */}
+          <div className="absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br from-blue-200 to-gray-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
         </div>
+
+        {/* Accessories Section */}
       </div>
     </div>
   );

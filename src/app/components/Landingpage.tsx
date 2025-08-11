@@ -51,7 +51,8 @@ export default function LandingPage() {
                 className="w-full h-full max-w-[24rem]    lg:max-w-[32rem] 2xl:max-w-full  lg:object-contain "
               /> */}
               <Image
-                src="/heroine.png"
+                // src="/heroine.png"
+                src="https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen/v1754910154/heroine_bz6uqp.png"
                 alt="Model with sunglasses"
                 width={512}
                 height={512}
