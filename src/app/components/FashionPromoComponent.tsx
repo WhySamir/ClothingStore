@@ -8,7 +8,7 @@ const FashionPromoComponent = () => {
           {/* Image Section */}
           <div className="lg:w-1/2 relative">
             <img
-              src="fashion.png"
+              src="/fashion.png"
               alt="Fashion Models"
               className="w-full max-h-112 lg:max-h-full  lg:h-full  object-cover"
             />

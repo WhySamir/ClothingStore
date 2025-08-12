@@ -5,9 +5,19 @@
 }
 
 body {
-  background: #e3e3e3;
+  background: white;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
