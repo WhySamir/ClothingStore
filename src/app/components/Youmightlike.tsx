@@ -25,7 +25,7 @@ const products: Product[] = [
     originalPrice: 150.0,
     discount: 50,
     rating: 4.8,
-    image: "/woman-brown-coat-hat.png",
+    image: "/fourbyfive.png",
     hasCountdown: true,
   },
   {
@@ -36,7 +36,7 @@ const products: Product[] = [
     originalPrice: 220.0,
     discount: 25,
     rating: 4.9,
-    image: "/woman-red-beret-beige-coat.png",
+    image: "/coat.png",
   },
   {
     id: 3,
@@ -46,7 +46,7 @@ const products: Product[] = [
     originalPrice: 100.0,
     discount: 10,
     rating: 4.8,
-    image: "/placeholder-hqy6m.png",
+    image: "/coat.png",
   },
   {
     id: 4,
@@ -56,7 +56,7 @@ const products: Product[] = [
     originalPrice: 100.0,
     discount: 25,
     rating: 4.7,
-    image: "/fashionable-woman-black-dress.png",
+    image: "/coat.png",
   },
   {
     id: 5,
@@ -66,7 +66,7 @@ const products: Product[] = [
     originalPrice: 100.0,
     discount: 25,
     rating: 4.7,
-    image: "/fashionable-woman-black-dress.png",
+    image: "/coat.png",
   },
   {
     id: 6,
@@ -76,7 +76,7 @@ const products: Product[] = [
     originalPrice: 100.0,
     discount: 25,
     rating: 4.7,
-    image: "/fashionable-woman-black-dress.png",
+    image: "/coat.png",
   },
 ];
 
@@ -116,7 +116,7 @@ function CountdownTimer() {
   }, []);
 
   return (
-    <div className="absolute bottom-4 left-4 bg-orange-200 w-64 mr-3 px-2 py-3 flex items-center gap-4 text-sm font-medium">
+    <div className="absolute bottom-2 left-0 bg-orange-200 w-full  px-2 py-3 flex items-center gap-4 text-sm font-medium">
       <div className="text-center">
         <div className="text-lg font-bold">
           {timeLeft.days.toString().padStart(2, "0")}
@@ -152,8 +152,8 @@ export default function ProductShowcase() {
   const [activeCategory, setActiveCategory] = useState("All");
 
   return (
-    <div className=" h-full w-full  text-black  pt-[10vh]">
-      <div className=" w-full xl:max-w-[90vw] ml-auto px-4 xl:px-0 py-8">
+    <div className=" h-full w-full  text-black  md:pt-[10vh]">
+      <div className=" w-full xl:max-w-[90vw] ml-auto px-4 xl:px-0 md:py-8">
         {/* Header */}
         <div className="mb-8">
           <p className="text-gray-600 mb-2">Our Products</p>
@@ -185,14 +185,20 @@ export default function ProductShowcase() {
             {products.map((product) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 w-72 group relative   overflow-hidden shadow-sm hover:shadow-lg transition-shadow "
+                className="flex-shrink-0 w-72  group relative   overflow-hidden shadow-sm hover:shadow-lg transition-shadow "
               >
                 {/* Product Image */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-[#F6F6F6]">
-                  <img
-                    src={product.image || "/placeholder.svg"}
+                <div className="relative  aspect-[4/5] overflow-hidden bg-[#F6F6F6]">
+                  <Image
+                    src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    fill
+                    style={{
+                      objectFit: "cover",
+                      objectPosition: " center calc(100% + 1rem)",
+                      overflow: "hidden",
+                    }}
+                    className="  group-hover:scale-105 transition-transform duration-300"
                   />
 
                   {/* Discount Badge */}

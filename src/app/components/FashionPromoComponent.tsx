@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 const FashionPromoComponent = () => {
@@ -7,13 +8,17 @@ const FashionPromoComponent = () => {
         <div className="flex max-w-7xl mx-auto  flex-col md:flex-row">
           {/* Image Section */}
           <div className="lg:w-1/2 relative">
-            <img
-              src="/fashion.png"
-              alt="Fashion Models"
-              className="w-full max-h-112 lg:max-h-full  lg:h-full  object-cover"
-            />
-            {/* <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div> */}
+            <div className="w-full max-h-112 lg:max-h-full  lg:h-full  object-cover">
+              <Image
+                src="/fashion.png"
+                alt="Fashion Models"
+                width={1200} // natural width of your image
+                height={800} // natural height of your image
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
+          {/* <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div> */}
 
           {/* Content Section */}
           <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">

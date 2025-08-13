@@ -1,19 +1,21 @@
 "use client";
 
+import Image from "next/image";
+
 const FashionCategories = () => {
   const features = [
     {
-      icon: "./Package",
+      icon: "/shipping.svg",
       title: "Free Shipping",
       description: "Free shipping for order above £100",
     },
     {
-      icon: "./CreditCard",
+      icon: "/payment.svg",
       title: "Flexible Payment",
       description: "Multiple secure payment options",
     },
     {
-      icon: "./Headphones",
+      icon: "/support.svg",
       title: "24x7 Support",
       description: "We support online all days.",
     },
@@ -30,16 +32,22 @@ const FashionCategories = () => {
   const menCategories = ["T-Shirts and Shirts", "Jackets & Coats", "Jeans"];
 
   return (
-    <div className="my-12 max-w-7xl mx-auto px-4 py-8">
+    <div className="my-4 md:my-12 max-w-7xl mx-auto px-4 py-8">
       {/* Features Section */}
-      <div className=" grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+      <div className=" grid grid-cols-1 md:grid-cols-3 gap-8  mb-16 md:mb-24">
         {features.map((feature, index) => (
           <div
             key={index}
             className="flex items-center gap-4 p-6 bg-white rounded-2xl shadow-sm border border-gray-100"
           >
-            <div className="p-3 bg-orange-100 rounded-xl">
-              {/* <feature.icon /> */}
+            <div className="relative z-0">
+              <Image
+                src={feature.icon}
+                alt={feature.title}
+                width={32}
+                height={32}
+              />
+              <div className="z-10 absolute  w-6 h-6   -right-1 -bottom-1 rounded-full border-2 bg-orange-400 opacity-50 border-orange-400 " />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-1">
@@ -63,7 +71,7 @@ const FashionCategories = () => {
             // "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen,e_saturation:30/v1754908581/photo-1483985988355-763728e1935b_icxxqo.jpg')",
             // "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto/q_auto/w_650/c_fill/g_auto/e_sharpen/v1754909322/3080381c-1ed1-42f2-beda-b4edf3f331f0-converted_q3iius.png')",
           }}
-          className="bg-[#f6f6f6]   relative  rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
+          className="bg-[#f6f6f6] md:bg-[url('/freepick.png')]    relative  rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
         >
           <div className="z-10 flex-1 max-w-lg">
             <div className="mb-4">
@@ -72,11 +80,11 @@ const FashionCategories = () => {
               </span>
             </div>
 
-            <h2 className="text-3xl font-bold text-gray-900 mb-4 transition-colors duration-300">
+            <h2 className="text-3xl font-bold  text-neutral-700 md:text-gray-900 mb-4 transition-colors duration-300">
               For Women&apos;s
             </h2>
 
-            <p className="text-gray-600 mb-6 leading-relaxed max-w-60">
+            <p className=" text-black md:text-gray-600 mb-6 leading-relaxed max-w-60">
               Discover our curated collection of women&apos;s fashion, for every
               occasion.
             </p>
@@ -85,7 +93,7 @@ const FashionCategories = () => {
               {womenCategories.map((category, index) => (
                 <li
                   key={index}
-                  className="flex items-center text-gray-700 hover:text-black cursor-pointer transition-colors duration-200"
+                  className="flex items-center text-black md:text-gray-700 hover:text-black cursor-pointer transition-colors duration-200"
                 >
                   <div className="w-1.5 h-1.5 bg-black rounded-full mr-3 opacity-70"></div>
                   <span className="font-medium">{category}</span>
@@ -95,7 +103,7 @@ const FashionCategories = () => {
           </div>
 
           {/* Decorative Image Placeholder */}
-          <div className="absolute -left-4 -bottom-4 w-32 h-32 bg-gradient-to-br from-blue-200 to-gray-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
+          <div className="absolute md:block hidden -left-4 -bottom-4 w-32 h-32 bg-gradient-to-br from-blue-200 to-gray-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
           {/* <div className="absolute -right-4 -bottom-4 w-40 h-40 bg-gradient-to-br from-orange-200 to-pink-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div> */}
         </div>
 
@@ -110,7 +118,7 @@ const FashionCategories = () => {
             // "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen,e_saturation:30/v1754908581/photo-1483985988355-763728e1935b_icxxqo.jpg')",
             // "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto/q_auto/w_650/c_fill/g_auto/e_sharpen/v1754909322/3080381c-1ed1-42f2-beda-b4edf3f331f0-converted_q3iius.png')",
           }}
-          className="bg-[#f6f6f6]   relative  rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
+          className="bg-[#f6f6f6] min-h-100   relative  rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
         >
           {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-gray-100/30 opacity-0  transition-opacity duration-500"></div> */}
 
@@ -121,10 +129,10 @@ const FashionCategories = () => {
               </span>
             </div>
 
-            <h2 className="text-3xl font-bold text-gray-900 mb-4 transition-colors duration-300">
+            <h2 className="text-3xl font-bold text-neutral-700 md:text-gray-900 mb-4 transition-colors duration-300">
               For Men&apos;s
             </h2>
-            <p className="text-gray-600 mb-6 leading-relaxed max-w-60">
+            <p className="text-black md:text-gray-600 mb-6 leading-relaxed max-w-60">
               Discover our curated collection of women&apos;s fashion, for every
               occasion.
             </p>
@@ -133,7 +141,7 @@ const FashionCategories = () => {
               {menCategories.map((category, index) => (
                 <li
                   key={index}
-                  className="flex items-center text-gray-700 hover:text-black cursor-pointer transition-colors duration-200"
+                  className="flex items-center  text-black md:text-gray-700 hover:text-black cursor-pointer transition-colors duration-200"
                 >
                   <div className="w-1.5 h-1.5 bg-black rounded-full mr-3 opacity-70"></div>
                   <span className="font-medium">{category}</span>

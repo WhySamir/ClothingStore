@@ -45,11 +45,6 @@ export default function LandingPage() {
           {/* Right Image & Callout */}
           <div className="relative">
             <div className="relative flex items-center justify-center md:items-end   md:justify-end  h-[448px] md:h-full  xl:h-[86dvh]   w-full">
-              {/* <img
-                src="/heroine.png"
-                alt="Model with sunglasses"
-                className="w-full h-full max-w-[24rem]    lg:max-w-[32rem] 2xl:max-w-full  lg:object-contain "
-              /> */}
               <Image
                 // src="/heroine.png"
                 src="https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen/v1754910154/heroine_bz6uqp.png"

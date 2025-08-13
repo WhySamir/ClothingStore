@@ -5,6 +5,7 @@ import { AuthProvider } from "./auth-context";
 import { createClient } from "@/utlis/supabase/server";
 import GoogleOneTap from "./components/GoogleOneTap";
 import Script from "next/script";
+import Footer from "./components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,8 +45,9 @@ export default async function RootLayout({
         <GoogleOneTap />
         <AuthProvider initialUser={user ?? null}>
           <AnnounceWithNav />
-          {children}
         </AuthProvider>
+        {children}
+        <Footer />
       </body>
     </html>
   );
