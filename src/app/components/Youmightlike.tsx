@@ -187,6 +187,7 @@ export default function ProductShowcase() {
               <Link
                 href={`/product/${product.id}`}
                 key={product.id}
+                scroll={false}
                 className="flex-shrink-0 w-72  group relative   overflow-hidden shadow-sm hover:shadow-lg transition-shadow "
               >
                 {/* Product Image */}
