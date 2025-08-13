@@ -24,8 +24,10 @@ const geistMono = Geist_Mono({
 
 export default async function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   const supabase = createClient();
   const {
@@ -47,6 +49,7 @@ export default async function RootLayout({
           <AnnounceWithNav />
         </AuthProvider>
         {children}
+        {modal}
         <Footer />
       </body>
     </html>

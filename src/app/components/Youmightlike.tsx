@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Expand, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Product {
   id: number;
@@ -183,7 +184,8 @@ export default function ProductShowcase() {
         <div className="pt-6 w-full ">
           <div className="flex gap-4 overflow-x-auto custom-scrollbar">
             {products.map((product) => (
-              <div
+              <Link
+                href={`/product/${product.id}`}
                 key={product.id}
                 className="flex-shrink-0 w-72  group relative   overflow-hidden shadow-sm hover:shadow-lg transition-shadow "
               >
@@ -255,7 +257,7 @@ export default function ProductShowcase() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
