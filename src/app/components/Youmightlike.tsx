@@ -149,7 +149,7 @@ function CountdownTimer() {
   );
 }
 
-export default function ProductShowcase() {
+function ProductShowcase() {
   const [activeCategory, setActiveCategory] = useState("All");
 
   return (
@@ -181,88 +181,87 @@ export default function ProductShowcase() {
         </div>
 
         {/* Product Grid */}
-        <div className="pt-6 w-full ">
-          <div className="flex gap-4 overflow-x-auto custom-scrollbar">
-            {products.map((product) => (
-              <Link
-                href={`/product/${product.id}`}
-                key={product.id}
-                scroll={false}
-                className="flex-shrink-0 w-72  group relative   overflow-hidden shadow-sm hover:shadow-lg transition-shadow "
-              >
-                {/* Product Image */}
-                <div className="relative  aspect-[4/5] overflow-hidden bg-[#F6F6F6]">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    style={{
-                      objectFit: "cover",
-                      objectPosition: " center calc(100% + 1rem)",
-                      overflow: "hidden",
-                    }}
-                    className="  group-hover:scale-105 transition-transform duration-300"
-                  />
-
-                  {/* Discount Badge */}
-                  <div className="absolute text-green-300 top-4 left-4 text-green font-bold px-2 py-1 rounded bg-white">
-                    {product.discount}% off
-                  </div>
-
-                  {/* Action Icons */}
-                  <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors">
-                      <Image
-                        src="./heart.svg"
-                        alt="heart"
-                        height={20}
-                        width={20}
-                      />
-                    </button>
-                    <button className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors">
-                      <Expand className="h-4 w-4" />
-                    </button>
-                  </div>
-
-                  {/* Countdown Timer */}
-                  {product.hasCountdown && <CountdownTimer />}
-                </div>
-
-                {/* Product Info */}
-                <div className="p-4">
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm text-gray-500 mb-1">
-                      {product.category}
-                    </p>
-
-                    {/* Rating */}
-                    <div className="flex items-center gap-1 mb-2">
-                      <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                      <span className="text-sm font-medium">
-                        {product.rating}
-                      </span>
-                    </div>
-                  </div>
-
-                  <h3 className="font-semibold text-gray-900 mb-2">
-                    {product.name}
-                  </h3>
-
-                  {/* Price */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-gray-900">
-                      ${product.price.toFixed(2)}
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      ${(product.price + 25).toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+        <ProductGrid />
       </div>
     </div>
   );
 }
+
+function ProductGrid() {
+  return (
+    <div className="pt-6 w-full ">
+      <div className="flex gap-4 overflow-x-auto custom-scrollbar">
+        {products.map((product) => (
+          <Link
+            href={`/product/${product.id}`}
+            key={product.id}
+            scroll={false}
+            className="flex-shrink-0 w-72  group relative   overflow-hidden shadow-sm hover:shadow-lg transition-shadow "
+          >
+            {/* Product Image */}
+            <div className="relative  aspect-[4/5] overflow-hidden bg-[#F6F6F6]">
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                style={{
+                  objectFit: "cover",
+                  objectPosition: " center calc(100% + 1rem)",
+                  overflow: "hidden",
+                }}
+                className="  group-hover:scale-105 transition-transform duration-300"
+              />
+
+              {/* Discount Badge */}
+              <div className="absolute text-green-300 top-4 left-4 text-green font-bold px-2 py-1 rounded bg-white">
+                {product.discount}% off
+              </div>
+
+              {/* Action Icons */}
+              <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors">
+                  <Image src="./heart.svg" alt="heart" height={20} width={20} />
+                </button>
+                <button className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors">
+                  <Expand className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Countdown Timer */}
+              {product.hasCountdown && <CountdownTimer />}
+            </div>
+
+            {/* Product Info */}
+            <div className="p-4">
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-gray-500 mb-1">{product.category}</p>
+
+                {/* Rating */}
+                <div className="flex items-center gap-1 mb-2">
+                  <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                  <span className="text-sm font-medium">{product.rating}</span>
+                </div>
+              </div>
+
+              <h3 className="font-semibold text-gray-900 mb-2">
+                {product.name}
+              </h3>
+
+              {/* Price */}
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-gray-900">
+                  ${product.price.toFixed(2)}
+                </span>
+                <span className="text-sm text-gray-500 line-through">
+                  ${(product.price + 25).toFixed(2)}
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export { ProductShowcase, ProductGrid };

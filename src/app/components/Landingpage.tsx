@@ -17,7 +17,7 @@ export default function LandingPage() {
           className="absolute bottom-0 left-1/4 translate-y-1/2 w-32 h-16"
         />
 
-        <div className="max-w-7xl mx-auto px-6 pt-4  grid grid-cols-1 md:grid-cols-2 2xl: gap-5   items-center">
+        <div className="lg:max-w-7xl mx-auto px-6 pt-4  grid grid-cols-1 md:grid-cols-2 2xl: gap-5   items-center">
           <div>
             <div className="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full ">
               <span className="md:text-lg font-semibold text-yellow-800">
