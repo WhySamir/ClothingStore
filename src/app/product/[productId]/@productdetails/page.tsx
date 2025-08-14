@@ -78,9 +78,12 @@ export default function ProductDetails() {
             <button
               key={color.name}
               onClick={() =>
-                setSelectedColor({ name: color.name, borderClass: color.class })
+                setSelectedColor({
+                  name: color.name,
+                  borderClass: color.class,
+                })
               }
-              className={`w-8 h-8 flex items-center justify-center rounded-full  border-2  ${
+              className={`w-8 h-8 flex items-center justify-center rounded-full   border-2  ${
                 selectedColor.name === color.name
                   ? `border-${color.class}`
                   : "border-gray-200"
