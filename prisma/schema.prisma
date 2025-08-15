@@ -85,8 +85,13 @@ model Review {
   productId  String
   customerId String
   rating     Float
+  title      String   @default("No title")
   comment    String
   createdAt  DateTime @default(now())
+
+  verified Boolean  @default(false)
+  images   String[]
+  videos   String?
 
   product  Product  @relation(fields: [productId], references: [id])
   customer Customer @relation(fields: [customerId], references: [id])
