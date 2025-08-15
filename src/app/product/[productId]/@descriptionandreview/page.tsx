@@ -1,5 +1,6 @@
 "use client";
 
+import ReviewForm from "@/app/components/ReviewForm";
 import { VideoPreview } from "@/app/components/VideoPreview";
 import { Star } from "lucide-react";
 import Image from "next/image";
@@ -258,6 +259,13 @@ export default function Page({ stats }: { stats?: Stats }) {
                 </div>
               </div>
             </div>
+
+            {/* review form */}
+            <h1 className="text-2xl font-semibold mt-8 mb-2">
+              Add your review
+            </h1>
+            <p className="mb-2">Your feedback is valuable to us.</p>
+            <ReviewForm />
           </div>
         )}
       </div>

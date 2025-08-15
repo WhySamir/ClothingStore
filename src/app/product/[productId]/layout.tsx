@@ -18,7 +18,7 @@ export default function ProductLayout({
 }: ProductLayoutProps) {
   return (
     <>
-      {/* <DisableScrollRestoration /> */}
+      <DisableScrollRestoration />
       <div className="max-w-7xl mx-auto px-5 md:px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {imagegallery}

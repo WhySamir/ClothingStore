@@ -1,5 +1,5 @@
 "use client";
-import { ChevronLeft, ChevronRight, Instagram, Quote } from "lucide-react";
+import { ChevronLeft, ChevronRight, Instagram } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 

@@ -6,7 +6,7 @@ export default function LandingPage() {
     <>
       <section className="relative bg-[#F6F6F6] md:min-h-[86dvh]   flex items-center ">
         {/* Dotted Background Decorations */}
-        <img
+        {/* <img
           src="/dts"
           alt="decoration"
           className="absolute top-0  left-1/2 -translate-x-1/2 w-32 h-16"
@@ -15,7 +15,7 @@ export default function LandingPage() {
           src="/dts-bottom-left.png"
           alt="decoration"
           className="absolute bottom-0 left-1/4 translate-y-1/2 w-32 h-16"
-        />
+        /> */}
 
         <div className="lg:max-w-7xl mx-auto px-6 pt-4  grid grid-cols-1 md:grid-cols-2 2xl: gap-5   items-center">
           <div>

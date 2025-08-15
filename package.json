@@ -13,6 +13,7 @@
     "seed": "ts-node --compiler-options {\"module\":\"commonjs\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
     "@prisma/client": "^6.13.0",
     "@supabase/auth-helpers-nextjs": "^0.7.4",
     "@supabase/ssr": "^0.6.1",
@@ -23,7 +24,11 @@
     "lucide-react": "^0.539.0",
     "next": "^15.4.4",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-dropzone": "^14.3.8",
+    "react-hook-form": "^7.62.0",
+    "react-rating": "^2.0.5",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

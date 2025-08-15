@@ -22,11 +22,6 @@ const Modal = ({ children, id }: { children: React.ReactNode; id: number }) => {
     router.back();
   };
 
-  const stopPropagation = (e: React.MouseEvent) => {
-    e.stopPropagation(); // prevent closing if modal itself is clicked
-    //refresh
-  };
-
   return (
     <div
       onClick={handleBackdropClick}

@@ -78,11 +78,9 @@ const products: Product[] = [
 
 const page = async ({ params }: { params: Promise<{ productId: string }> }) => {
   const { productId } = await params;
-  const selectedImg = Object.values(products).find(
-    (img: Product, idx: number) => {
-      return img.id === Number(productId);
-    }
-  );
+  const selectedImg = Object.values(products).find((img: Product) => {
+    return img.id === Number(productId);
+  });
   if (!selectedImg) {
     return <div>Image not found</div>;
   }
