@@ -117,7 +117,7 @@ function CountdownTimer() {
   }, []);
 
   return (
-    <div className="absolute bottom-2 left-0 bg-orange-200 w-full  px-2 py-3 flex items-center gap-4 text-sm font-medium">
+    <div className="absolute bottom-2 left-0 bg-orange-200 w-full  px-2 py-3 flex items-center justify-center gap-4 text-sm font-medium">
       <div className="text-center">
         <div className="text-lg font-bold">
           {timeLeft.days.toString().padStart(2, "0")}

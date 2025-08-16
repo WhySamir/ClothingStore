@@ -12,6 +12,7 @@ import {
   Linkedin,
   Instagram,
 } from "lucide-react";
+import AddtoCart from "@/app/components/AddtoCart";
 
 export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState({
@@ -148,10 +149,7 @@ export default function ProductDetails() {
             <Plus className="w-4 h-4" />
           </button>
         </div>
-
-        <button className="bg-amber-900 hover:bg-amber-800 text-white py-2 px-8">
-          Add To Cart
-        </button>
+        <AddtoCart />
 
         <button className="bg-yellow-400 border border-yellow-400  py-2 text-black px-8">
           Buy Now

@@ -34,7 +34,7 @@ export default function ImageGallery() {
         </button>
         <button
           onClick={nextImage}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-amber-900 border border-amber-900 hover:bg-amber-800 text-white  p-2 md:p-4 "
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-orange-950 border border-orange-950 hover:bg-orange-900 text-white  p-2 md:p-4 "
         >
           <ChevronRight className="w-5 h-5" />
         </button>

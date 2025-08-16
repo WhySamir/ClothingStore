@@ -6,6 +6,7 @@ import { createClient } from "@/utlis/supabase/server";
 import GoogleOneTap from "./components/GoogleOneTap";
 import Script from "next/script";
 import Footer from "./components/Footer";
+import DisableScrollRestoration from "./components/DisableScroll";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,6 +49,7 @@ export default async function RootLayout({
         <AuthProvider initialUser={user ?? null}>
           <AnnounceWithNav />
         </AuthProvider>
+        <DisableScrollRestoration />
         {children}
         {modal}
         <Footer />

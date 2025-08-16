@@ -160,10 +160,10 @@ export default function Navbar() {
               </button>
             )}
             <Link href={"/wishlists"} className="hidden md:flex  h-6 w-6">
-              <Image src="./heart.svg" alt="" height={24} width={24} />
+              <Image src="/heart.svg" alt="" height={24} width={24} />
             </Link>
             <Link href={"/carts"} className="hidden md:flex  h-6 w-6">
-              <Image src="./cart.svg" alt="" height={24} width={24} />
+              <Image src="/cart.svg" alt="" height={24} width={24} />
             </Link>
             <div className="relative ">
               <button
@@ -172,7 +172,7 @@ export default function Navbar() {
                 }}
                 className="hidden md:flex h-6 w-6"
               >
-                <Image src="./user.svg" alt="" height={24} width={24} />
+                <Image src="/user.svg" alt="" height={24} width={24} />
               </button>
               {userDropdown &&
                 (user ? (

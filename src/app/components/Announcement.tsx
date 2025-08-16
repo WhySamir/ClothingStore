@@ -45,7 +45,7 @@ export function Announcement({ setShow }: { setShow: () => void }) {
         {/* Main Text */}
         <ul className="flex">
           <li className="hidden md:flex cursor-pointer">
-            Sign up and <span className="font-medium"> GET 25% OFF </span>
+            Sign up and <span className="font-medium mx-1">GET 25% OFF </span>
             for your first order.
           </li>
           <SignInButton buttonText="Sign in up now" />
