@@ -1,5 +1,5 @@
 "use client";
-import AddtoCart from "../components/AddtoCart";
+import AddtoCart from "../components/buttons/AddtoCart";
 import Image from "next/image";
 import { X } from "lucide-react";
 import PageHeader from "../components/PageHeader";

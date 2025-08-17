@@ -4,15 +4,14 @@ import { useState } from "react";
 
 import {
   Star,
-  Minus,
-  Plus,
   Heart,
   Facebook,
   Twitter,
   Linkedin,
   Instagram,
 } from "lucide-react";
-import AddtoCart from "@/app/components/AddtoCart";
+import AddtoCart from "@/app/components/buttons/AddtoCart";
+import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
 
 export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState({
@@ -132,23 +131,7 @@ export default function ProductDetails() {
 
       {/* Quantity and Actions */}
       <div className="flex-wrap flex flex-col md:flex-row  md:items-center gap-4">
-        <div className="flex items-center border rounded-md">
-          <button
-            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="p-2 hover:bg-gray-100"
-          >
-            <Minus className="w-4 h-4" />
-          </button>
-          <span className="px-4 py-2 md:min-w-[60px] text-center">
-            {quantity}
-          </span>
-          <button
-            onClick={() => setQuantity(quantity + 1)}
-            className=" p-2 hover:bg-gray-100"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        </div>
+        <ItemsAddDel value={quantity} onChange={setQuantity} />
         <AddtoCart />
 
         <button className="bg-yellow-400 border border-yellow-400  py-2 text-black px-8">

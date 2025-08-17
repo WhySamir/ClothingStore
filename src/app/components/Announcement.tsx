@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import SignInButton from "./SignInButton";
+import SignInButton from "./buttons/SignInButton";
 
 //64
 export function Announcement({ setShow }: { setShow: () => void }) {

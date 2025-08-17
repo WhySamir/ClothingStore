@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface PageHeaderProps {
   title: string;
   path: string;
@@ -5,7 +7,7 @@ interface PageHeaderProps {
 
 export default function PageHeader({ title, path }: PageHeaderProps) {
   return (
-    <div className="relative bg-gray-100 py-12 px-4">
+    <div className="relative bg-gray-100 py-6 md:py-12 px-4">
       {/* <img
           src="/dts"
           alt="decoration"
@@ -27,13 +29,11 @@ export default function PageHeader({ title, path }: PageHeaderProps) {
       </div>
 
       <div className="relative max-w-7xl mx-auto text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-          {title}
-        </h1>
+        <h1 className="text-4xl  font-bold text-gray-900 mb-4">{title}</h1>
         <nav className="text-gray-600 text-sm md:text-base">
-          <a href="/" className="hover:text-gray-900 cursor-pointer">
+          <Link href="/" className="hover:text-gray-900 cursor-pointer">
             Home
-          </a>
+          </Link>
           <span className="mx-2">/</span>
           <span className="text-gray-900">{path}</span>
         </nav>

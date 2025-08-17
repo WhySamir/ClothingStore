@@ -11,7 +11,7 @@ import { DesktopSearch } from "./search/DesktopSearch";
 import Link from "next/link";
 import { createClient } from "@/utlis/supabase/client";
 import { useAuth } from "../auth-context";
-import SignInButton from "./SignInButton";
+import SignInButton from "./buttons/SignInButton";
 
 //80
 export default function Navbar() {
