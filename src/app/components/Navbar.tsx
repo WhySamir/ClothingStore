@@ -111,15 +111,21 @@ export default function Navbar() {
                 Home
               </Link>
               <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
-                Shop
-              </Link>
-              <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
                 Women
               </Link>
               <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
                 Men
               </Link>
-              <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
+              <Link
+                href={"/contactus"}
+                className="cursor-pointer hover:text-[#4b2e1a]"
+              >
+                Contact Us
+              </Link>
+              <Link
+                href={"/aboutus"}
+                className="cursor-pointer hover:text-[#4b2e1a]"
+              >
                 About Us
               </Link>
             </motion.ul>

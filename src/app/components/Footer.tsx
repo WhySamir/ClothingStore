@@ -113,10 +113,10 @@ export default function Footer() {
             <option className="bg-orange-950">English</option>
             <option className="bg-orange-950">UK</option>
           </select>
-          <select className="bg-transparent border border-[#6A3E2A] rounded px-2 py-1">
+          {/* <select className="bg-transparent border border-[#6A3E2A] rounded px-2 py-1">
             <option className="bg-orange-950">USD</option>
             <option className="bg-orange-950">Rs</option>
-          </select>
+          </select> */}
         </div>
       </div>
     </footer>

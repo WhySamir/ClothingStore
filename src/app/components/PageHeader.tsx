@@ -34,7 +34,10 @@ export default function PageHeader({ title, path }: PageHeaderProps) {
           <Link href="/" className="hover:text-gray-900 cursor-pointer">
             Home
           </Link>
-          <span className="mx-2 tracking-wider text-gray-900">{path}</span>
+          <span className="mx-1">/</span>
+          <span className=" tracking-wider capitalize text-gray-900">
+            {path}
+          </span>
         </nav>
       </div>
     </div>

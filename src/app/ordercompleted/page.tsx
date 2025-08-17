@@ -15,7 +15,7 @@ export default function OrderConfirmed() {
       </div>
 
       {/* Order Info Card */}
-      <div className="bg-amber-400 rounded-lg shadow p-6 grid grid-cols-1 md:grid-cols-4 items-center gap-6 text-center md:text-left">
+      <div className="bg-amber-400 shadow p-6 grid grid-cols-1 md:grid-cols-4 items-center gap-6 text-center md:text-left">
         {/* Order ID */}
         <div>
           <p className="text-sm text-gray-800">Order ID</p>

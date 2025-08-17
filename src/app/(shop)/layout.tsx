@@ -1,5 +1,4 @@
 "use client";
-import { use } from "react";
 import DisableScrollRestoration from "../components/DisableScroll";
 import OrderSummary from "../components/OrderSummary";
 import PageHeader from "../components/PageHeader";
@@ -18,12 +17,26 @@ export default function ShopLayout({
     couponDiscount: 50,
     total: 210,
   };
-  const path = usePathname();
+  const pathname = usePathname();
+
+  let buttonLabel = "Proceed";
+  let buttonPath = "/";
+
+  if (pathname === "/carts") {
+    buttonLabel = "Shopping Cart";
+    buttonPath = "carts";
+  } else if (pathname === "/checkout") {
+    buttonLabel = "Checkout";
+    buttonPath = "checkout";
+  } else if (pathname === "/payment") {
+    buttonLabel = "Confirm Payment";
+    buttonPath = "confirm-payment";
+  }
 
   return (
     <>
       <DisableScrollRestoration />
-      <PageHeader title="Shopping Cart" path={`${path}`} />
+      <PageHeader title={`${buttonLabel}`} path={`${buttonPath}`} />
       <div className="max-w-7xl mx-auto md:px-6 py-4 md:py-8">
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1">{children}</div>
