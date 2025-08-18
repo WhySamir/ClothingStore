@@ -1,1 +1,4 @@
 form : useActionState instead of server actions
+for maps:
+npm install react-leaflet leaflet
+npm install -D @types/leaflet

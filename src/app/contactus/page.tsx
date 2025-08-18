@@ -1,5 +1,17 @@
+"use client";
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
 import PageHeader from "../components/PageHeader";
+import dynamic from "next/dynamic";
+
+const Map = dynamic(
+  () => import("@/app/components/Map").then((component) => component.Map),
+  { ssr: false }
+);
+
+const locations = [
+  { id: "1", lat: 27.664906, lng: 85.329345 }, // Gwarko
+  { id: "2", lat: 27.6581, lng: 85.3244 },
+];
 
 function Page() {
   return (
@@ -82,7 +94,7 @@ function Page() {
 
                 <button
                   type="submit"
-                  className="bg-orange-900 hover:bg-amber-800 text-white px-8 py-3 rounded-md"
+                  className="bg-orange-900 hover:bg-amber-800 text-white px-8 py-3 "
                 >
                   Send Message
                 </button>
@@ -147,6 +159,14 @@ function Page() {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="p-6 w-full">
+            <h1 className="text-2xl font-bold mb-4">Contact Us</h1>
+            <p className="mb-4">We’re located in Lalitpur.</p>
+            <Map
+              center={{ lat: 27.6675, lng: 85.3258 }}
+              locations={locations}
+            />
           </div>
         </div>
       </div>
