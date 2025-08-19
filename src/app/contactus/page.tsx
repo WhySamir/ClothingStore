@@ -2,6 +2,10 @@
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import dynamic from "next/dynamic";
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { contactSchema, ContactFormData } from "@/app/lib/validation";
+import { useForm } from "react-hook-form";
 
 const Map = dynamic(
   () => import("@/app/components/Map").then((component) => component.Map),
@@ -14,6 +18,39 @@ const locations = [
 ];
 
 function Page() {
+  const [sent, setSent] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactSchema),
+  });
+
+  const onSubmit = async (data: ContactFormData) => {
+    try {
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        setSent(true);
+        reset(); // Clear form
+        setTimeout(() => setSent(false), 3000);
+      } else {
+        alert(
+          "Failed to send message, rate limiter hitted success please send message tommorow"
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
+    }
+  };
+
   return (
     <>
       <PageHeader title="Contact Us" path="contact us" />
@@ -30,7 +67,7 @@ function Page() {
                 marked *
               </p>
 
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label
@@ -40,11 +77,17 @@ function Page() {
                       Your Name *
                     </label>
                     <input
+                      {...register("name")}
                       id="name"
                       type="text"
                       placeholder="John Doe"
-                      className="mt-2 ml-2 pl-3 py-1 outline-none bg-gray-50 border-gray-200"
+                      className="mt-2 ml-2 pl-3 py-1 outline-none bg-gray-50 border-gray-200 w-full"
                     />
+                    {errors.name && (
+                      <p className="text-red-600 text-sm mt-1">
+                        {errors.name.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -54,11 +97,17 @@ function Page() {
                       Email *
                     </label>
                     <input
+                      {...register("email")}
                       id="email"
                       type="email"
                       placeholder="example@gmail.com"
-                      className="mt-2 ml-2 pl-3 py-1 outline-none bg-gray-50 border-gray-200"
+                      className="mt-2 ml-2 pl-3 py-1 outline-none bg-gray-50 border-gray-200 w-full"
                     />
+                    {errors.email && (
+                      <p className="text-red-600 text-sm mt-1">
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -70,11 +119,17 @@ function Page() {
                     Subject *
                   </label>
                   <input
+                    {...register("subject")}
                     id="subject"
                     type="text"
                     placeholder="Enter Subject"
-                    className="mt-2 ml-2 pl-3 py-1 outline-none bg-gray-50 border-gray-200"
+                    className="mt-2 ml-2 pl-3 py-1 outline-none bg-gray-50 border-gray-200 w-full"
                   />
+                  {errors.subject && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.subject.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -85,18 +140,29 @@ function Page() {
                     Your Message *
                   </label>
                   <textarea
+                    {...register("message")}
                     id="message"
                     placeholder="Enter here..."
                     rows={6}
                     className="mt-2 w-full px-2 py-1 pl-3 bg-gray-50 outline-none border-gray-200 resize-none"
                   />
+                  {errors.message && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.message.message}
+                    </p>
+                  )}
                 </div>
 
                 <button
                   type="submit"
-                  className="bg-orange-900 hover:bg-amber-800 text-white px-8 py-3 "
+                  disabled={isSubmitting}
+                  className="bg-orange-900 hover:bg-amber-800 text-white px-8 py-3 disabled:opacity-50"
                 >
-                  Send Message
+                  {sent
+                    ? " Sent Successfully!"
+                    : isSubmitting
+                    ? "Sending..."
+                    : "Send Message"}
                 </button>
               </form>
             </div>

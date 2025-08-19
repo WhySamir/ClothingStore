@@ -40,12 +40,12 @@ export const Map: React.FC<MapProps> = ({ center, locations }) => {
   };
 
   const mapMarkIcon = new Icon({
-    iconUrl: "/free.png",
-    iconSize: [25, 41],
+    iconUrl: "/locate.svg",
+    iconSize: [54, 61],
   });
   const mapMarkActiveIcon = new Icon({
-    iconUrl: "/freemen.png",
-    iconSize: [35, 51],
+    iconUrl: "/locate.svg",
+    iconSize: [55, 61],
   });
 
   const renderMarks = () => {
