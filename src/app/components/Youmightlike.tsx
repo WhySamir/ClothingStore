@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Expand, Star } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Product {
   id: number;
@@ -188,14 +188,16 @@ function ProductShowcase() {
 }
 
 function ProductGrid() {
+  const router = useRouter();
   return (
     <div className="pt-6 w-full ">
       <div className="flex gap-4 overflow-x-auto custom-scrollbar">
         {products.map((product) => (
-          <Link
-            href={`/product/${product.id}`}
+          <div
             key={product.id}
-            scroll={false}
+            onClick={() => {
+              window.location.href = `/product/${product.id}`;
+            }}
             className="flex-shrink-0 w-72  group relative   overflow-hidden shadow-sm hover:shadow-lg transition-shadow "
           >
             {/* Product Image */}
@@ -220,9 +222,15 @@ function ProductGrid() {
               {/* Action Icons */}
               <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors">
-                  <Image src="./heart.svg" alt="heart" height={20} width={20} />
+                  <Image src="/heart.svg" alt="heart" height={20} width={20} />
                 </button>
-                <button className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(`/product/${product.id}`, { scroll: false });
+                  }}
+                  className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors"
+                >
                   <Expand className="h-4 w-4" />
                 </button>
               </div>
@@ -257,7 +265,7 @@ function ProductGrid() {
                 </span>
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>
