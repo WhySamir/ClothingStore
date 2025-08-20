@@ -4,7 +4,7 @@ import React from "react";
 export default function LandingPage() {
   return (
     <>
-      <section className="relative bg-[#F6F6F6] md:min-h-[86dvh]   flex items-center ">
+      <section className="relative  bg-[#F6F6F6] md:min-h-[86dvh]   flex items-center ">
         {/* Dotted Background Decorations */}
         {/* <img
           src="/dts"

@@ -7,11 +7,13 @@ import { ProductShowcase } from "./components/Youmightlike";
 export default function Home() {
   return (
     <>
-      <LandingPage />
-      <FashionCategories />
-      <ProductShowcase />
-      <FashionPromoComponent />
-      <InstagramTestimonials />
+      <div className="relative ">
+        <LandingPage />
+        <FashionCategories />
+        <ProductShowcase />
+        <FashionPromoComponent />
+        <InstagramTestimonials />
+      </div>
     </>
   );
 }
