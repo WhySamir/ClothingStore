@@ -1,21 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Expand, Star } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
-  originalPrice: number;
-  discount: number;
-  rating: number;
-  image: string;
-  hasCountdown?: boolean;
-}
+import { Product } from "./productcard/productType";
+import ProductCard from "./productcard/ProductCard";
 
 const products: Product[] = [
   {
@@ -83,72 +70,6 @@ const products: Product[] = [
 
 const categories = ["All", "Women", "Men"];
 
-function CountdownTimer() {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 5,
-    hours: 12,
-    minutes: 30,
-    seconds: 25,
-  });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        } else if (prev.days > 0) {
-          return {
-            ...prev,
-            days: prev.days - 1,
-            hours: 23,
-            minutes: 59,
-            seconds: 59,
-          };
-        }
-        return prev;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <div className="absolute bottom-2 left-0 bg-orange-200 w-full  px-2 py-3 flex items-center justify-center gap-4 text-sm font-medium">
-      <div className="text-center">
-        <div className="text-lg font-bold">
-          {timeLeft.days.toString().padStart(2, "0")}
-        </div>
-        <div className="text-xs">Days</div>
-      </div>
-      <div className="text-lg">:</div>
-      <div className="text-center">
-        <div className="text-lg font-bold">
-          {timeLeft.hours.toString().padStart(2, "0")}
-        </div>
-        <div className="text-xs">Hours</div>
-      </div>
-      <div className="text-lg">:</div>
-      <div className="text-center">
-        <div className="text-lg font-bold">
-          {timeLeft.minutes.toString().padStart(2, "0")}
-        </div>
-        <div className="text-xs">Mins</div>
-      </div>
-      <div className="text-lg">:</div>
-      <div className="text-center">
-        <div className="text-lg font-bold">
-          {timeLeft.seconds.toString().padStart(2, "0")}
-        </div>
-        <div className="text-xs">Sec</div>
-      </div>
-    </div>
-  );
-}
-
 function ProductShowcase() {
   const [activeCategory, setActiveCategory] = useState("All");
 
@@ -188,84 +109,11 @@ function ProductShowcase() {
 }
 
 function ProductGrid() {
-  const router = useRouter();
   return (
     <div className="pt-6 w-full ">
       <div className="flex gap-4 overflow-x-auto custom-scrollbar">
         {products.map((product) => (
-          <div
-            key={product.id}
-            onClick={() => {
-              window.location.href = `/product/${product.id}`;
-            }}
-            className="flex-shrink-0 w-72  group relative   overflow-hidden shadow-sm hover:shadow-lg transition-shadow "
-          >
-            {/* Product Image */}
-            <div className="relative  aspect-[4/5] overflow-hidden bg-[#F6F6F6]">
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                style={{
-                  objectFit: "cover",
-                  objectPosition: " center calc(100% + 1rem)",
-                  overflow: "hidden",
-                }}
-                className="  group-hover:scale-105 transition-transform duration-300"
-              />
-
-              {/* Discount Badge */}
-              <div className="absolute text-green-300 top-4 left-4 text-green font-bold px-2 py-1 rounded bg-white">
-                {product.discount}% off
-              </div>
-
-              {/* Action Icons */}
-              <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors">
-                  <Image src="/heart.svg" alt="heart" height={20} width={20} />
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    router.push(`/product/${product.id}`, { scroll: false });
-                  }}
-                  className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors"
-                >
-                  <Expand className="h-4 w-4" />
-                </button>
-              </div>
-
-              {/* Countdown Timer */}
-              {product.hasCountdown && <CountdownTimer />}
-            </div>
-
-            {/* Product Info */}
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-gray-500 mb-1">{product.category}</p>
-
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-2">
-                  <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                  <span className="text-sm font-medium">{product.rating}</span>
-                </div>
-              </div>
-
-              <h3 className="font-semibold text-gray-900 mb-2">
-                {product.name}
-              </h3>
-
-              {/* Price */}
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold text-gray-900">
-                  ${product.price.toFixed(2)}
-                </span>
-                <span className="text-sm text-gray-500 line-through">
-                  ${(product.price + 25).toFixed(2)}
-                </span>
-              </div>
-            </div>
-          </div>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </div>
