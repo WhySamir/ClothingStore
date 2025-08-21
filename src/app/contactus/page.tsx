@@ -81,7 +81,7 @@ function Page() {
                       id="name"
                       type="text"
                       placeholder="John Doe"
-                      className="mt-2 ml-2 pl-3 py-1 outline-none bg-gray-50 border-gray-200 w-full"
+                      className="mt-2   pl-3 py-1  border rounded-sm border-gray-900 w-full"
                     />
                     {errors.name && (
                       <p className="text-red-600 text-sm mt-1">
@@ -100,8 +100,8 @@ function Page() {
                       {...register("email")}
                       id="email"
                       type="email"
-                      placeholder="example@gmail.com"
-                      className="mt-2 ml-2 pl-3 py-1 outline-none bg-gray-50 border-gray-200 w-full"
+                      placeholder="exampe@gmail.com"
+                      className="mt-2   pl-3 py-1  border rounded-sm border-gray-900 w-full"
                     />
                     {errors.email && (
                       <p className="text-red-600 text-sm mt-1">
@@ -111,7 +111,7 @@ function Page() {
                   </div>
                 </div>
 
-                <div>
+                <div className="flex flex-col">
                   <label
                     htmlFor="subject"
                     className="text-sm font-medium text-gray-700"
@@ -123,7 +123,7 @@ function Page() {
                     id="subject"
                     type="text"
                     placeholder="Enter Subject"
-                    className="mt-2 ml-2 pl-3 py-1 outline-none bg-gray-50 border-gray-200 w-full"
+                    className="mt-2   pl-3 py-1 border rounded-sm border-gray-900 w-1/2"
                   />
                   {errors.subject && (
                     <p className="text-red-600 text-sm mt-1">
@@ -144,7 +144,7 @@ function Page() {
                     id="message"
                     placeholder="Enter here..."
                     rows={6}
-                    className="mt-2 w-full px-2 py-1 pl-3 bg-gray-50 outline-none border-gray-200 resize-none"
+                    className="mt-2 w-full px-2 py-1 pl-3   border rounded-sm border-gray-900resize-none"
                   />
                   {errors.message && (
                     <p className="text-red-600 text-sm mt-1">
@@ -207,19 +207,19 @@ function Page() {
                   Stay Connected
                 </h3>
                 <div className="flex gap-3">
-                  <div className="w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
+                  <div className="w-10 h-10 bg-[#F5BD63] rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
                     <Facebook className="w-5 h-5 text-white" />
                   </div>
-                  <div className="w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
+                  <div className="w-10 h-10 bg-[#F5BD63] rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
                     <Linkedin className="w-5 h-5 text-white" />
                   </div>
-                  <div className="w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
+                  <div className="w-10 h-10 bg-[#F5BD63] rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
                     <Youtube className="w-5 h-5 text-white" />
                   </div>
-                  <div className="w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
+                  <div className="w-10 h-10 bg-[#F5BD63] rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
                     <Twitter className="w-5 h-5 text-white" />
                   </div>
-                  <div className="w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
+                  <div className="w-10 h-10 bg-[#F5BD63] rounded-full flex items-center justify-center hover:bg-amber-500 cursor-pointer transition-colors">
                     <Instagram className="w-5 h-5 text-white" />
                   </div>
                 </div>

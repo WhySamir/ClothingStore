@@ -55,32 +55,41 @@ export const SmNav: React.FC<Props> = ({ setShow, setIsRotated }) => {
             HOME
           </Link>
           <Link
-            href="/about"
+            href="/women"
             className={`text-xl leading-7 text-neutral-700 ${
               activePath === "/about" ? "text-[#111111] font-bold  " : ""
             }"`}
-            onClick={() => handleSetActive("/about")}
+            onClick={() => handleSetActive("/women")}
           >
-            ABOUT
+            Women
           </Link>
 
           <Link
-            href="/work"
+            href="/men"
             className={`text-xl leading-7 text-neutral-700  ${
               activePath === "/work" ? "text-[#111111] font-bold " : ""
             }"`}
-            onClick={() => handleSetActive("/work")}
+            onClick={() => handleSetActive("/men")}
           >
-            WORK
+            Men
           </Link>
           <Link
-            href="/case-study"
-            className={`text-xl leading-7 text-neutral-700   ${
-              activePath === "/case-study" ? "text-[#111111] font-bold " : ""
+            href="/contactus"
+            className={`text-xl leading-7 text-neutral-700  ${
+              activePath === "/work" ? "text-[#111111] font-bold " : ""
             }"`}
-            onClick={() => handleSetActive("/case-study")}
+            onClick={() => handleSetActive("/contactus")}
           >
-            CASE STUDY
+            Contact Us
+          </Link>
+          <Link
+            href="/aboutus"
+            className={`text-xl leading-7 text-neutral-700  ${
+              activePath === "/work" ? "text-[#111111] font-bold " : ""
+            }"`}
+            onClick={() => handleSetActive("/aboutus")}
+          >
+            About Us
           </Link>
         </div>
       </motion.div>

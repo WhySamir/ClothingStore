@@ -110,10 +110,16 @@ export default function Navbar() {
               <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
                 Home
               </Link>
-              <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
+              <Link
+                href={"/women"}
+                className="cursor-pointer hover:text-[#4b2e1a]"
+              >
                 Women
               </Link>
-              <Link href={"/"} className="cursor-pointer hover:text-[#4b2e1a]">
+              <Link
+                href={"/men"}
+                className="cursor-pointer hover:text-[#4b2e1a]"
+              >
                 Men
               </Link>
               <Link
