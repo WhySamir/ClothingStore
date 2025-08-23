@@ -1,10 +1,9 @@
-// app/dashboard/page.tsx
 "use client";
 import ShowUserData from "@/app/components/ShowUserData";
 import { createClient } from "@/utlis/supabase/client";
 import { useRouter } from "next/navigation";
 
-export default function DashboardPage() {
+export default function AdminData() {
   const router = useRouter();
   const supabase = createClient();
 
@@ -15,7 +14,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="p-6 text-white  overflow-auto">
+    <div className="p-6 text-black  overflow-auto">
       <h1 className="text-3xl font-bold">Welcome to Dashboard</h1>
       <button onClick={handleLogout} className="mx-3 border">
         Logout

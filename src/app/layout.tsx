@@ -7,6 +7,7 @@ import GoogleOneTap from "./components/GoogleOneTap";
 import Script from "next/script";
 import Footer from "./components/Footer";
 import DisableScrollRestoration from "./components/DisableScroll";
+import { headers } from "next/headers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +31,10 @@ export default async function RootLayout({
   children: React.ReactNode;
   modal: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-next-pathname") || "";
+  const isAdminRoute = pathname.startsWith("/admin");
+
   const supabase = createClient();
   const {
     data: { user },
@@ -47,12 +52,12 @@ export default async function RootLayout({
         />
         <GoogleOneTap />
         <AuthProvider initialUser={user ?? null}>
-          <AnnounceWithNav />
+          {!isAdminRoute && <AnnounceWithNav />}
         </AuthProvider>
         <DisableScrollRestoration />
         {children}
         {modal}
-        <Footer />
+        {!isAdminRoute && <Footer />}
       </body>
     </html>
   );

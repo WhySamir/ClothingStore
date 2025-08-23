@@ -115,7 +115,7 @@ export default function HomePage() {
     priceRange: [25, 125],
     colors: [],
     sizes: [],
-    gender: ["women"],
+    gender: ["men"],
   });
 
   // Filter products based on current filters

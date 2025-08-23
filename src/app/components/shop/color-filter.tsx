@@ -35,13 +35,10 @@ export function ColorFilter({ selectedColors, onChange }: ColorFilterProps) {
               onClick={() => handleColorChange(color.value)}
               style={{
                 backgroundColor: color.color,
-                boxShadow: selectedColors.includes(color.value)
-                  ? `0 0 0 2px ${color.color}, 0 0 0 4px white` // inner ring + offset ring
-                  : undefined,
               }}
               className={`w-4 h-4 rounded-full flex-shrink-0 transition-all ${
                 selectedColors.includes(color.value)
-                  ? "ring-2 ring-[color.color] ring-offset-2"
+                  ? "ring-2 ring-black ring-offset-2"
                   : "hover:scale-110"
               }`}
               aria-label={`Select ${color.name} color`}

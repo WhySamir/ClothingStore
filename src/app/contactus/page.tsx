@@ -168,7 +168,7 @@ function Page() {
             </div>
 
             {/* Contact Info - Right Side */}
-            <div className=" bg-[#f6f6f6] rounded-sm">
+            <div className=" bg-[#f6f6f6] mb-4 h-fit rounded-sm">
               {/* Address */}
               <div className=" p-6  ">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">

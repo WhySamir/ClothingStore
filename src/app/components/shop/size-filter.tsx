@@ -26,7 +26,7 @@ export function SizeFilter({ selectedSizes, onChange }: SizeFilterProps) {
               onClick={() => handleSizeChange(size)}
               className={`w-4 h-4 rounded border transition-all flex-shrink-0 ${
                 selectedSizes.includes(size)
-                  ? "bg-primary border-primary"
+                  ? "accent-orange-950 bg-orange-950"
                   : "border-gray-300 hover:border-primary"
               }`}
               aria-label={`Select size ${size}`}

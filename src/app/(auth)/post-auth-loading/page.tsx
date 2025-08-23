@@ -11,5 +11,5 @@ export default async function PostAuthLoading() {
     redirect("/");
   }
 
-  redirect("/dashboard");
+  redirect("/admin");
 }

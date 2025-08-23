@@ -69,7 +69,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const isAdminRoute = request.nextUrl.pathname.startsWith('/api/private')
-  const isDashboardAdmin = request.nextUrl.pathname.startsWith('/dashboard/admin')
+  const isDashboardAdmin = request.nextUrl.pathname.startsWith('/admin/dashboard')
 
   // protect private API routes only admin role
   if (isAdminRoute) {
@@ -86,7 +86,7 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  // protect dashboard/admin pages only admin 
+  // protect admin/dashboard pages only admin 
   if (isDashboardAdmin) {
     const role = user.user_metadata?.role
     if (role !== 'admin') {

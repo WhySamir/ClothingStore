@@ -100,10 +100,7 @@ export function ActiveFilters({
         </div>
       )}
 
-      <button
-        onClick={onClearAll}
-        className="text-destructive hover:text-destructive hover:bg-destructive/10 underline"
-      >
+      <button onClick={onClearAll} className="pb-2 underline">
         Clear All
       </button>
     </div>

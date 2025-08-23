@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 // import { SortDropdown } from "@/components/sort-dropdown";
 import ProductCard from "@/app/components/productcard/ProductCard";
+import { ActiveFilters } from "../components/shop/activefilters";
 // Mock product data
 const mockProducts = [
   {
@@ -73,6 +74,20 @@ const mockProducts = [
   },
   {
     id: 6,
+    name: "Classic White Shirt",
+    category: "Shirt",
+    price: 45.0,
+    originalPrice: 50.0,
+    discount: 10,
+    rating: 5.0,
+    image: "/white-button-shirt-model.png",
+    colors: ["white"],
+    sizes: ["S", "M", "L", "XL"],
+    gender: "women",
+  },
+
+  {
+    id: 7,
     name: "Classic White Shirt",
     category: "Shirt",
     price: 45.0,
@@ -160,31 +175,35 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto p-5 md:py-6 md:px-6">
+        <div className="flex items-center justify-between mb-3">
+          <h1 className="text-xl font-semibold mb-2 hidden lg:block">
+            Filter Options
+          </h1>
+          <p className="text-muted-foreground">
+            Showing 1-2 of {mockProducts.length} results
+          </p>
+        </div>
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filter Sidebar */}
           <div className="lg:w-64 hidden lg:block flex-shrink-0">
-            <FilterSidebar filters={filters} onFiltersChange={updateFilters} />
+            <div className="sticky top-4    max-h-[calc(90svh)] scrollbar-clean overflow-y-auto">
+              <FilterSidebar
+                filters={filters}
+                onFiltersChange={updateFilters}
+              />
+            </div>
           </div>
 
           {/* Main Content */}
           <div className="flex-1">
             {/* Header with results count and sort */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <div>
-                <h1 className="text-2xl font-semibold mb-2">Filter Options</h1>
-                <p className="text-muted-foreground">
-                  Showing 1-2 of {mockProducts.length} results
-                </p>
-              </div>
-              {/* <SortDropdown value={sortBy} onChange={setSortBy} /> */}
-            </div>
 
             {/* Active Filters */}
-            {/* <ActiveFilters
+            <ActiveFilters
               filters={filters}
               onRemoveFilter={removeFilter}
               onClearAll={clearAllFilters}
-            /> */}
+            />
 
             {/* Product Grid */}
 
