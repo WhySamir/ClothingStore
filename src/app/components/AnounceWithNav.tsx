@@ -62,7 +62,7 @@ export function AnnounceWithNav() {
         ref={ref}
         layout
         initial={false}
-        className="relative box-border w-full z-40"
+        className="relative box-border w-full z-[888]"
         transition={{ duration: 0.8, ease: "easeInOut" }}
       >
         <AnimatePresence mode="wait">
@@ -79,7 +79,7 @@ export function AnnounceWithNav() {
           initial={{ y: -140, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="fixed top-0 left-0 box-border w-full z-50 bg-white shadow-md"
+          className="fixed top-0 left-0 box-border w-full z-[999] bg-white shadow-md"
         >
           <AnimatePresence mode="wait">
             {showAnnouncement && (

@@ -22,3 +22,35 @@ html {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+.leaflet-control {
+  z-index: 30 !important;
+}
+
+/* Always show thin, default scrollbar without buttons */
+.scrollbar-clean {
+  scrollbar-width: thin;
+  scrollbar-color: #441306 transparent;
+}
+
+.scrollbar-clean::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-clean::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-clean::-webkit-scrollbar-thumb {
+  background-color: rgba(68, 19, 6, 0.2);
+  border-radius: 3px;
+}
+
+.scrollbar-clean::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+.scrollbar-clean::-webkit-scrollbar-corner {
+  background: transparent;
+}

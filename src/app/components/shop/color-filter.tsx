@@ -6,14 +6,14 @@ interface ColorFilterProps {
 }
 
 const colors = [
-  { name: "Black", value: "black", color: "bg-black" },
-  { name: "Grey", value: "grey", color: "bg-gray-500" },
-  { name: "Green", value: "green", color: "bg-green-500" },
-  { name: "Red", value: "red", color: "bg-red-500" },
-  { name: "Orange", value: "orange", color: "bg-orange-500" },
-  { name: "Blue", value: "blue", color: "bg-blue-500" },
-  { name: "Pink", value: "pink", color: "bg-pink-500" },
-  { name: "White", value: "white", color: "bg-white border border-gray-300" },
+  { name: "Black", value: "black", color: "#000000" },
+  { name: "Grey", value: "grey", color: "#808080" },
+  { name: "Green", value: "green", color: "#008000" },
+  { name: "Red", value: "red", color: "#FF0000" },
+  { name: "Orange", value: "orange", color: "#FFA500" },
+  { name: "Blue", value: "blue", color: "#0000FF" },
+  { name: "Pink", value: "pink", color: "#FFC0CB" },
+  { name: "White", value: "white", color: "#FFFFFF" },
 ];
 
 export function ColorFilter({ selectedColors, onChange }: ColorFilterProps) {
@@ -33,11 +33,15 @@ export function ColorFilter({ selectedColors, onChange }: ColorFilterProps) {
           <div key={color.value} className="flex items-center space-x-3">
             <button
               onClick={() => handleColorChange(color.value)}
+              style={{
+                backgroundColor: color.color,
+                boxShadow: selectedColors.includes(color.value)
+                  ? `0 0 0 2px ${color.color}, 0 0 0 4px white` // inner ring + offset ring
+                  : undefined,
+              }}
               className={`w-4 h-4 rounded-full flex-shrink-0 transition-all ${
-                color.color
-              } ${
                 selectedColors.includes(color.value)
-                  ? "ring-2 ring-primary ring-offset-2"
+                  ? "ring-2 ring-[color.color] ring-offset-2"
                   : "hover:scale-110"
               }`}
               aria-label={`Select ${color.name} color`}

@@ -34,6 +34,7 @@ export function CategoryFilter({
         {categories.map((category) => (
           <div key={category} className="flex items-center space-x-2">
             <input
+              className="accent-orange-950 bg-orange-950"
               type="checkbox"
               id={category}
               checked={selectedCategories.includes(category)}

@@ -81,7 +81,7 @@ function Page() {
                       id="name"
                       type="text"
                       placeholder="John Doe"
-                      className="mt-2   pl-3 py-1  border rounded-sm border-gray-900 w-full"
+                      className="mt-2 outline-none  pl-3 py-1  border rounded-sm border-gray-900 w-full"
                     />
                     {errors.name && (
                       <p className="text-red-600 text-sm mt-1">
@@ -101,7 +101,7 @@ function Page() {
                       id="email"
                       type="email"
                       placeholder="exampe@gmail.com"
-                      className="mt-2   pl-3 py-1  border rounded-sm border-gray-900 w-full"
+                      className="mt-2 outline-none  pl-3 py-1  border rounded-sm border-gray-900 w-full"
                     />
                     {errors.email && (
                       <p className="text-red-600 text-sm mt-1">
@@ -123,7 +123,7 @@ function Page() {
                     id="subject"
                     type="text"
                     placeholder="Enter Subject"
-                    className="mt-2   pl-3 py-1 border rounded-sm border-gray-900 w-1/2"
+                    className="mt-2 outline-none  pl-3 py-1 border rounded-sm border-gray-900 w-1/2 mr-6"
                   />
                   {errors.subject && (
                     <p className="text-red-600 text-sm mt-1">
@@ -144,7 +144,7 @@ function Page() {
                     id="message"
                     placeholder="Enter here..."
                     rows={6}
-                    className="mt-2 w-full px-2 py-1 pl-3   border rounded-sm border-gray-900resize-none"
+                    className="mt-2 w-full px-2 py-1 pl-3 outline-none   border rounded-sm border-gray-900 resize-none"
                   />
                   {errors.message && (
                     <p className="text-red-600 text-sm mt-1">
@@ -168,7 +168,7 @@ function Page() {
             </div>
 
             {/* Contact Info - Right Side */}
-            <div className=" bg-[#f6f6f6]">
+            <div className=" bg-[#f6f6f6] rounded-sm">
               {/* Address */}
               <div className=" p-6  ">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">

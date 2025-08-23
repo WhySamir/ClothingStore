@@ -16,7 +16,7 @@ export function FilterSidebar({
   onFiltersChange,
 }: FilterSidebarProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-2 ">
       <CategoryFilter
         selectedCategories={filters.categories}
         onChange={(categories) => onFiltersChange({ categories })}
