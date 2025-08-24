@@ -17,7 +17,7 @@ export default function LandingPage() {
           className="absolute bottom-0 left-1/4 translate-y-1/2 w-32 h-16"
         /> */}
 
-        <div className="lg:max-w-7xl mx-auto px-6 pt-4  grid grid-cols-1 md:grid-cols-2 2xl: gap-5   items-center">
+        <div className="lg:max-w-7xl mx-auto px-6  pt-4  grid grid-cols-1 md:grid-cols-2 2xl: gap-5   items-center">
           <div>
             <div className="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full ">
               <span className="md:text-lg font-semibold text-yellow-800">
@@ -46,13 +46,13 @@ export default function LandingPage() {
           <div className="relative">
             <div className="relative flex items-center justify-center md:items-end   md:justify-end  h-[448px] md:h-full  xl:h-[86dvh]   w-full">
               <Image
-                // src="/heroine.png"
+                // src="/dito2.png"
                 src="https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen/v1754910154/heroine_bz6uqp.png"
                 alt="Model with sunglasses"
                 width={512}
                 height={512}
                 priority
-                className="w-full h-full max-w-[24rem] lg:max-w-[32rem] 2xl:max-w-full object-cover  lg:object-contain"
+                className="w-full h-full max-w-[24rem] lg:max-w-[32rem] 2xl:max-w-full object-cover   lg:object-contain"
               />
             </div>
             {/* Callout Circle */}

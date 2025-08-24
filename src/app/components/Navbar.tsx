@@ -177,7 +177,7 @@ export default function Navbar() {
             <Link href={"/carts"} className="hidden md:flex  h-6 w-6">
               <Image src="/cart.svg" alt="" height={24} width={24} />
             </Link>
-            <div className="relative ">
+            <div className="relative " ref={dropdownRef}>
               <button
                 onClick={() => {
                   setUserDropdown((prev: boolean) => !prev);
@@ -188,20 +188,20 @@ export default function Navbar() {
               </button>
               {userDropdown &&
                 (user ? (
-                  <div ref={dropdownRef}>
-                    <button
-                      onClick={handleLogout}
-                      className="md:block absolute  hidden -left-4 mt-2 min-w-fit bg-white shadow-lg rounded-lg p-2 z-50"
-                    >
-                      <p className="text-sm text-gray-500 cursor-pointer hover:text-black">
-                        Logout
-                      </p>
-                    </button>
-                  </div>
+                  // <div ref={dropdownRef}>
+                  <button
+                    onClick={handleLogout}
+                    className="md:block absolute  hidden -left-4 mt-2 min-w-fit bg-white shadow-lg rounded-lg p-2 z-50"
+                  >
+                    <p className="text-sm text-gray-500 cursor-pointer hover:text-black">
+                      Logout
+                    </p>
+                  </button>
                 ) : (
-                  <div ref={dropdownRef}>
-                    <SignInButton buttonText="Login" />
-                  </div>
+                  // </div>
+                  // <div ref={dropdownRef}>
+                  <SignInButton buttonText="Login" />
+                  // </div>
                 ))}
             </div>
 
