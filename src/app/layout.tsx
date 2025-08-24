@@ -17,8 +17,10 @@ const geistMono = Geist_Mono({
 
 export default async function RootLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const supabase = createClient();
   const {
@@ -36,6 +38,7 @@ export default async function RootLayout({
         />
         <GoogleOneTap />
         <AuthProvider initialUser={user ?? null}>{children}</AuthProvider>
+        {modal}
       </body>
     </html>
   );
