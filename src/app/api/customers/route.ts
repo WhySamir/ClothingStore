@@ -14,7 +14,7 @@ try {
   
   const customerProfile = await getOrSetCache(
       `customer:${user.id}`, 
-      3000, // ~1hr
+      3600, // ~1hr
       () => prisma.customer.findUnique({ where: { id: user.id },
       select: { id: true, name: true, email: true, provider: true, userAvatarUrl: true } })
     );

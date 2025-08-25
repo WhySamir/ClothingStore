@@ -3,8 +3,8 @@ import { useAuth } from "@/app/auth-context";
 import Image from "next/image";
 
 export default function DashboardOverview() {
-  const { admin } = useAuth();
-  console.log(admin);
+  const { user } = useAuth();
+  console.log(user);
   return (
     <div className="flex items-center justify-between mb-4 ">
       {/* Header */}
@@ -12,16 +12,16 @@ export default function DashboardOverview() {
         <h1 className="text-2xl font-bold ">Dashboard</h1>
       </div>
       <div className="flex items-center justify-between gap-2">
-        <div className="relative w-8 h-8 bg-red-500 rounded-full">
+        <div className="relative w-8 h-8 bg-blue-500 rounded-full">
           <Image
-            src={admin?.userAvatarUrl ?? "/"}
+            src={user?.userAvatarUrl ?? "/"}
             fill
             alt="user account"
-            className="rounded-full object-contain"
+            className="rounded-full object-contain text-blue-500"
           />
         </div>
         <div className="flex flex-col items-start justify-center">
-          <div className="userName text-sm">Samir Shakya</div>
+          <div className="userName text-sm">{user?.name}</div>
           <div className=" text-xs ">Admin</div>
         </div>
       </div>

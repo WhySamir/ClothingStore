@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       where: { id: user.id }
     })
 
-    if (!existing) {
+    if (existing) {
       const avatarUrl = user.user_metadata?.avatar_url
       const customer = {
         id:user.id,

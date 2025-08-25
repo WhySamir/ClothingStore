@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "../lib/prisma";
+// import ShowUserData from "../(admin)/admin_components/ShowUserData";
 
 export default async function Page() {
   const customer = await prisma.customer.findMany();
@@ -13,6 +14,7 @@ export default async function Page() {
           </p>
         </div>
       ))}
+      {/* <ShowUserData /> */}
     </div>
   );
 }

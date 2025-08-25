@@ -1,56 +1,29 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { User } from "@supabase/auth-helpers-nextjs";
-import { createClient } from "@/utlis/supabase/client";
+import { Customer } from "@prisma/client";
 
-interface AdminUser {
-  id: string;
-  fullName: string;
-  userAvatarUrl: string | null;
-}
-const AuthContext = createContext<
-  { user: User | null; admin: AdminUser | null } | undefined
->(undefined);
+const AuthContext = createContext<{ user: Customer | null } | undefined>(
+  undefined
+);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
+  const [user, setUser] = useState<Customer | null>(null);
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const u = session.user;
-        setUser(u);
-        const admin = {
-          id: u.id,
-          fullName: u.user_metadata?.full_name || "Admin",
-          userAvatarUrl: null,
-        };
-
-        const res = await fetch("/api/private/admin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: admin.id,
-            userAvatarUrl: u.user_metadata?.avatar_url,
-          }),
-        });
-
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/customers");
         const data = await res.json();
-        if (data.success) {
-          setAdminUser({ ...admin, userAvatarUrl: data.userAvatarUrl });
-        } else {
-          setAdminUser(admin);
-        }
+        setUser(data);
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
       }
-    });
+    };
+    fetchUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, admin: adminUser }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
   );
 };
 
