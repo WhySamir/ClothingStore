@@ -29,8 +29,8 @@ export default function ShowUserData() {
   return (
     <div>
       <p className="text-green-400">Logged in as: {user.email}</p>
-      <p className="text-black">User ID: {user.id}</p>
-      <pre className="text-black">{JSON.stringify(session, null, 2)}</pre>
+      <p className="text-white">User ID: {user.id}</p>
+      <pre className="text-white">{JSON.stringify(session, null, 2)}</pre>
     </div>
   );
 }

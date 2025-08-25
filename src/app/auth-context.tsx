@@ -1,46 +1,54 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@supabase/auth-helpers-nextjs";
 import { createClient } from "@/utlis/supabase/client";
 
-interface AuthContextType {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+interface AdminUser {
+  id: string;
+  fullName: string;
+  userAvatarUrl: string | null;
 }
+const AuthContext = createContext<
+  { user: User | null; admin: AdminUser | null } | undefined
+>(undefined);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider = ({
-  children,
-  initialUser,
-}: {
-  children: React.ReactNode;
-  initialUser: User | null;
-}) => {
-  const supabase = createClient();
-  const [user, setUser] = useState<User | null>(initialUser);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
 
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        if (session) {
-          const {
-            data: { user },
-          } = await supabase.auth.getUser(); // validate with Supabase Auth
-          setUser(user);
+    const supabase = createClient();
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        const u = session.user;
+        setUser(u);
+        const admin = {
+          id: u.id,
+          fullName: u.user_metadata?.full_name || "Admin",
+          userAvatarUrl: null,
+        };
+
+        const res = await fetch("/api/private/admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: admin.id,
+            userAvatarUrl: u.user_metadata?.avatar_url,
+          }),
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          setAdminUser({ ...admin, userAvatarUrl: data.userAvatarUrl });
         } else {
-          setUser(null);
+          setAdminUser(admin);
         }
       }
-    );
-
-    return () => {
-      listener?.subscription.unsubscribe();
-    };
-  }, [supabase]);
+    });
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, admin: adminUser }}>
       {children}
     </AuthContext.Provider>
   );
@@ -48,6 +56,6 @@ export const AuthProvider = ({
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+  if (!context) throw new Error("useAuth must be inside AuthProvider");
   return context;
 };

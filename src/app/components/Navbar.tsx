@@ -96,7 +96,7 @@ export default function Navbar() {
               C
             </div>
             <span className="md:text-xl font-semibold">
-              Clothing<span className="text-[#4b2e1a]">.</span>
+              Clodex<span className="text-[#4b2e1a]">.</span>
             </span>
           </Link>
           {!searchOpen ? (

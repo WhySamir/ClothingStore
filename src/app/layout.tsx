@@ -1,9 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./auth-context";
-import { createClient } from "@/utlis/supabase/server";
 import Script from "next/script";
 import GoogleOneTap from "./components/GoogleOneTap";
+import { Poppins } from "next/font/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,6 +14,11 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-poppins",
+});
 
 export default async function RootLayout({
   children,
@@ -22,22 +27,17 @@ export default async function RootLayout({
   children: React.ReactNode;
   modal: React.ReactNode;
 }) {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await (await supabase).auth.getUser();
-
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
         <Script
           src="https://accounts.google.com/gsi/client"
           strategy="afterInteractive"
         />
         <GoogleOneTap />
-        <AuthProvider initialUser={user ?? null}>{children}</AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
         {modal}
       </body>
     </html>

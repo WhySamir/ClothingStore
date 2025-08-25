@@ -1,9 +1,16 @@
 import { uploadFromUrlToCloudinary } from "@/utlis/uploadonCloudinary";
-import { Customer } from "@prisma/client";
 import { prisma } from "@/app/lib/prisma";
-import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
+
+interface Customer {
+  id: string;
+  userAvatarUrl: string | null;
+}
 
 export const googleAvatartoCloud = async (customer:Customer) => {
+
+  if(!customer.userAvatarUrl){
+    return null
+  }
   // Upload avatars for all customers who have userAvatarUrl but it's not yet on Cloudinary
     if (
       customer.userAvatarUrl &&
@@ -15,11 +22,9 @@ export const googleAvatartoCloud = async (customer:Customer) => {
         where: { id: customer.id },
         data: { userAvatarUrl: cloudinaryUrl },
       });
+      return cloudinaryUrl
     }else{
-        return  ApiResponds(200, "No avatar to upload or already uploaded to Cloudinary", customer.userAvatarUrl);
+        return  customer.userAvatarUrl;
     }
-  return  ApiResponds(
-     200,
-     "Avatars uploaded successfully",
-  );
+  
 };

@@ -1,16 +1,28 @@
-// app/(admin)/layout.tsx
-import { AuthProvider } from "../../auth-context";
-import { createClient } from "@/utlis/supabase/server";
+import { AuthProvider } from "@/app/auth-context";
+import { AdminSidebar } from "../admin_components/Sidebar";
 
 export default async function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await (await supabase).auth.getUser();
+  return (
+    <AuthProvider>
+      {
+        <>
+          <div className="min-h-screen bg-white">
+            <div className="flex">
+              {/* Sidebar */}
+              <AdminSidebar />
 
-  return <AuthProvider initialUser={user ?? null}>{children}</AuthProvider>;
+              {/* Main content */}
+              <div className="flex-1 min-h-screen ml-64 bg-[#111111]">
+                <div className="px-8 py-6 text-[#E0E0E0]">{children}</div>
+              </div>
+            </div>
+          </div>
+        </>
+      }
+    </AuthProvider>
+  );
 }

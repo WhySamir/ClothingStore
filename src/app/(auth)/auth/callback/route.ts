@@ -1,6 +1,7 @@
-// app/auth/callback/route.ts
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { googleAvatartoCloud } from '@/app/lib/googleAvatar'
+import { prisma } from '@/app/lib/prisma'
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url)
@@ -37,7 +38,29 @@ export async function GET(request: NextRequest) {
 
     if (error) throw new Error(`Supabase error: ${error.message}`)
 
+
+      //upload to cloudinary avatar
+
+     const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('No user returned from Supabase')
+
+    const existing = await prisma.customer.findUnique({
+      where: { id: user.id }
+    })
+
+    if (!existing) {
+      const avatarUrl = user.user_metadata?.avatar_url
+      const customer = {
+        id:user.id,
+        userAvatarUrl: user.user_metadata?.avatar_url
+      }
+
+      if (avatarUrl) {
+         await googleAvatartoCloud(customer) 
+      }
+} 
     return response
+    
   } catch (err) {
     console.error('Callback error:', err)
     return NextResponse.redirect(`${url.origin}?error=${encodeURIComponent((err as Error).message)}`)

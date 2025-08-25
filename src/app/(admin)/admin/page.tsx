@@ -1,5 +1,5 @@
 "use client";
-import ShowUserData from "@/app/components/ShowUserData";
+import ShowUserData from "@/app/(admin)/admin_components/ShowUserData";
 import { createClient } from "@/utlis/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -14,7 +14,7 @@ export default function AdminData() {
   };
 
   return (
-    <div className="p-6 text-black  overflow-auto">
+    <div className="p-6 text-white  overflow-auto">
       <h1 className="text-3xl font-bold">Welcome to Dashboard</h1>
       <button onClick={handleLogout} className="mx-3 border">
         Logout
