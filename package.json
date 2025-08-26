@@ -31,6 +31,7 @@
     "react-hook-form": "^7.62.0",
     "react-leaflet": "^5.0.0",
     "react-rating": "^2.0.5",
+    "recharts": "^3.1.2",
     "zod": "^4.0.17",
     "zustand": "^5.0.8"
   },

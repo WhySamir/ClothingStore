@@ -65,7 +65,7 @@ export function AdminSidebar() {
           </div>
           <div>
             <h1 className="text-xl font-bold [font-family:var(--font-poppins)] ">
-              Clodex
+              ClodeX
             </h1>
           </div>
         </div>
