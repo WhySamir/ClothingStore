@@ -1,20 +1,25 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Customer } from "@prisma/client";
+import { User } from "@supabase/supabase-js";
+import { createClient } from "@/utlis/supabase/client";
 
-const AuthContext = createContext<{ user: Customer | null } | undefined>(
-  undefined
-);
+const AuthContext = createContext<
+  { customer: Customer | null; user: User | null } | undefined
+>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<Customer | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
+
+  const supabase = createClient();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await fetch("/api/customers");
         const data = await res.json();
-        setUser(data);
+        setCustomer(data);
       } catch (err) {
         console.error("Failed to fetch user:", err);
       }
@@ -22,8 +27,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
+  }, [supabase]);
+
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ customer, user }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
