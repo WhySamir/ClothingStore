@@ -8,7 +8,7 @@ function Page() {
         title="Total Cost of Goods Sold"
         value="$3200"
         details="+20.1% from last month"
-        detailsClassName="text-green-500"
+        detailsClassName="text-green-600"
         icon={<ParkingMeter className="w-5 h-5" />}
       />
     </>

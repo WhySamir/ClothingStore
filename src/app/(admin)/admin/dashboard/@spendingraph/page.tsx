@@ -3,17 +3,18 @@ import { useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const data = [
-  { name: "Subscriptions", value: 148.4, color: "#3B82F6" }, // blue
+  { name: "Shipping", value: 148.4, color: "#3B82F6" }, // blue
   { name: "Mortgage", value: 824.28, color: "#F97316" }, // orange
-  { name: "Food and dining", value: 614.16, color: "#A855F7" }, // purple
-  { name: "Groceries", value: 642.48, color: "#22C55E" }, // green
+  { name: "Packaging", value: 614.16, color: "#A855F7" }, // purple
+  { name: "Food", value: 642.48, color: "#22C55E" }, // green
+  { name: "Groceries", value: 178.4, color: "#38373C" }, // green
 ];
 
 export default function PieChartComponent() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
-    <div className="bg-[#1E1E1E] rounded-2xl p-6 shadow-lg w-full ">
+    <div className="bg-[#1B1A1D]  rounded-lg border-2 border-[#323438] p-6 shadow-lg w-full ">
       <div className="flex justify-between items-center mb-6">
         <h2 className=" text-lg font-semibold">Monthly spending</h2>
         <span className="px-3 py-1 rounded-full bg-[#2A2A2A] text-sm text-green-400">

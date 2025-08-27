@@ -8,7 +8,7 @@ const Page = () => {
     <div>
       <div className="flex items-center justify-between mb-4 ">
         <div>
-          <h1 className="text-2xl font-bold ">Dashboard</h1>
+          <h1 className="text-3xl font-bold ">Dashboard</h1>
         </div>
         <div className="flex items-center justify-between gap-2">
           <div className="relative w-8 h-8 bg-blue-500 rounded-full">

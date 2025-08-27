@@ -9,7 +9,7 @@ function Page() {
         title="Total Revenue"
         value="$3200"
         details="+20.1% from last month"
-        detailsClassName="text-green-500"
+        detailsClassName="text-green-600"
         icon={<DollarSign className="w-5 h-5" />}
       />
     </>

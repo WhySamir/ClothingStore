@@ -9,3 +9,19 @@ export const contactSchema = z.object({
 });
 
 export type ContactFormData = z.infer<typeof contactSchema>;
+
+
+
+
+export const productSchema = z.object({
+  name: z.string().min(1),
+  category: z.string().min(1),
+  price: z.number().nonnegative(),
+  originalPrice: z.number().nonnegative(),
+  stock: z.number().int().nonnegative(),
+  colors: z.string().optional(),
+  sizes: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export type ProductFormData = z.infer<typeof productSchema>;

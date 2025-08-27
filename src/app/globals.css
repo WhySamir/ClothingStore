@@ -54,3 +54,15 @@ html {
 .scrollbar-clean::-webkit-scrollbar-corner {
   background: transparent;
 }
+.outercard {
+  background-color: #171717;
+}
+.cardborder {
+  border: 2px solid;
+  border-color: #323438;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.innercard {
+  background-color: #1b1a1d;
+}
