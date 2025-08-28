@@ -4,7 +4,7 @@ import { CategoryFilter } from "@/app/components/shop/category";
 import { PriceRangeFilter } from "./price-range-filter";
 import { ColorFilter } from "@/app/components/shop/color-filter";
 import { SizeFilter } from "./size-filter";
-import type { Filters } from "@/app/men/page";
+import type { Filters } from "@/app/(public)/men/page";
 
 interface FilterSidebarProps {
   filters: Filters;

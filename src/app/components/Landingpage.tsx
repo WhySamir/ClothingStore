@@ -1,3 +1,4 @@
+import { BadgePercent } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -19,8 +20,10 @@ export default function LandingPage() {
 
         <div className="lg:max-w-7xl mx-auto px-6  pt-4  grid grid-cols-1 md:grid-cols-2 2xl: gap-5   items-center">
           <div>
-            <div className="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full ">
-              <span className="md:text-lg font-semibold text-yellow-800">
+            <div className="inline-flex items-center gap-1 bg-white px-4 py-1.5 rounded-full ">
+              {" "}
+              <BadgePercent size={28} fill="#441306" className="text-white" />
+              <span className="md:text-lg font-semibold text-black">
                 50% OFF
               </span>
               <span className="md:text-lg  text-black">Summer Super Sale</span>
@@ -37,6 +40,7 @@ export default function LandingPage() {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore.
             </p>
+
             <button className="mt-6 px-6 py-3 bg-orange-950 text-white rounded hover:bg-[#4a1800] transition">
               Shop Now →
             </button>

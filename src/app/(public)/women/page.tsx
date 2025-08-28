@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 // import { SortDropdown } from "@/components/sort-dropdown";
 import ProductCard from "@/app/components/productcard/ProductCard";
-import { ActiveFilters } from "../components/shop/activefilters";
+import { ActiveFilters } from "../../components/shop/activefilters";
 // Mock product data
 const mockProducts = [
   {
@@ -115,7 +115,7 @@ export default function HomePage() {
     priceRange: [25, 125],
     colors: [],
     sizes: [],
-    gender: ["men"],
+    gender: ["women"],
   });
 
   // Filter products based on current filters

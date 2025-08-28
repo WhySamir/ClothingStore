@@ -1,6 +1,6 @@
 "use client";
 
-import { Filters } from "@/app/men/page";
+import { Filters } from "@/app/(public)/men/page";
 import { X } from "lucide-react";
 
 interface ActiveFiltersProps {

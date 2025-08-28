@@ -1,6 +1,6 @@
 "use client";
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
-import PageHeader from "../components/PageHeader";
+import PageHeader from "../../components/PageHeader";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";

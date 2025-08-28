@@ -1,7 +1,7 @@
 "use client";
-import DisableScrollRestoration from "../components/DisableScroll";
-import OrderSummary from "../components/OrderSummary";
-import PageHeader from "../components/PageHeader";
+import DisableScrollRestoration from "../../components/DisableScroll";
+import OrderSummary from "../../components/OrderSummary";
+import PageHeader from "../../components/PageHeader";
 import { usePathname } from "next/navigation";
 
 export default function ShopLayout({

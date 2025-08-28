@@ -1,8 +1,8 @@
 "use client";
-import AddtoCart from "../components/buttons/AddtoCart";
+import AddtoCart from "../../components/buttons/AddtoCart";
 import Image from "next/image";
 import { X } from "lucide-react";
-import PageHeader from "../components/PageHeader";
+import PageHeader from "../../components/PageHeader";
 
 const products = [
   {

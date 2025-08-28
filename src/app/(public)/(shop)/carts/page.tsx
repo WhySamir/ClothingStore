@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
-import { ItemsAddDel } from "../../components/buttons/ItemsAddDel";
+import { ItemsAddDel } from "../../../components/buttons/ItemsAddDel";
 import DisableScrollRestoration from "@/app/components/DisableScroll";
 
 interface Product {
