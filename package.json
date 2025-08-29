@@ -15,6 +15,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@prisma/client": "^6.13.0",
+    "@reduxjs/toolkit": "^2.8.2",
     "@supabase/auth-helpers-nextjs": "^0.7.4",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.52.1",
@@ -31,6 +32,7 @@
     "react-hook-form": "^7.62.0",
     "react-leaflet": "^5.0.0",
     "react-rating": "^2.0.5",
+    "react-redux": "^9.2.0",
     "recharts": "^3.1.2",
     "zod": "^4.0.17",
     "zustand": "^5.0.8"

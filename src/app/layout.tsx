@@ -4,6 +4,7 @@ import { AuthProvider } from "./auth-context";
 import Script from "next/script";
 import GoogleOneTap from "./components/GoogleOneTap";
 import { Poppins } from "next/font/google";
+import { ReduxProvider } from "@/redux/Provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,8 +37,10 @@ export default async function RootLayout({
           src="https://accounts.google.com/gsi/client"
           strategy="afterInteractive"
         />
-        <GoogleOneTap />
-        <AuthProvider>{children}</AuthProvider>
+        <GoogleOneTap />{" "}
+        <AuthProvider>
+          <ReduxProvider>{children}</ReduxProvider>
+        </AuthProvider>
         {modal}
       </body>
     </html>

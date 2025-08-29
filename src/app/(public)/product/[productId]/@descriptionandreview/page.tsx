@@ -300,8 +300,7 @@ const reviews = [
     verified: false,
     timeAgo: "1 week ago",
     title: "Good but has some issues",
-    content:
-      "Overall, I like the product, but I wish the battery lasted longer. Packaging was great though.",
+    content: "Overall, I like the product, and packaging was great.",
     rating: 4,
     avatar: "/free.png",
     images: [],
@@ -314,7 +313,7 @@ const reviews = [
     timeAgo: "3 weeks ago",
     title: "Not what I expected",
     content:
-      "It’s okay, but the color is different from what was shown online. Performance is average.",
+      "It’s okay, but the color is different from what was shown online.",
     rating: 3,
     avatar: "/men.png",
     images: [],
