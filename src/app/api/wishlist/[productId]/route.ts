@@ -83,7 +83,9 @@ export async function POST(req:NextRequest, context: { params: Promise<{ product
             data:{
                 productId,
                 customerId:user.id
-            }
+            },  include: {
+        product: true,
+      },
         })
         return ApiResponds(200, "Product added to wishlist successfully", response);
     } catch (error) {

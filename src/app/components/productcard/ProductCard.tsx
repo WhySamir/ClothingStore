@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { Expand, Star } from "lucide-react";
 import { Product } from "@/app/components/productcard/productType";
 import { CountdownTimer } from "@/app/components/productcard/CountdownTimer";
+import { AddToWishlistButton } from "../buttons/AddtoWishlist";
 
 interface ProductCardProps {
   product: Product;
@@ -40,9 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Action Icons */}
         <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors">
-            <Image src="/heart.svg" alt="heart" height={20} width={20} />
-          </button>
+          <AddToWishlistButton productId={product.id} />
           <button
             onClick={(e) => {
               e.stopPropagation();

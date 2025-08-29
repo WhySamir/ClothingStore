@@ -3,6 +3,13 @@ import AddtoCart from "../../components/buttons/AddtoCart";
 import Image from "next/image";
 import { X } from "lucide-react";
 import PageHeader from "../../components/PageHeader";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+  removeFromWishlist,
+  setWishlist,
+} from "@/redux/AddtoWishlist/WishlistSlice";
+import { RootState } from "@/redux/store";
 
 const products = [
   {
@@ -58,13 +65,41 @@ const products = [
 ];
 
 export default function Page() {
-  const handleRemoveProduct = (productId: number) => {
-    console.log(`[v0] Removing product with ID: ${productId}`);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchWishlist() {
+      try {
+        const res = await fetch("/api/wishlist");
+        console.log(res);
+        if (!res.ok) throw new Error("Failed to fetch wishlist");
+        const items = await res.json();
+        dispatch(setWishlist(items));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchWishlist();
+  }, [dispatch]);
+
+  const wishlist = useSelector(
+    (state: RootState) => state.wishlist.wishlistItems
+  );
+
+  const handleRemoveitem = (productId: string | number) => {
+    const existingItem = wishlist.find(
+      (i) => i.product.id === productId
+      // i.color === selectedColor &&
+      // i.size === selectedSize
+    );
+    if (existingItem) {
+      dispatch(removeFromWishlist({ wishlistId: existingItem.id }));
+    }
   };
 
-  const handleAddToCart = (productId: number) => {
-    console.log(`[v0] Adding product ${productId} to cart`);
-  };
+  console.log(wishlist, "from redux");
+
   return (
     <>
       <PageHeader title="Wishlist" path="Wishlist" />
@@ -87,17 +122,17 @@ export default function Page() {
           </div>
 
           <div className="bg-white">
-            {products.map((product, index) => (
+            {wishlist.map((item, index) => (
               <div
-                key={product.id}
+                key={item.id}
                 className={`grid grid-cols-6 md:grid-cols-10 md:gap-4 items-center py-4 px-2 md:px-6 border-b border-gray-100 ${
                   index % 2 === 0 ? "bg-gray-50/50" : "bg-white"
                 }`}
               >
-                {/* Remove Button & Product Info */}
+                {/* Remove Button & item Info */}
                 <div className="col-span-2 md:col-span-4 flex flex-col md:flex-row items-center gap-3">
                   <button
-                    onClick={() => handleRemoveProduct(product.id)}
+                    onClick={() => handleRemoveitem(item.id)}
                     className="p-1 h-auto hover:bg-gray-200"
                   >
                     <X className="h-4 w-4 text-gray-500" />
@@ -105,8 +140,8 @@ export default function Page() {
 
                   <div className="relative  aspect-square flex-shrink-0">
                     <Image
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
+                      src={item.product.mainImgUrl || "/placeholder.svg"}
+                      alt={item.product.name}
                       height={36}
                       width={36}
                       className="object-cover rounded-md"
@@ -115,27 +150,30 @@ export default function Page() {
 
                   <div className="min-w-0 flex-1">
                     <h4 className="font-semibold text-gray-900 text-sm md:text-base">
-                      {product.name}
+                      {item.product.name}
                     </h4>
                     <p className="text-gray-500 md:block hidden text-xs md:text-sm">
-                      Color: {product.color} | Size: {product.size}
+                      Color: {item.product.colors[0]?.color} | Size:{" "}
+                      {item.product.sizes[0]?.size}
                     </p>
                   </div>
                 </div>
 
                 {/* Price */}
                 <div className="col-span-1 text-sm md:text-base font-medium text-gray-900">
-                  ${product.price.toFixed(2)}
+                  ${item.product.price}
                 </div>
 
                 {/* Date Added */}
                 <div className="col-span-2 text-sm md:text-base text-gray-600">
-                  {product.dateAdded}
+                  {item.createdAt}
                 </div>
 
                 {/* Status & Add to Cart */}
                 <div className="col-span-1 flex flex-col  gap-2">
-                  {product.status}
+                  {item.product.sizes[0]?.stockQty > 0
+                    ? "In Stock"
+                    : "Out of Stock"}
                   <div className="block md:hidden w-8 bg-orange-950 text-white p-2 ">
                     +
                   </div>

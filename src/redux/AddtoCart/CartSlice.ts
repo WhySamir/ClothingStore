@@ -6,7 +6,7 @@ interface CartItemUI {
   itemQty: number;
   updatedAt: Date;
   product: {
-    id: string;
+    id: string |number;
     name: string;
     price: number;
     imageUrl?: string;
