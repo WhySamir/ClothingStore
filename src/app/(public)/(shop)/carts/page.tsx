@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { ItemsAddDel } from "../../../components/buttons/ItemsAddDel";
 import DisableScrollRestoration from "@/app/components/DisableScroll";
+import { useDispatch, useSelector } from "react-redux";
+import { setCart } from "@/redux/AddtoCart/CartSlice";
+import { RootState } from "@/redux/store";
 
 interface Product {
   id: string;
@@ -58,6 +61,27 @@ const initialProducts: Product[] = [
 export default function ShoppingCart() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchCartItems() {
+      try {
+        const res = await fetch("/api/cart");
+
+        if (!res.ok) throw new Error("Failed to fetch cart items");
+        const items = await res.json();
+        console.log(items.data);
+        dispatch(setCart(items.data));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchCartItems();
+  }, [dispatch]);
+
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+
   const handleRemoveProduct = (id: string) => {
     setProducts(products.filter((product) => product.id !== id));
   };
@@ -103,15 +127,15 @@ export default function ShoppingCart() {
 
         {/* Product Rows */}
         <div className="bg-white">
-          {products.map((product) => (
+          {cartItems.map((item) => (
             <div
-              key={product.id}
+              key={item.id}
               className="grid grid-cols-12  md:gap-4 items-center py-6 px-2 md:px-6 border-b border-gray-100 bg-white"
             >
               {/* Product Info with Remove Button */}
               <div className="col-span-3 md:col-span-4  flex-col flex sm:flex-row items-center gap-4">
                 <button
-                  onClick={() => handleRemoveProduct(product.id)}
+                  onClick={() => handleRemoveProduct(item.id)}
                   className="p-1 hover:bg-gray-100 rounded"
                 >
                   <X className="h-5 w-5 text-gray-400" />
@@ -119,8 +143,8 @@ export default function ShoppingCart() {
 
                 <div className="relative w-16 h-16 flex-shrink-0">
                   <Image
-                    src={product.image || "/placeholder.svg"}
-                    alt={product.name}
+                    src={item.product.mainImgUrl || "/placeholder.svg"}
+                    alt={item.product.name}
                     fill
                     className="object-cover rounded-lg"
                   />
@@ -128,10 +152,10 @@ export default function ShoppingCart() {
 
                 <div className=" min-w-0 flex-1">
                   <h4 className="font-semibold text-gray-900 text-base mb-1">
-                    {product.name}
+                    {item.product.name}
                   </h4>
                   <p className="text-gray-500 text-sm hidden sm:block">
-                    Color : {product.color} | Size : {product.size}
+                    Color : {item.color.color} | Size : {item.size.size}
                   </p>
                 </div>
               </div>
@@ -139,24 +163,24 @@ export default function ShoppingCart() {
               {/* Price */}
               <div className="col-span-2 text-center">
                 <span className="text-base font-medium text-gray-900">
-                  ${product.price.toFixed(2)}
+                  ${Number(item.product.price).toFixed(2)}
                 </span>
               </div>
 
               {/* Quantity Controls */}
-              <div className="col-span-4 text-center itesm-center flex justify-center">
+              <div className="col-span-4 text-center items-center flex justify-center">
                 <ItemsAddDel
-                  key={product.id}
-                  value={product.quantity}
+                  id={item.id}
+                  value={item.itemQty}
                   onChange={(newValue) =>
-                    handleQuantityChange(product.id, newValue)
+                    handleQuantityChange(item.id, newValue)
                   }
                 />
               </div>
               {/* Subtotal */}
               <div className="col-span-3  md:col-span-2  text-center">
                 <span className="text-base font-medium text-gray-900">
-                  ${(product.price * product.quantity).toFixed(2)}
+                  ${(Number(item.product.price) * item.itemQty).toFixed(2)}
                 </span>
               </div>
             </div>

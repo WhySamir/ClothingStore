@@ -1,74 +1,71 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface CartItemUI {
-  cartId: string;
+interface Product {
+  id: string;
+  name: string;
+  price: Decimal;
+  mainImgUrl: string;
+}
+
+interface Color {
+  id: string;
+  color: string;
+  hexCode: string;
+}
+
+interface Sizes {
+  id: string;
+  size: string;
+  stockQty: number;
+}
+
+interface CartItem {
+  id: string;        // unique cart item id
   productId: string;
   itemQty: number;
-  updatedAt: Date;
-  product: {
-    id: string |number;
-    name: string;
-    price: number;
-    imageUrl?: string;
-  };
+  colorId: string;
+  sizeId: string;
+  product: Product;
+  color: Color;
+  size: Sizes;
 }
 
 interface CartState {
-  cartItems: CartItemUI[];
+  items: CartItem[];
 }
 
 const initialState: CartState = {
-  cartItems: [],
+  items: [],
 };
 
 export const CartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<CartItemUI>) => {
-      const existingItem = state.cartItems.find(
-        (item) => item.cartId === action.payload.cartId
-      );
-      if (existingItem) {
-        existingItem.itemQty += 1;
+    setCart: (state, action: PayloadAction<CartItem[]>) => {
+      state.items = action.payload;
+    },
+    addToCart: (state, action: PayloadAction<CartItem>) => {
+      const exists = state.items.find(i => i.id === action.payload.id);
+      if (exists) {
+        exists.itemQty += action.payload.itemQty;
       } else {
-        state.cartItems.push({ ...action.payload, itemQty: 1 });
+        state.items.push(action.payload);
       }
     },
-    removeFromCart: (state, action: PayloadAction<{ cartId: string }>) => {
-      state.cartItems = state.cartItems.filter(
-        (item) => item.cartId !== action.payload.cartId
-      );
+    updateQty: (state, action: PayloadAction<{ id: string; itemQty: number }>) => {
+      const item = state.items.find(i => i.id === action.payload.id);
+      if (item) item.itemQty = action.payload.itemQty;
     },
-    clearCart: (state) => {
-      state.cartItems = [];
+    removeFromCart: (state, action: PayloadAction<{ id: string }>) => {
+      state.items = state.items.filter(i => i.id !== action.payload.id);
     },
-    increment: (state, action: PayloadAction<{ cartId: string }>) => {
-      const item = state.cartItems.find(
-        (item) => item.cartId === action.payload.cartId
-      );
-      if (item) item.itemQty += 1;
-    },
-    decrement: (state, action: PayloadAction<{ cartId: string }>) => {
-      const item = state.cartItems.find(
-        (item) => item.cartId === action.payload.cartId
-      );
-      if (item) {
-        if (item.itemQty > 1) item.itemQty -= 1;
-        else
-          state.cartItems = state.cartItems.filter(
-            (cartItem) => cartItem.cartId !== action.payload.cartId
-          );
-      }
+    clearCart: state => {
+      state.items = [];
     },
   },
 });
 
-// Selectors
-export const selectCartItemCount = (state: { cart: CartState }) =>
-  state.cart.cartItems.reduce((total, item) => total + item.itemQty, 0);
-
-export const { addToCart, removeFromCart, clearCart, increment, decrement } =
-  CartSlice.actions;
-
+export const { setCart, addToCart, updateQty, removeFromCart, clearCart } = CartSlice.actions;
 export default CartSlice.reducer;

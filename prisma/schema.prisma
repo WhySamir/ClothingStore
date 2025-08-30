@@ -34,7 +34,7 @@ model Product {
   colors        ProductColor[]
   features      ProductFeature[]
   reviews       Review[]
-  cartItems     CartItem[]
+  cartItems     Cart[]
   wishlistItems WishlistItem[]
   images        ProductImage[]
   orderItems    OrderItem[]
@@ -57,6 +57,7 @@ model ProductSize {
   size      String
   stockQty  Int
   product   Product @relation(fields: [productId], references: [id])
+  cartItems Cart[]
 }
 
 model ProductColor {
@@ -65,8 +66,10 @@ model ProductColor {
   productId String
   color     String
   hexCode   String?
+  stockQty  Int            @default(1)
   product   Product        @relation(fields: [productId], references: [id])
   images    ProductImage[]
+  cartItems Cart[]
 }
 
 model ProductFeature {
@@ -134,25 +137,21 @@ model Customer {
 
 // CART 
 model Cart {
-  id String @id @default(cuid())
-
+  id         String   @id @default(cuid()) // unique per cart item
   customerId String
-  name       String
+  productId  String
+  itemQty    Int
+  colorId    String
+  sizeId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  customer Customer   @relation(fields: [customerId], references: [id])
-  items    CartItem[]
-}
+  customer Customer     @relation(fields: [customerId], references: [id])
+  product  Product      @relation(fields: [productId], references: [id])
+  color    ProductColor @relation(fields: [colorId], references: [id])
+  size     ProductSize  @relation(fields: [sizeId], references: [id])
 
-model CartItem {
-  cartId    String
-  productId String
-  itemQty   Int
-  updatedAt DateTime @updatedAt
-
-  cart    Cart    @relation(fields: [cartId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
-
-  @@id([cartId, productId])
+  @@unique([customerId, productId, colorId, sizeId])
 }
 
 // WISHLIST 
