@@ -28,8 +28,8 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     const customer = await verifyUser(req);
     if (!customer) return ApiError(401, "Unauthorized");
 
-    const { quantity, price } = await req.json();
-const {id} = await context.params
+    const { quantity, price, shippingCost, taxes, couponDiscount } = await req.json();
+    const { id } = await context.params;
     const existingItem = await prisma.orderItem.findUnique({
       where: { id },
       include: { order: true },
@@ -43,6 +43,9 @@ const {id} = await context.params
       data: {
         ...(quantity !== undefined && { quantity }),
         ...(price !== undefined && { price }),
+        ...(shippingCost !== undefined && { shippingCost }),
+        ...(taxes !== undefined && { taxes }),
+        ...(couponDiscount !== undefined && { couponDiscount }),
       },
     });
 

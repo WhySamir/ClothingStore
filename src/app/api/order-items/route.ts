@@ -27,10 +27,10 @@ export async function POST(req: NextRequest) {
     const customer = await verifyUser(req);
     if (!customer) return ApiError(401, "Unauthorized");
 
-    const { orderId, productId, quantity, price } = await req.json();
+    const { orderId, productId, quantity, price, shippingCost, taxes, couponDiscount } = await req.json();
 
-    if (!orderId || !productId || !quantity || !price) {
-      return ApiError(400, "orderId, productId, quantity, and price are required");
+    if (!orderId || !productId || !quantity || !price || !shippingCost || !taxes || !couponDiscount) {
+      return ApiError(400, "orderId, productId, quantity, price, shippingCost, taxes, and couponDiscount are required");
     }
 
     const order = await prisma.order.findUnique({ where: { id: orderId } });
@@ -43,6 +43,9 @@ export async function POST(req: NextRequest) {
         productId,
         quantity,
         price,
+        shippingCost,
+        taxes,
+        couponDiscount
       },
     });
 

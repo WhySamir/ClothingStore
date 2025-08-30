@@ -13,7 +13,7 @@ npx prisma generate
 
 npx prisma migrate reset
 npx prisma validate
- npx prisma migrate dev --name clothingallschemas
+ npx prisma migrate dev --name addedColsinOrderItem
 
 
  And you don’t want to create a migration yet, you can just run:
