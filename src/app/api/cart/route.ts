@@ -79,13 +79,13 @@ export async function PATCH(req: NextRequest) {
   const customer = await verifyUser(req);
   if (!customer?.id) return ApiError(401, "Unauthorized");
 
-  const { productId, colorId, sizeId, itemQty } = await req.json();
-  if (!productId || !colorId || !sizeId || itemQty == null)
-    return ApiError(400, "productId, colorId, sizeId, itemQty required");
+  const { cartId, itemQty } = await req.json();
+  if (!cartId || itemQty == null)
+    return ApiError(400, "cartId, itemQty required");
 
   try {
     const updated = await prisma.cart.update({
-      where: { customerId_productId_colorId_sizeId: { customerId: customer.id, productId, colorId, sizeId } },
+      where: {id:cartId  },
       data: { itemQty }
     });
 
@@ -95,18 +95,17 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
-
 export async function DELETE(req: NextRequest) {
   const customer = await verifyUser(req);
   if (!customer?.id) return ApiError(401, "Unauthorized");
 
-  const { productId, colorId, sizeId } = await req.json();
-  if (!productId || !colorId || !sizeId)
-    return ApiError(400, "productId, colorId, sizeId required");
+  const { cartId } = await req.json();
+
+  if (!cartId) return ApiError(400, "cartId required");
 
   try {
     const deleted = await prisma.cart.delete({
-      where: { customerId_productId_colorId_sizeId: { customerId: customer.id, productId, colorId, sizeId } }
+      where: { id: cartId }
     });
 
     return ApiResponds(200, "Cart item deleted", deleted);
@@ -114,3 +113,4 @@ export async function DELETE(req: NextRequest) {
     return ApiError(500, error);
   }
 }
+

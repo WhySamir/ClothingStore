@@ -6,61 +6,45 @@ import Image from "next/image";
 import { ItemsAddDel } from "../../../components/buttons/ItemsAddDel";
 import DisableScrollRestoration from "@/app/components/DisableScroll";
 import { useDispatch, useSelector } from "react-redux";
-import { setCart } from "@/redux/AddtoCart/CartSlice";
+import {
+  removeFromCart,
+  setCart,
+  updateQty,
+} from "@/redux/AddtoCart/CartSlice";
 import { RootState } from "@/redux/store";
+import { Decimal } from "@prisma/client/runtime/library";
 
 interface Product {
   id: string;
   name: string;
-  color: string;
-  size: string;
-  price: number;
-  quantity: number;
-  image: string;
+  price: Decimal;
+  mainImgUrl: string;
 }
 
-const initialProducts: Product[] = [
-  {
-    id: "1",
-    name: "Trendy Brown Coat",
-    color: "Brown",
-    size: "XXL",
-    price: 75.0,
-    quantity: 4,
-    image: "/brown-coat.png",
-  },
-  {
-    id: "2",
-    name: "Classy Light Coat",
-    color: "Cream",
-    size: "XXL",
-    price: 165.0,
-    quantity: 1,
-    image: "/light-cream-coat.png",
-  },
-  {
-    id: "3",
-    name: "Light Brown Sweater",
-    color: "Light Brown",
-    size: "S",
-    price: 63.0,
-    quantity: 1,
-    image: "/light-brown-sweater.png",
-  },
-  {
-    id: "4",
-    name: "Modern Brown Dress",
-    color: "Brown",
-    size: "S",
-    price: 90.0,
-    quantity: 2,
-    image: "/brown-dress.png",
-  },
-];
+interface Color {
+  id: string;
+  color: string;
+  hexCode: string;
+}
+
+interface Sizes {
+  id: string;
+  size: string;
+  stockQty: number;
+}
+
+interface CartItem {
+  id: string; // unique cart item id
+  productId: string;
+  itemQty: number;
+  colorId: string;
+  sizeId: string;
+  product: Product;
+  color: Color;
+  size: Sizes;
+}
 
 export default function ShoppingCart() {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -81,20 +65,35 @@ export default function ShoppingCart() {
   }, [dispatch]);
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const [products, setProducts] = useState<CartItem[]>(cartItems);
 
-  const handleRemoveProduct = (id: string) => {
-    setProducts(products.filter((product) => product.id !== id));
+  const handleRemoveProduct = async (cartId: string) => {
+    await fetch("/api/cart", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ cartId }),
+    });
+    dispatch(removeFromCart({ id: cartId }));
   };
 
-  const handleQuantityChange = (id: string, newValue: number) => {
-    setProducts(
-      products.map((product) =>
-        product.id === id ? { ...product, quantity: newValue } : product
-      )
-    );
+  const handleQuantityChange = async (cartId: string, newQty: number) => {
+    try {
+      // update backend
+      await fetch("/api/cart", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ cartId, itemQty: newQty }),
+      });
+
+      dispatch(updateQty({ id: cartId, itemQty: newQty }));
+    } catch (err) {
+      console.error(err);
+    }
   };
   const subtotal = products.reduce(
-    (sum, product) => sum + product.price * product.quantity,
+    (sum, product) => sum + Number(product.product.price) * product.itemQty,
     0
   );
 
@@ -172,8 +171,8 @@ export default function ShoppingCart() {
                 <ItemsAddDel
                   id={item.id}
                   value={item.itemQty}
-                  onChange={(newValue) =>
-                    handleQuantityChange(item.id, newValue)
+                  onChange={(id: string, newValue: number) =>
+                    handleQuantityChange(id, newValue)
                   }
                 />
               </div>
