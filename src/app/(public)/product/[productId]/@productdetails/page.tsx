@@ -15,7 +15,7 @@ import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
 import { updateQty } from "@/redux/AddtoCart/CartSlice";
 import { useDispatch } from "react-redux";
 
-export default function ProductDetails(productId: string) {
+export default function ProductDetails({ productId }: { productId: string }) {
   const [selectedColor, setSelectedColor] = useState({
     name: "brown",
     borderClass: "amber-800",
@@ -34,7 +34,8 @@ export default function ProductDetails(productId: string) {
   ];
 
   const sizes = ["S", "M", "L", "XL", "XXL", "XXXL"];
-  const handleQuantityChange = async (productId: string, newQty: number) => {
+  const handleQuantityChange = (productId: string, newQty: number) => {
+    setQuantity(newQty);
     dispatch(updateQty({ id: productId, itemQty: newQty }));
   };
 
@@ -141,9 +142,7 @@ export default function ProductDetails(productId: string) {
         <ItemsAddDel
           id={productId}
           value={quantity}
-          onChange={(productId: string, quantity: number) =>
-            handleQuantityChange(productId, quantity)
-          }
+          onChange={(id: string, qty: number) => handleQuantityChange(id, qty)}
         />
         <AddtoCart />
 

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,160 +9,136 @@ datasource db {
 }
 
 model Product {
-  id            String   @id @default(cuid())
+  id            String           @id @default(cuid())
   name          String
   description   String
-  mainImgUrl    String   @default("https://res.cloudinary.com/dcfrlqakq/image/upload/v1753473129/image_1_lapjpe.png")
-  price         Decimal
+  sellingPrice  Decimal
   stockQty      Int
   discount      Decimal?
   categoryId    String
   brand         String
   material      String
   originCountry String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  mainImgUrl    String           @default("https://res.cloudinary.com/dcfrlqakq/image/upload/v1753473129/image_1_lapjpe.png")
+  costPrice     Decimal          @default(10.00) @db.Decimal
+  cartItems     Cart[]
+  orderItems    OrderItem[]
   category      Category         @relation(fields: [categoryId], references: [id])
-  sizes         ProductSize[]
   colors        ProductColor[]
   features      ProductFeature[]
-  reviews       Review[]
-  cartItems     Cart[]
-  wishlistItems WishlistItem[]
   images        ProductImage[]
-  orderItems    OrderItem[]
+  sizes         ProductSize[]
+  reviews       Review[]
+  wishlistItems WishlistItem[]
 }
 
 model ProductImage {
   id             Int           @id @default(autoincrement())
-  url            String // e.g., Cloudinary or Supabase storage URL
-  alt            String? // optional image description
+  url            String
+  alt            String?
   productId      String
-  product        Product       @relation(fields: [productId], references: [id])
-  ProductColor   ProductColor? @relation(fields: [productColorId], references: [id])
   productColorId String?
+  ProductColor   ProductColor? @relation(fields: [productColorId], references: [id])
+  product        Product       @relation(fields: [productId], references: [id])
 }
 
 model ProductSize {
-  id String @id @default(cuid())
-
+  id        String  @id @default(cuid())
   productId String
   size      String
   stockQty  Int
-  product   Product @relation(fields: [productId], references: [id])
   cartItems Cart[]
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model ProductColor {
-  id String @id @default(cuid())
-
+  id        String         @id @default(cuid())
   productId String
   color     String
   hexCode   String?
   stockQty  Int            @default(1)
+  cartItems Cart[]
   product   Product        @relation(fields: [productId], references: [id])
   images    ProductImage[]
-  cartItems Cart[]
 }
 
 model ProductFeature {
-  id String @id @default(cuid())
-
+  id        String  @id @default(cuid())
   productId String
   key       String
   value     String
-
-  product Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Review {
-  id String @id @default(cuid())
-
+  id         String   @id @default(cuid())
   productId  String
   customerId String
   rating     Float
-  title      String   @default("No title")
   comment    String
   createdAt  DateTime @default(now())
-
-  verified Boolean  @default(false)
-  images   String[]
-  videos   String?
-
-  product  Product  @relation(fields: [productId], references: [id])
-  customer Customer @relation(fields: [customerId], references: [id])
+  images     String[]
+  verified   Boolean  @default(false)
+  videos     String?
+  title      String   @default("No title")
+  customer   Customer @relation(fields: [customerId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
 
   @@unique([productId, customerId])
 }
 
-//CATEGORY 
-
-enum GenderCategory {
-  male
-  female
-}
-
 model Category {
-  id String @id @default(cuid())
-
+  id          String         @id @default(cuid())
   name        GenderCategory
   description String
-
-  products Product[]
+  products    Product[]
 }
 
-// CUSTOMER 
 model Customer {
-  id            String   @id
+  id            String         @id
   name          String?
-  email         String?  @unique
+  email         String?        @unique
   userAvatarUrl String?
   provider      String?
   providerId    String?
-  updatedAt     DateTime @updatedAt
-  createdAt     DateTime @default(now())
-
-  reviews       Review[]
+  updatedAt     DateTime       @updatedAt
+  createdAt     DateTime       @default(now())
   carts         Cart[]
-  wishlistItems WishlistItem[]
   orders        Order[]
+  reviews       Review[]
+  wishlistItems WishlistItem[]
 }
 
-// CART 
 model Cart {
-  id         String   @id @default(cuid()) // unique per cart item
+  id         String       @id @default(cuid())
   customerId String
-  productId  String
-  itemQty    Int
   colorId    String
+  createdAt  DateTime     @default(now())
+  itemQty    Int
+  productId  String
   sizeId     String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  customer Customer     @relation(fields: [customerId], references: [id])
-  product  Product      @relation(fields: [productId], references: [id])
-  color    ProductColor @relation(fields: [colorId], references: [id])
-  size     ProductSize  @relation(fields: [sizeId], references: [id])
+  updatedAt  DateTime     @updatedAt
+  color      ProductColor @relation(fields: [colorId], references: [id])
+  customer   Customer     @relation(fields: [customerId], references: [id])
+  product    Product      @relation(fields: [productId], references: [id])
+  size       ProductSize  @relation(fields: [sizeId], references: [id])
 
   @@unique([customerId, productId, colorId, sizeId])
 }
 
-// WISHLIST 
 model WishlistItem {
-  id String @id @default(cuid())
-
+  id         String   @id @default(cuid())
   customerId String
   productId  String
   createdAt  DateTime @default(now())
-
-  customer Customer @relation(fields: [customerId], references: [id])
-  product  Product  @relation(fields: [productId], references: [id])
+  customer   Customer @relation(fields: [customerId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
 
   @@unique([customerId, productId])
 }
 
-// ADMIN 
 model Admin {
   id            String   @id @default(cuid())
   name          String
@@ -183,9 +153,8 @@ model Order {
   totalAmount Decimal
   status      OrderStatus @default(PENDING)
   createdAt   DateTime    @default(now())
-
-  customer Customer    @relation(fields: [customerId], references: [id])
-  items    OrderItem[]
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  items       OrderItem[]
 }
 
 model OrderItem {
@@ -194,12 +163,16 @@ model OrderItem {
   productId      String
   quantity       Int
   price          Decimal
+  couponDiscount Decimal?
   shippingCost   Decimal
   taxes          Decimal
-  couponDiscount Decimal?
+  order          Order    @relation(fields: [orderId], references: [id])
+  product        Product  @relation(fields: [productId], references: [id])
+}
 
-  order   Order   @relation(fields: [orderId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
+enum GenderCategory {
+  male
+  female
 }
 
 enum OrderStatus {
