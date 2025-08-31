@@ -17,7 +17,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 interface Product {
   id: string;
   name: string;
-  price: Decimal;
+  sellingPrice: Decimal;
   mainImgUrl: string;
 }
 
@@ -93,7 +93,8 @@ export default function ShoppingCart() {
     }
   };
   const subtotal = products.reduce(
-    (sum, product) => sum + Number(product.product.price) * product.itemQty,
+    (sum, product) =>
+      sum + Number(product.product.sellingPrice) * product.itemQty,
     0
   );
 
@@ -162,7 +163,7 @@ export default function ShoppingCart() {
               {/* Price */}
               <div className="col-span-2 text-center">
                 <span className="text-base font-medium text-gray-900">
-                  ${Number(item.product.price).toFixed(2)}
+                  ${Number(item.product.sellingPrice).toFixed(2)}
                 </span>
               </div>
 
@@ -179,7 +180,10 @@ export default function ShoppingCart() {
               {/* Subtotal */}
               <div className="col-span-3  md:col-span-2  text-center">
                 <span className="text-base font-medium text-gray-900">
-                  ${(Number(item.product.price) * item.itemQty).toFixed(2)}
+                  $
+                  {(Number(item.product.sellingPrice) * item.itemQty).toFixed(
+                    2
+                  )}
                 </span>
               </div>
             </div>

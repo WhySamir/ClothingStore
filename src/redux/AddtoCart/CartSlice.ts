@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface Product {
   id: string;
   name: string;
-  price: Decimal;
+  sellingPrice: Decimal;
   mainImgUrl: string;
 }
 

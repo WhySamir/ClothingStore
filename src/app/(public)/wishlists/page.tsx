@@ -161,7 +161,7 @@ export default function Page() {
 
                 {/* Price */}
                 <div className="col-span-1 text-sm md:text-base font-medium text-gray-900">
-                  ${item.product.price}
+                  ${item.product.sellingPrice}
                 </div>
 
                 {/* Date Added */}

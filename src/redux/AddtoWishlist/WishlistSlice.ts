@@ -8,7 +8,7 @@ type WishlistItem = {
     product: {
     id: string |number;
     name: string;
-    price: string|number;
+    sellingPrice: number;
     mainImgUrl: string;
     colors:{
         id: string|number;
