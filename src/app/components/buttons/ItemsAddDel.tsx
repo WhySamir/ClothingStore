@@ -1,7 +1,4 @@
-import { updateQty } from "@/redux/AddtoCart/CartSlice";
-import { RootState } from "@/redux/store";
 import { Minus, Plus } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
 
 interface ItemsAddDelProps {
   id: string;
@@ -18,9 +15,6 @@ export const ItemsAddDel = ({
   min = 0,
   max,
 }: ItemsAddDelProps) => {
-  const dispatch = useDispatch();
-  const cartItems = useSelector((state: RootState) => state.cart.items);
-
   return (
     <div className={`flex items-center max-w-[9rem]  border rounded-md `}>
       <button

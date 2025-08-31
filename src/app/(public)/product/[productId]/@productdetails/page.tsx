@@ -12,12 +12,16 @@ import {
 } from "lucide-react";
 import AddtoCart from "@/app/components/buttons/AddtoCart";
 import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
+import { updateQty } from "@/redux/AddtoCart/CartSlice";
+import { useDispatch } from "react-redux";
 
-export default function ProductDetails() {
+export default function ProductDetails(productId: string) {
   const [selectedColor, setSelectedColor] = useState({
     name: "brown",
     borderClass: "amber-800",
   });
+  const dispatch = useDispatch();
+
   const [selectedSize, setSelectedSize] = useState("XXL");
   const [quantity, setQuantity] = useState(4);
 
@@ -30,6 +34,9 @@ export default function ProductDetails() {
   ];
 
   const sizes = ["S", "M", "L", "XL", "XXL", "XXXL"];
+  const handleQuantityChange = async (productId: string, newQty: number) => {
+    dispatch(updateQty({ id: productId, itemQty: newQty }));
+  };
 
   return (
     <div className="space-y-6">
@@ -131,7 +138,13 @@ export default function ProductDetails() {
 
       {/* Quantity and Actions */}
       <div className="flex-wrap flex flex-col md:flex-row  md:items-center gap-4">
-        <ItemsAddDel value={quantity} onChange={setQuantity} />
+        <ItemsAddDel
+          id={productId}
+          value={quantity}
+          onChange={(productId: string, quantity: number) =>
+            handleQuantityChange(productId, quantity)
+          }
+        />
         <AddtoCart />
 
         <button className="bg-yellow-400 border border-yellow-400  py-2 text-black px-8">
