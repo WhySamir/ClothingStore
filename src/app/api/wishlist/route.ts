@@ -18,7 +18,7 @@ export async function GET( req: NextRequest){
         select: {
             id: true,
             name: true,
-            price: true,
+            sellingPrice: true,
             mainImgUrl: true,
         colors: {
           take: 1,

@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const rawData = formData.get("data") as string;
-    const { product, sizes, colors, features, imagesMeta } = JSON.parse(rawData);
+    const { product, sizes, colors, features, imagesMeta,tags } = JSON.parse(rawData);
 
     //product Image main
     const mainFile = formData.get("mainImage") as File | null;
@@ -60,6 +60,17 @@ export async function POST(request: NextRequest) {
         )
       );
     }
+   if (tags && tags.length > 0) {
+  await prisma.$transaction(
+    tags.map((tag: { name: string }) => prisma.tag.create({
+      data: {
+        name: tag.name,
+        productId
+      }
+    }))
+  );
+}
+
     const uploadedImages = [];
     const files = formData.getAll("images") as File[];
 
@@ -96,6 +107,8 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error(" Product creation failed:", error);
-    return ApiError(500, error);
-  }
+return new Response(
+  JSON.stringify({ success: false, message: error }),
+  { status: 500, headers: { "Content-Type": "application/json" } }
+);  }
 }

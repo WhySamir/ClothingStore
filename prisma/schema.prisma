@@ -23,6 +23,7 @@ model Product {
   updatedAt     DateTime         @updatedAt
   mainImgUrl    String           @default("https://res.cloudinary.com/dcfrlqakq/image/upload/v1753473129/image_1_lapjpe.png")
   costPrice     Decimal          @default(10.00) @db.Decimal
+  tags          Tag[]
   cartItems     Cart[]
   orderItems    OrderItem[]
   category      Category         @relation(fields: [categoryId], references: [id])
@@ -34,8 +35,15 @@ model Product {
   wishlistItems WishlistItem[]
 }
 
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+}
+
 model ProductImage {
-  id             Int           @id @default(autoincrement())
+  id             String        @id @default(cuid())
   url            String
   alt            String?
   productId      String

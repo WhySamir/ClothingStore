@@ -13,7 +13,7 @@ export async function GET() {
         id: true,
         name: true,
         description: true,
-        price: true,
+        sellingPrice: true,
         brand: true,
         mainImgUrl: true,
         category: {
