@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductFormData, productSchema } from "@/app/lib/validation";
 import SizesStock from "./SizesStock";
 import { ImagePlus } from "lucide-react";
+import { useState } from "react";
+import Image from "next/image";
 
 const Modal = ({
   setIsAddDialogOpen,
@@ -42,6 +44,7 @@ const Modal = ({
     control,
     name: "colors",
   });
+  type imgFields = { image: File };
   const {
     fields: imgFields,
     append: addImg,
@@ -125,6 +128,9 @@ const Modal = ({
     }
   }
 
+  const [heroImage, setHeroImage] = useState<File | null>(null);
+  const [extraFiles, setExtraFiles] = useState<File[]>([]);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
       <div className="bg-[#1a1c20] w-full lg:max-w-4xl 2xl:max-w-5xl max-h-[90vh] p-8 text-gray-200 rounded-2xl overflow-y-auto">
@@ -189,43 +195,94 @@ const Modal = ({
             {/* Upload Image */}
             <div className="col-span-5 flex flex-col bg-[#212328] p-6 rounded-2xl space-y-4">
               <h3 className="text-lg font-semibold">Upload Image</h3>
-              <div className="aspect-square rounded-xl bg-[#2b2d31] flex flex-col items-center justify-center border-2 border-dashed border-gray-600">
-                <ImagePlus size={48} className="text-gray-400 mb-1" />
-                <span className="text-xs text-gray-500">
-                  Upload Hero Image{" "}
-                </span>
-              </div>
-              <div className="flex gap-3">
-                {/* Add button */}
-                {imgFields.length < 4 && (
-                  <div
-                    onClick={() => addImg({ image: "" })}
-                    className="aspect-square cursor-pointer w-12 rounded-lg bg-[#2b2d31] 
-                 flex items-center justify-center border-2 border-dashed border-gray-600 text-gray-400"
-                  >
-                    +
-                  </div>
-                )}
-
-                {/* Render image fields */}
-                {imgFields.map((field, idx) => (
-                  <div key={field.id} className="relative">
-                    <input
-                      type="text"
-                      {...register(`imagesMeta.${idx}.image`)}
-                      className="aspect-square outline-none cursor-pointer w-12 rounded-lg bg-[#2b2d31] 
-                 flex items-center justify-center border-2 border-dashed border-gray-600 text-gray-400"
+              <label className="uploadHero aspect-square rounded-xl bg-[#2b2d31] flex flex-col items-center justify-center border-2 border-dashed border-gray-600">
+                {heroImage ? (
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={URL.createObjectURL(heroImage)}
+                      alt="Hero"
+                      fill
+                      className="object-cover rounded-xl"
                     />
                     <button
                       type="button"
-                      onClick={() => remove(idx)}
+                      onClick={() => setHeroImage(null)}
                       className="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 
-                   flex items-center justify-center rounded-full text-xs"
+                     flex items-center justify-center rounded-full text-xs"
                     >
                       ✕
                     </button>
                   </div>
-                ))}
+                ) : (
+                  <>
+                    {" "}
+                    <ImagePlus size={48} className="text-gray-400 mb-1" />
+                    <span className="text-xs text-gray-500">
+                      Upload Hero Image{" "}
+                    </span>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) setHeroImage(e.target.files[0]);
+                  }}
+                />
+              </label>
+              <div className="flex gap-3">
+                {/* Add button */}
+                {imgFields.length < 4 && (
+                  <label
+                    className="aspect-square cursor-pointer w-12 rounded-lg bg-[#2b2d31] 
+                 flex items-center justify-center border-2 border-dashed border-gray-600 text-gray-400"
+                  >
+                    +
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          const file = e.target.files[0];
+                          setExtraFiles((prev) => [...prev, file]);
+                          addImg({ image: file.name });
+                        }
+                      }}
+                    />
+                  </label>
+                )}
+
+                {/* Render image fields */}
+                {imgFields.map((field, idx) => {
+                  const fileObj = extraFiles.find(
+                    (f) => f.name === field.image
+                  );
+
+                  return (
+                    <div key={field.id} className="relative w-12 h-12">
+                      {fileObj ? (
+                        <Image
+                          src={URL.createObjectURL(fileObj)}
+                          alt="preview"
+                          fill
+                          className="object-cover rounded-lg border border-gray-600"
+                        />
+                      ) : (
+                        <div className="aspect-square w-12 rounded-lg bg-[#2b2d31] border border-dashed border-gray-600" />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => remove(idx)}
+                        className="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 
+                   flex items-center justify-center rounded-full text-xs"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
