@@ -3,9 +3,9 @@
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductFormData, productSchema } from "@/app/lib/validation";
-import { useState } from "react";
+import SizesStock from "./SizesStock";
+import { ImagePlus, Plus } from "lucide-react";
 
-const categories = ["Coats", "Shirts", "Dresses", "Sweaters", "Pants"];
 const sizeOptions = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const Modal = ({
@@ -40,13 +40,17 @@ const Modal = ({
     },
   });
 
-  const { fields: sizeFields, append: addSize } = useFieldArray({
-    control,
-    name: "sizes",
-  });
   const { fields: colorFields, append: addColor } = useFieldArray({
     control,
     name: "colors",
+  });
+  const {
+    fields: imgFields,
+    append: addImg,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "imagesMeta",
   });
   const { fields: featureFields, append: addFeature } = useFieldArray({
     control,
@@ -185,43 +189,52 @@ const Modal = ({
             {/* Upload Image */}
             <div className="col-span-5 flex flex-col bg-[#212328] p-6 rounded-2xl space-y-4">
               <h3 className="text-lg font-semibold">Upload Image</h3>
-              <div className="aspect-square rounded-xl bg-[#2b2d31] flex items-center justify-center border-2 border-dashed border-gray-600">
-                <span className="text-gray-500">Upload Hero Image </span>
+              <div className="aspect-square rounded-xl bg-[#2b2d31] flex flex-col items-center justify-center border-2 border-dashed border-gray-600">
+                <ImagePlus size={48} className="text-gray-400 mb-1" />
+                <span className="text-xs text-gray-500">
+                  Upload Hero Image{" "}
+                </span>
               </div>
-              <div className="aspect-square w-12 rounded-lg  bg-[#2b2d31] flex items-center justify-center border-2 border-dashed border-gray-600">
-                +
+              <div className="flex gap-3">
+                {/* Add button */}
+                {imgFields.length < 4 && (
+                  <div
+                    onClick={() => addImg({ image: "" })}
+                    className="aspect-square cursor-pointer w-12 rounded-lg bg-[#2b2d31] 
+                 flex items-center justify-center border-2 border-dashed border-gray-600 text-gray-400"
+                  >
+                    +
+                  </div>
+                )}
+
+                {/* Render image fields */}
+                {imgFields.map((field, idx) => (
+                  <div key={field.id} className="relative">
+                    <input
+                      type="text"
+                      {...register(`imagesMeta.${idx}.image`)}
+                      className="aspect-square outline-none cursor-pointer w-12 rounded-lg bg-[#2b2d31] 
+                 flex items-center justify-center border-2 border-dashed border-gray-600 text-gray-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => remove(idx)}
+                      className="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 
+                   flex items-center justify-center rounded-full text-xs"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
           {/* Sizes */}
           <div className="my-6 grid grid-cols-12 gap-6">
             <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-6">
-              <h3 className="text-lg font-semibold mb-4">Sizes & Stock</h3>
-              <div className="grid grid-cols-6 gap-3">
-                {sizeFields.map((field, idx) => (
-                  <div
-                    key={field.id}
-                    className="p-3 rounded-lg bg-[#2b2d31] text-gray-300"
-                  >
-                    <label className="block font-semibold">
-                      {sizeOptions[idx]}
-                    </label>
-                    <input
-                      type="hidden"
-                      {...register(`sizes.${idx}.size`)}
-                      value={sizeOptions[idx]} // lock in the size label
-                    />
-                    <input
-                      type="number"
-                      min={0}
-                      {...register(`sizes.${idx}.stockQty`, {
-                        valueAsNumber: true,
-                      })}
-                      placeholder="Stock"
-                      className="mt-2 w-full rounded-md px-2 py-1 bg-[#1a1c20] border border-gray-600 text-gray-200 text-sm"
-                    />
-                  </div>
-                ))}
+              {/* <h3 className="text-lg font-semibold mb-4">Sizes & Stock</h3> */}
+              <div className="col-span-7">
+                <SizesStock register={register} />
               </div>
             </div>
             <div className="col-span-5 flex flex-col bg-[#212328] p-6 rounded-2xl space-y-4">
@@ -249,7 +262,6 @@ const Modal = ({
               </div>
             </div>
           </div>
-
           {/* Colors */}
           <div className="mb-6 grid grid-cols-12 gap-6">
             <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-6">
@@ -274,7 +286,7 @@ const Modal = ({
                 onClick={() => addColor({ color: "", hexCode: "" })}
                 className="mt-2 px-3 py-1 rounded bg-purple-600 hover:bg-purple-700"
               >
-                + Add Color
+                Add Color
               </button>
             </div>
 
@@ -301,48 +313,45 @@ const Modal = ({
                 onClick={() => addFeature({ key: "", value: "" })}
                 className="mt-2 px-3 py-1 rounded bg-purple-600 hover:bg-purple-700"
               >
-                + Add Feature
+                Add Feature
               </button>
             </div>
           </div>
-
           {/* Pricing & Stock */}
-          <div className="col-span-12 bg-[#212328] p-6 rounded-2xl space-y-4">
-            <h3 className="text-lg font-semibold">Pricing and Stock</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm">Actual Price</label>
-                <input
-                  type="number"
-                  {...register("product.costPrice")}
-                  className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
-                />
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-4">
+              <h3 className="text-lg font-semibold">Pricing and Stock</h3>
+              <div className="">
+                <div className="w-fit mb-1">
+                  <label className="text-sm">Actual Price</label>
+                  <input
+                    min={0}
+                    type="number"
+                    {...register("product.costPrice")}
+                    className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
+                  />
+                </div>
+                <div className="w-fit">
+                  <label className="text-sm">Selling Price</label>
+                  <input
+                    min={0}
+                    type="number"
+                    {...register("product.sellingPrice")}
+                    className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
+                  />
+                </div>
               </div>
+            </div>
+            <div className="col-span-5  bg-[#212328] p-6 rounded-2xl space-y-4">
               <div>
-                <label className="text-sm">Selling Price</label>
+                <label className="text-sm ">Category</label>
                 <input
-                  type="number"
-                  {...register("product.sellingPrice")}
-                  className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
+                  type="text"
+                  className="w-full rounded-lg mt-1 px-3 py-2 bg-[#2b2d31] border border-gray-600"
                 />
-              </div>
-              <div>
-                <label className="text-sm">Category</label>
-                <select
-                  {...register("product.categoryId")}
-                  className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
-                >
-                  <option value="">Select category</option>
-                  {categories.map((cat, i) => (
-                    <option key={i} value={i + 1} className="bg-[#1a1c20]">
-                      {cat}
-                    </option>
-                  ))}
-                </select>
               </div>
             </div>
           </div>
-
           {/* Actions */}
           <div className="col-span-12 mt-4 flex justify-end gap-3">
             <button

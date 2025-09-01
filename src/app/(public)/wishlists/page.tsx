@@ -11,59 +11,6 @@ import {
 } from "@/redux/AddtoWishlist/WishlistSlice";
 import { RootState } from "@/redux/store";
 
-const products = [
-  {
-    id: 1,
-    name: "Light Brown Sweater",
-    color: "Light Brown",
-    size: "XXL",
-    price: 64.0,
-    dateAdded: "18 February 2024",
-    status: "Instock",
-    image: "/freemen.png",
-  },
-  {
-    id: 2,
-    name: "Modern Brown Dress",
-    color: "Brown",
-    size: "S",
-    price: 90.0,
-    dateAdded: "17 February 2024",
-    status: "Instock",
-    image: "/freemen.png",
-  },
-  {
-    id: 3,
-    name: "Brown Winter Coat",
-    color: "Brown",
-    size: "M",
-    price: 60.0,
-    dateAdded: "11 February 2024",
-    status: "Instock",
-    image: "/freemen.png",
-  },
-  {
-    id: 4,
-    name: "Classic White Shirt",
-    color: "White",
-    size: "S",
-    price: 45.0,
-    dateAdded: "05 February 2024",
-    status: "Instock",
-    image: "/free.png",
-  },
-  {
-    id: 5,
-    name: "Trendy Brown Coat",
-    color: "Brown",
-    size: "XXL",
-    price: 75.0,
-    dateAdded: "05 February 2024",
-    status: "Instock",
-    image: "/freemen.png",
-  },
-];
-
 export default function Page() {
   const dispatch = useDispatch();
 

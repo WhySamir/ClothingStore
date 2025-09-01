@@ -59,7 +59,7 @@ export const productSchema = z.object({
   imagesMeta: z
     .array(
       z.object({
-        color: z.string().min(1, "Image color reference is required"),
+        image: z.string().min(1, "Image color reference is required"),
       })
     )
     .optional(),
