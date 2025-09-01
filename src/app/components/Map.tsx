@@ -1,13 +1,7 @@
 "use client";
 import { Icon, LatLngLiteral } from "leaflet";
 import { useEffect, useState } from "react";
-import {
-  MapContainer,
-  Marker,
-  TileLayer,
-  useMap,
-  ZoomControl,
-} from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 
 type MapType = "roadmap" | "satellite" | "hybrid" | "terrain";
 

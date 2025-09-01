@@ -4,16 +4,14 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductFormData, productSchema } from "@/app/lib/validation";
 import SizesStock from "./SizesStock";
-import { ImagePlus, Plus } from "lucide-react";
-
-const sizeOptions = ["XS", "S", "M", "L", "XL", "XXL"];
+import { ImagePlus } from "lucide-react";
 
 const Modal = ({
   setIsAddDialogOpen,
   handleAddProduct,
 }: {
   setIsAddDialogOpen: (open: boolean) => void;
-  handleAddProduct: SubmitHandler<any>;
+  handleAddProduct: SubmitHandler<ProductFormData>;
 }) => {
   const {
     control,
@@ -60,7 +58,9 @@ const Modal = ({
   const onSubmit = (data: ProductFormData) => {
     const payload = {
       ...data,
-      imagesMeta: (data.colors ?? []).map((c) => ({ color: c.color })),
+      imagesMeta: (data.imagesMeta ?? []).map((img) => ({
+        image: img.image,
+      })),
     };
     handleAddProduct(payload);
   };

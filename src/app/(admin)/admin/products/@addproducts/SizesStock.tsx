@@ -1,10 +1,11 @@
+import { ProductFormData } from "@/app/lib/validation";
 import { useState } from "react";
 import { UseFormRegister } from "react-hook-form";
 
 const sizeOptions = ["XS", "S", "M", "L", "XL", "XXL"];
 
 interface SizesStockProps {
-  register: UseFormRegister<any>;
+  register: UseFormRegister<ProductFormData>;
 }
 
 export default function SizesStock({ register }: SizesStockProps) {

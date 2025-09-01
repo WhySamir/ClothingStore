@@ -14,7 +14,6 @@ export default function ProductLayout({
   imagegallery,
   productdetails,
   descriptionandreview,
-  params,
 }: ProductLayoutProps) {
   return (
     <>

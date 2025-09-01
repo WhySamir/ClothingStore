@@ -12,7 +12,6 @@ import {
 import {
   NameType,
   ValueType,
-  Payload,
 } from "recharts/types/component/DefaultTooltipContent";
 
 const revenueData = [

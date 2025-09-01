@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { ItemsAddDel } from "../../../components/buttons/ItemsAddDel";
@@ -65,7 +65,7 @@ export default function ShoppingCart() {
   }, [dispatch]);
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const [products, setProducts] = useState<CartItem[]>(cartItems);
+  // const [products, setProducts] = useState<CartItem[]>(cartItems);
 
   const handleRemoveProduct = async (cartId: string) => {
     await fetch("/api/cart", {
@@ -92,16 +92,6 @@ export default function ShoppingCart() {
       console.error(err);
     }
   };
-  const subtotal = products.reduce(
-    (sum, product) =>
-      sum + Number(product.product.sellingPrice) * product.itemQty,
-    0
-  );
-
-  const shipping = 0;
-  const taxes = 0;
-  const couponDiscount = 100;
-  const total = subtotal + shipping + taxes - couponDiscount;
 
   return (
     <>
