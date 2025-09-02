@@ -26,17 +26,19 @@ const Modal = ({
       product: {
         name: "",
         description: "",
+        brand: "",
+        material: "",
+        mainImgUrl: "",
+        originCountry: "",
         sellingPrice: 0,
         costPrice: 0,
         stockQty: 0,
         categoryId: "",
-        brand: "",
-        material: "",
-        originCountry: "",
       },
       sizes: [{ size: "", stockQty: 0 }],
       colors: [{ color: "", hexCode: "" }],
       features: [{ key: "", value: "" }],
+      imagesMeta: [{ image: "", alt: "" }],
     },
   });
 
@@ -58,16 +60,57 @@ const Modal = ({
     name: "features",
   });
 
-  const onSubmit = (data: ProductFormData) => {
-    const payload = {
-      ...data,
-      imagesMeta: (data.imagesMeta ?? []).map((img) => ({
-        image: img.image,
-      })),
-    };
-    handleAddProduct(payload);
-  };
+  // const onSubmit = async (data: ProductFormData) => {
+  //   const formData = new FormData();
 
+  //   // Append simple product fields
+  //   Object.entries(data.product).forEach(([key, value]) => {
+  //     formData.append(key, String(value ?? ""));
+  //   });
+
+  //   // Append colors
+  //   if (data.colors) {
+  //     data.colors.forEach((c, i) => {
+  //       formData.append(`colors[${i}][color]`, c.color);
+  //       formData.append(`colors[${i}][hexCode]`, c.hexCode);
+  //     });
+  //   }
+
+  //   // Append features
+  //   if (data.features) {
+  //     data.features.forEach((f, i) => {
+  //       formData.append(`features[${i}][key]`, f.key);
+  //       formData.append(`features[${i}][value]`, f.value);
+  //     });
+  //   }
+
+  //   // Append images (this is key)
+  //   (data?.imagesMeta ?? []).forEach((img, i) => {
+  //     if (img.image) {
+  //       formData.append(`imagesMeta[${i}]`, img.image);
+  //     }
+  //   });
+
+  //   try {
+  //     const res = await fetch("/api/private/admin/products", {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     if (!res.ok) throw new Error("Failed to save product");
+
+  //     const json = await res.json();
+  //     console.log("Saved:", json);
+  //     alert("Product saved!");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Error saving product");
+  //   }
+  // };
+
+  const onSubmit = async (data: ProductFormData) => {
+    console.log("Submitting form data:", data); // <--- check this
+  };
   async function addDummyProduct() {
     async function fetchImage(url: string, filename: string) {
       const res = await fetch(url);
@@ -223,6 +266,7 @@ const Modal = ({
                   </>
                 )}
                 <input
+                  {...register("product.mainImgUrl")}
                   type="file"
                   accept="image/*"
                   className="hidden"
@@ -247,7 +291,7 @@ const Modal = ({
                         if (e.target.files?.[0]) {
                           const file = e.target.files[0];
                           setExtraFiles((prev) => [...prev, file]);
-                          addImg({ image: file.name });
+                          addImg({ image: file.name, alt: "" });
                         }
                       }}
                     />
@@ -419,10 +463,11 @@ const Modal = ({
               Cancel
             </button>
             <button
-              onClick={() => {
-                addDummyProduct();
-              }}
-              type="button"
+              // onClick={() => {
+              //   addDummyProduct();
+              // }}
+
+              type="submit"
               className="px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700"
             >
               Add Product

@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./auth-context";
 import Script from "next/script";
@@ -21,6 +21,12 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+const playfair = Playfair_Display({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-playfair",
+});
+
 export default async function RootLayout({
   children,
   modal,
@@ -31,7 +37,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable}  ${poppins.variable} antialiased`}
       >
         <Script
           src="https://accounts.google.com/gsi/client"

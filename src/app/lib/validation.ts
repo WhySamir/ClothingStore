@@ -18,6 +18,7 @@ export const productSchema = z.object({
   product: z.object({
     name: z.string().min(1, "Product name is required"),
     description: z.string().min(1, "Description is required"),
+    mainImgUrl: z.string().min(1, "Hero Image is required"),
     sellingPrice:z.number().nonnegative("Price must not be non-negative"),   
     costPrice:z.number().nonnegative("Price must not be non-negative"),  
     stockQty: z.number().int().nonnegative("Stock must be >= 0"),
@@ -60,6 +61,7 @@ export const productSchema = z.object({
     .array(
       z.object({
         image: z.string().min(1, "Image color reference is required"),
+        alt: z.string().min(1, "Image alt color reference is required"),
       })
     )
     .optional(),
