@@ -1,51 +1,43 @@
-"use client";
-
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductFormData, productSchema } from "@/app/lib/validation";
-import SizesStock from "./SizesStock";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus } from "lucide-react";
-import { useState } from "react";
 import Image from "next/image";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import SizesStock from "../admin/products/@addproducts/SizesStock";
 
-const Modal = ({
+export const AddModal = ({
   setIsAddDialogOpen,
-  handleAddProduct,
 }: {
   setIsAddDialogOpen: (open: boolean) => void;
-  handleAddProduct: SubmitHandler<ProductFormData>;
 }) => {
   const {
     control,
     register,
     handleSubmit,
+    setValue,
+    trigger,
+    setError,
     formState: { errors },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       product: {
         name: "",
-        description: "",
-        brand: "",
-        material: "",
-        mainImgUrl: "",
-        originCountry: "",
-        sellingPrice: 0,
-        costPrice: 0,
-        stockQty: 0,
-        categoryId: "",
       },
-      sizes: [{ size: "", stockQty: 0 }],
-      colors: [{ color: "", hexCode: "" }],
+      mainImage: undefined,
+      colors: [
+        { color: "", hexCode: "" },
+        { color: "", hexCode: "" },
+      ],
+      imagesMeta: [],
       features: [{ key: "", value: "" }],
-      imagesMeta: [{ image: "", alt: "" }],
     },
   });
 
-  const { fields: colorFields, append: addColor } = useFieldArray({
-    control,
-    name: "colors",
-  });
+  const [heroImage, setHeroImage] = useState<File | null>(null);
+  const [noImage, setNoImage] = useState<boolean>(false);
+
   type imgFields = { image: File };
   const {
     fields: imgFields,
@@ -55,129 +47,67 @@ const Modal = ({
     control,
     name: "imagesMeta",
   });
-  const { fields: featureFields, append: addFeature } = useFieldArray({
+  const {
+    fields: colorFields,
+    append: addColor,
+    // remove: removeColor,
+  } = useFieldArray({
+    control,
+    name: "colors",
+  });
+
+  const {
+    fields: featureFields,
+    append: addFeature,
+    // remove: removeFeature,
+  } = useFieldArray({
     control,
     name: "features",
   });
 
-  // const onSubmit = async (data: ProductFormData) => {
-  //   const formData = new FormData();
-
-  //   // Append simple product fields
-  //   Object.entries(data.product).forEach(([key, value]) => {
-  //     formData.append(key, String(value ?? ""));
-  //   });
-
-  //   // Append colors
-  //   if (data.colors) {
-  //     data.colors.forEach((c, i) => {
-  //       formData.append(`colors[${i}][color]`, c.color);
-  //       formData.append(`colors[${i}][hexCode]`, c.hexCode);
-  //     });
-  //   }
-
-  //   // Append features
-  //   if (data.features) {
-  //     data.features.forEach((f, i) => {
-  //       formData.append(`features[${i}][key]`, f.key);
-  //       formData.append(`features[${i}][value]`, f.value);
-  //     });
-  //   }
-
-  //   // Append images (this is key)
-  //   (data?.imagesMeta ?? []).forEach((img, i) => {
-  //     if (img.image) {
-  //       formData.append(`imagesMeta[${i}]`, img.image);
-  //     }
-  //   });
-
-  //   try {
-  //     const res = await fetch("/api/private/admin/products", {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     if (!res.ok) throw new Error("Failed to save product");
-
-  //     const json = await res.json();
-  //     console.log("Saved:", json);
-  //     alert("Product saved!");
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Error saving product");
-  //   }
-  // };
-
   const onSubmit = async (data: ProductFormData) => {
-    console.log("Submitting form data:", data); // <--- check this
-  };
-  async function addDummyProduct() {
-    async function fetchImage(url: string, filename: string) {
-      const res = await fetch(url);
-      const blob = await res.blob();
-      return new File([blob], filename, { type: blob.type });
+    const valid = await trigger();
+    if (!valid) return;
+    if (!heroImage) {
+      setNoImage(true);
+      return;
     }
-    const mainImageFile = await fetchImage("/review.webp", "review.webp");
+    setNoImage(false);
 
-    const additionalImages = [
-      await fetchImage("/review2.webp", "review2.webp"),
-    ];
-
-    const dummyData = {
-      product: {
-        name: "Vintage Denim Jacket",
-        description: "Classic oversized denim jacket with a relaxed fit...",
-        sellingPrice: 3200,
-        costPrice: 2000,
-        stockQty: 12,
-        categoryId: "2",
-        brand: "Levi's",
-        material: "100% Cotton Denim",
-        originCountry: "Italy",
-      },
-      sizes: [
-        { size: "S", stockQty: 5 },
-        { size: "M", stockQty: 7 },
-      ],
-      colors: [{ color: "Light Brown", hexCode: "#b7825f" }],
-      features: [
-        { key: "fit", value: "Oversized" },
-        { key: "closure", value: "Button Down" },
-        { key: "season", value: "All Season" },
-      ],
-      imagesMeta: [{ color: "Light Brown" }],
-      tags: [{ name: "Jacket" }],
-    };
-
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(dummyData));
-    formData.append("mainImage", mainImageFile);
-    additionalImages.forEach((file) => formData.append("images", file));
-
-    try {
-      const res = await fetch("/api/private/admin/products", {
-        method: "POST",
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IlJjZzJqenMxYTlxZmEvNDgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3pybWNsaW5oeGVuYndsZGFoeHBhLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiI1ZmE0ZWMwZC04ZmYxLTQ2NzMtOTQwNy02YzY3ODZlOTg4YWQiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzU2Njc1MDIwLCJpYXQiOjE3NTY2NzE0MjAsImVtYWlsIjoiY3NpdDIzMDgxMDI1X3NhbWlyQGFjaHNuZXBhbC5lZHUubnAiLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6Imdvb2dsZSIsInByb3ZpZGVycyI6WyJnb29nbGUiXX0sInVzZXJfbWV0YWRhdGEiOnsiYXZhdGFyX3VybCI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0oxVkY5OGE0Qm1rLWFPWUxCU0d1dlQwdE82eERxeU9Fd1YxUkdZVW1RVFZwRnR2Q2c9czk2LWMiLCJjdXN0b21fY2xhaW1zIjp7ImhkIjoiYWNoc25lcGFsLmVkdS5ucCJ9LCJlbWFpbCI6ImNzaXQyMzA4MTAyNV9zYW1pckBhY2hzbmVwYWwuZWR1Lm5wIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlNhbWlyIFNoYWt5YSIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJTYW1pciBTaGFreWEiLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NKMVZGOThhNEJtay1hT1lMQlNHdXZUMHRPNnhEcXlPRXdWMVJHWVVtUVRWcEZ0dkNnPXM5Ni1jIiwicHJvdmlkZXJfaWQiOiIxMTEwNTUzOTU1MjAwNzY5NDAxNDMiLCJyb2xlIjoiYWRtaW4iLCJzdWIiOiIxMTEwNTUzOTU1MjAwNzY5NDAxNDMifSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJvYXV0aCIsInRpbWVzdGFtcCI6MTc1NjY2Nzg4Nn1dLCJzZXNzaW9uX2lkIjoiYWI5MDY1MGMtNjg5NS00YWE5LTlkNGUtZWEzOTRkZDk4NjExIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.PbBW7_LAJzVPFkuxr2AdEGSgdU8xPYZmJz1IAQYHzR0",
-        },
-        body: formData,
+    if (data.colors.length !== data.imagesMeta.length) {
+      setError("colors", {
+        type: "manual",
+        message: `Number of colors (${data.colors.length}) must match number of images (${data.imagesMeta.length})`,
       });
-
-      const json = await res.json();
-      console.log("Response:", json);
-    } catch (err) {
-      console.error("Error adding product:", err);
+      return;
     }
-  }
+    const formData = new FormData();
 
-  const [heroImage, setHeroImage] = useState<File | null>(null);
-  const [extraFiles, setExtraFiles] = useState<File[]>([]);
+    const { imagesMeta, ...restData } = data;
+    formData.append("data", JSON.stringify(restData));
+
+    if (heroImage) formData.append("mainImage", heroImage);
+
+    imagesMeta.forEach((img, index) => {
+      if (img.file) {
+        formData.append(`images[${index}]`, img.file);
+      }
+    });
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+    setIsAddDialogOpen(false);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
       <div className="bg-[#1a1c20] w-full lg:max-w-4xl 2xl:max-w-5xl max-h-[90vh] p-8 text-gray-200 rounded-2xl overflow-y-auto">
         <form onSubmit={handleSubmit(onSubmit)} className="">
+          {errors.root && (
+            <div className="mb-4 p-3 bg-red-900/30 border border-red-700 rounded-lg">
+              <p className="text-red-400 text-sm">{errors.root.message}</p>
+            </div>
+          )}
           <div className="grid grid-cols-12 gap-6">
             {/* General Information */}
             <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-6">
@@ -190,7 +120,7 @@ const Modal = ({
                   placeholder="Enter product name"
                   className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
                 />
-                {errors.product?.costPrice && (
+                {errors.product?.name && (
                   <p className="text-red-500 text-xs">
                     {errors.product?.name?.message}
                   </p>
@@ -204,6 +134,11 @@ const Modal = ({
                   placeholder="Enter product description"
                   className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
                 />
+                {errors.product?.description && (
+                  <p className="text-red-500 text-xs">
+                    {errors.product?.description?.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-4">
@@ -214,6 +149,11 @@ const Modal = ({
                     placeholder="Brand name"
                     className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
                   />
+                  {errors.product?.brand && (
+                    <p className="text-red-500 text-xs">
+                      {errors.product?.brand?.message}
+                    </p>
+                  )}
                 </div>
                 <div className="flex-1">
                   <label className="text-sm">Material</label>
@@ -222,6 +162,11 @@ const Modal = ({
                     placeholder="Material"
                     className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
                   />
+                  {errors.product?.material && (
+                    <p className="text-red-500 text-xs">
+                      {errors.product?.material?.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -232,12 +177,22 @@ const Modal = ({
                   placeholder="e.g. Italy"
                   className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
                 />
+                {errors.product?.originCountry && (
+                  <p className="text-red-500 text-xs">
+                    {errors.product?.originCountry?.message}
+                  </p>
+                )}
               </div>
             </div>
+            {/* ________________________________- */}
 
-            {/* Upload Image */}
+            {/* upload image */}
             <div className="col-span-5 flex flex-col bg-[#212328] p-6 rounded-2xl space-y-4">
               <h3 className="text-lg font-semibold">Upload Image</h3>
+
+              {/* ________________________________- */}
+              {/* mainImage */}
+
               <label className="uploadHero aspect-square rounded-xl bg-[#2b2d31] flex flex-col items-center justify-center border-2 border-dashed border-gray-600">
                 {heroImage ? (
                   <div className="relative w-full h-full">
@@ -251,7 +206,7 @@ const Modal = ({
                       type="button"
                       onClick={() => setHeroImage(null)}
                       className="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 
-                     flex items-center justify-center rounded-full text-xs"
+                               flex items-center justify-center rounded-full text-xs"
                     >
                       ✕
                     </button>
@@ -260,50 +215,54 @@ const Modal = ({
                   <>
                     {" "}
                     <ImagePlus size={48} className="text-gray-400 mb-1" />
-                    <span className="text-xs text-gray-500">
-                      Upload Hero Image{" "}
+                    <span
+                      className={`text-xs ${
+                        noImage ? "text-red-500" : "text-gray-500"
+                      }`}
+                    >
+                      Upload Hero Image
                     </span>
                   </>
                 )}
                 <input
-                  {...register("product.mainImgUrl")}
                   type="file"
                   accept="image/*"
                   className="hidden"
                   onChange={(e) => {
-                    if (e.target.files?.[0]) setHeroImage(e.target.files[0]);
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setValue("mainImage", file, { shouldValidate: true });
+                      setHeroImage(file); // for preview
+                    }
                   }}
                 />
               </label>
+              {errors.mainImage && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.mainImage.message}
+                </p>
+              )}
+
               <div className="flex gap-3">
-                {/* Add button */}
                 {imgFields.length < 4 && (
-                  <label
-                    className="aspect-square cursor-pointer w-12 rounded-lg bg-[#2b2d31] 
-                 flex items-center justify-center border-2 border-dashed border-gray-600 text-gray-400"
-                  >
-                    +
+                  <label className="aspect-square cursor-pointer w-12 rounded-lg bg-[#2b2d31] flex items-center justify-center border-2 border-dashed border-gray-600 text-gray-400">
+                    <div className="text-gray-400 text-lg">+</div>
                     <input
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         if (e.target.files?.[0]) {
                           const file = e.target.files[0];
-                          setExtraFiles((prev) => [...prev, file]);
-                          addImg({ image: file.name, alt: "" });
+                          if (file) addImg({ file, color: "", alt: "" });
                         }
                       }}
                     />
                   </label>
                 )}
 
-                {/* Render image fields */}
                 {imgFields.map((field, idx) => {
-                  const fileObj = extraFiles.find(
-                    (f) => f.name === field.image
-                  );
-
+                  const fileObj = field.file;
                   return (
                     <div key={field.id} className="relative w-12 h-12">
                       {fileObj ? (
@@ -319,23 +278,54 @@ const Modal = ({
                       <button
                         type="button"
                         onClick={() => remove(idx)}
-                        className="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 
-                   flex items-center justify-center rounded-full text-xs"
+                        className="absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs"
                       >
                         ✕
                       </button>
+                      {errors.imagesMeta?.[idx]?.file && (
+                        <p className="text-red-500 text-xs">
+                          {errors.imagesMeta[idx]?.file?.message}
+                        </p>
+                      )}
                     </div>
                   );
                 })}
               </div>
+
+              {/* Images array level error */}
+              {errors.imagesMeta?.message && (
+                <p className="text-red-500 text-xs">
+                  {errors.imagesMeta.message}
+                </p>
+              )}
+
+              {/* Per-item errors */}
+              {errors.imagesMeta &&
+                Array.isArray(errors.imagesMeta) &&
+                errors.imagesMeta.map((imgError, index) => {
+                  if (imgError?.file?.message) {
+                    return (
+                      <p key={index} className="text-red-500 text-xs">
+                        {imgError.file.message}
+                      </p>
+                    );
+                  }
+                  return null;
+                })}
             </div>
           </div>
-          {/* Sizes */}
+          {/* ________________________________ */}
+          {/* sizes stocks and gender */}
           <div className="my-6 grid grid-cols-12 gap-6">
             <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-6">
               {/* <h3 className="text-lg font-semibold mb-4">Sizes & Stock</h3> */}
               <div className="col-span-7">
                 <SizesStock register={register} />
+                {errors.sizes && (
+                  <p className="text-red-500 text-xs">
+                    {errors.sizes?.message}
+                  </p>
+                )}
               </div>
             </div>
             <div className="col-span-5 flex flex-col bg-[#212328] p-6 rounded-2xl space-y-4">
@@ -360,55 +350,104 @@ const Modal = ({
                   />
                   Female
                 </label>
+                {errors.product?.categoryId && (
+                  <p className="text-red-500 text-xs">
+                    {errors.product?.categoryId?.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
-          {/* Colors */}
+          {/* ________________________________ */}
+          {/* feature and colors */}
           <div className="mb-6 grid grid-cols-12 gap-6">
+            {/* colors */}
             <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-6">
               <h3 className="text-lg font-semibold mb-4">Colors</h3>
 
-              {colorFields.map((field, idx) => (
-                <div key={field.id} className="flex gap-3 mb-2">
-                  <input
-                    {...register(`colors.${idx}.color`)}
-                    placeholder="Color name"
-                    className="flex-1 rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
-                  />
-                  <input
-                    type="color"
-                    {...register(`colors.${idx}.hexCode`)}
-                    className="w-16 h-10 rounded-lg"
-                  />
-                </div>
-              ))}
+              {colorFields.map((field, idx) => {
+                const colorError = errors.colors?.[idx]?.color;
+                const hexError = errors.colors?.[idx]?.hexCode;
+
+                return (
+                  <div key={field.id} className="flex flex-col gap-1 mb-2">
+                    <div className="flex gap-3">
+                      <input
+                        {...register(`colors.${idx}.color` as const)}
+                        placeholder="Color name"
+                        className="flex-1 rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
+                      />
+                      <input
+                        type="text"
+                        {...register(`colors.${idx}.hexCode` as const)}
+                        className="w-16 h-10 rounded-lg px-3 py-2 border border-gray-600"
+                      />
+                    </div>
+                    {colorError && (
+                      <p className="text-red-500 text-xs">
+                        {colorError.message}
+                      </p>
+                    )}
+                    {errors.colors?.message && (
+                      <p className="text-red-500 text-xs">
+                        {errors.colors.message}
+                      </p>
+                    )}
+                    {hexError && (
+                      <p className="text-red-500 text-xs">{hexError.message}</p>
+                    )}
+                  </div>
+                );
+              })}
               <button
                 type="button"
-                onClick={() => addColor({ color: "", hexCode: "" })}
-                className="mt-2 px-3 py-1 rounded bg-purple-600 hover:bg-purple-700"
+                onClick={() => {
+                  if (colorFields.length < 4) {
+                    addColor({ color: "", hexCode: "" });
+                  }
+                }}
+                disabled={colorFields.length >= 4}
+                className="mt-2 px-3 py-1 rounded bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
               >
-                Add Color
+                {colorFields.length >= 4 ? "Maximum 4 colors" : "Add Color"}
               </button>
+
+              {/* Colors array level error */}
+              {errors.colors?.message && (
+                <p className="text-red-500 text-xs">{errors.colors.message}</p>
+              )}
             </div>
 
-            {/* Features */}
-            <div className="col-span-5  bg-[#212328] p-6 rounded-2xl space-y-4">
+            {/*  Features */}
+            <div className="col-span-5 bg-[#212328] p-6 rounded-2xl space-y-4">
               <h3 className="text-lg font-semibold mb-4">Features</h3>
 
               {featureFields.map((field, idx) => (
-                <div key={field.id} className="flex flex-col gap-3 mb-2">
+                <div key={field.id} className="flex flex-col gap-1 mb-2">
                   <input
-                    {...register(`features.${idx}.key`)}
+                    {...register(`features.${idx}.key` as const)}
                     placeholder="Key (e.g. Fit)"
                     className="flex-1 rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
                   />
+                  {errors.features?.[idx]?.key && (
+                    <p className="text-red-500 text-xs">
+                      {errors.features[idx]?.key?.message}
+                    </p>
+                  )}
+
                   <input
-                    {...register(`features.${idx}.value`)}
+                    {...register(`features.${idx}.value` as const)}
                     placeholder="Value (e.g. Oversized)"
                     className="flex-1 rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
                   />
+                  {errors.features?.[idx]?.value && (
+                    <p className="text-red-500 text-xs">
+                      {errors.features[idx]?.value?.message}
+                    </p>
+                  )}
                 </div>
               ))}
+
               <button
                 type="button"
                 onClick={() => addFeature({ key: "", value: "" })}
@@ -418,7 +457,9 @@ const Modal = ({
               </button>
             </div>
           </div>
-          {/* Pricing & Stock */}
+
+          {/* ________________________________ */}
+          {/* price and tags */}
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-4">
               <h3 className="text-lg font-semibold">Pricing and Stock</h3>
@@ -428,28 +469,47 @@ const Modal = ({
                   <input
                     min={0}
                     type="number"
-                    {...register("product.costPrice")}
+                    {...register("product.costPrice", { valueAsNumber: true })}
                     className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
                   />
+                  {errors.product?.costPrice && (
+                    <p className="text-red-500 text-xs">
+                      {errors.product.costPrice.message}
+                    </p>
+                  )}
                 </div>
                 <div className="w-fit">
                   <label className="text-sm">Selling Price</label>
                   <input
                     min={0}
                     type="number"
-                    {...register("product.sellingPrice")}
+                    {...register("product.sellingPrice", {
+                      valueAsNumber: true,
+                    })}
                     className="w-full rounded-lg px-3 py-2 bg-[#2b2d31] border border-gray-600"
                   />
+                  {errors.product?.sellingPrice && (
+                    <p className="text-red-500 text-xs">
+                      {errors.product.sellingPrice.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
+            {/* tags */}
             <div className="col-span-5  bg-[#212328] p-6 rounded-2xl space-y-4">
               <div>
-                <label className="text-sm ">Category</label>
+                <label className="text-sm ">Tags</label>
                 <input
+                  {...register("tags.0.name")}
                   type="text"
                   className="w-full rounded-lg mt-1 px-3 py-2 bg-[#2b2d31] border border-gray-600"
                 />
+                {errors.tags?.[0]?.name && (
+                  <p className="text-xs text-red-500">
+                    {errors.tags[0]?.name?.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -463,10 +523,6 @@ const Modal = ({
               Cancel
             </button>
             <button
-              // onClick={() => {
-              //   addDummyProduct();
-              // }}
-
               type="submit"
               className="px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700"
             >
@@ -478,5 +534,3 @@ const Modal = ({
     </div>
   );
 };
-
-export default Modal;

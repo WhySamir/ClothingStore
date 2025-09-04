@@ -1,19 +1,11 @@
 "use client";
 
-import { ProductFormData } from "@/app/lib/validation";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import Modal from "./modal";
+import { AddModal } from "@/app/(admin)/admin_components/AddModal";
 
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleAddProduct = (data: ProductFormData) => {
-    console.log("✅ New Product:", data);
-    // TODO: call your API or mutation here
-    setIsModalOpen(false); // close modal after submit
-  };
-
   return (
     <div className="flex justify-between items-center">
       <div className="flex flex-col mb-4 ">
@@ -31,12 +23,7 @@ const Page = () => {
         <Plus className="h-4 w-4 mr-2" />
         Add Product
       </button>
-      {isModalOpen && (
-        <Modal
-          setIsAddDialogOpen={setIsModalOpen}
-          handleAddProduct={handleAddProduct}
-        />
-      )}
+      {isModalOpen && <AddModal setIsAddDialogOpen={setIsModalOpen} />}
     </div>
   );
 };
