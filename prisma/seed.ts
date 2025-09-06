@@ -11,11 +11,9 @@ const customers: Prisma.CustomerCreateInput[] = [
     }
   ]
   const categories:Prisma.CategoryCreateInput[] = [{
-    id:1,
     name:"male",
     description:"Men's clothing"
   },{
-    id:2,
     name:"female",
     description:"Women's clothing"
   }]

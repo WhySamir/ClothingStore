@@ -6,7 +6,7 @@ export async function GET() {
    try {
      const men = await prisma.product.findMany({
          where:{
-             categoryId:"2"
+             categoryId:2
          }
      })
      return ApiResponds(200, "Female products fetched successfully", men)
