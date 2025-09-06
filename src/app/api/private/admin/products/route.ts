@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
       const meta = imagesMeta[i] || { color: null };
       const buffer = Buffer.from(await file.arrayBuffer());
 
-      let colorName = meta.color || undefined;
+      const colorName = meta.color || undefined;
       const url = await uploadColorProductImage(buffer, productId, colorName);
 
       let colorId: string | null = null;
