@@ -11,7 +11,8 @@ export const contactSchema = z.object({
 export type ContactFormData = z.infer<typeof contactSchema>;
 
 
-const allowedCategoryIds = ["1", "2"];
+const allowedCategoryIds = ["1","2"];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 
 export const productSchema = z.object({
@@ -24,9 +25,11 @@ export const productSchema = z.object({
     sellingPrice: z.number().min(10, "Selling price must be greater or equals to 10"),
     costPrice: z.number().min(5,"Cost price must be greater or equals to than 5"),
     // stockQty: z.number().int().positive("Stock must be >= 0"),
-    categoryId: z.string().refine((val) => allowedCategoryIds.includes(val), {
-      message: "One gender please",
-    }),
+      categoryId: z
+      .string()
+      .refine((val) => allowedCategoryIds.includes(val), {
+        message: "One gender please",
+      }),
     brand: z.string().min(3, "Brand name of atleast 3 characters is required"),
     material: z.string().min(3, "Material of atleast 3 characters is required"),
     originCountry: z.string().min(3, "Origin country o alteast 3 characters is required"),
@@ -34,7 +37,7 @@ export const productSchema = z.object({
 
  mainImage: z
     .instanceof(File, { message: "Main image is required" })
-    .refine((f) => f.size > 0, "Main image cannot be empty"),
+    .refine((f) => f.size > 0, "Main image cannot be empty").refine((f) => f.size <= MAX_FILE_SIZE, "Main image must be less than 10MB"),
 
   sizes: z
   .array(
@@ -99,30 +102,33 @@ colors: z.array(
       alt: z.string().nullable().optional(),
       file: z
         .instanceof(File)
-        .refine((f) => f.size > 0, "Image file is required"),
+        .refine((f) => f.size > 0, "Image file is required").refine((f) => f.size <= MAX_FILE_SIZE, "Image must be less than 10MB"),
     })
   ).min(2, "At least 2 images are required").max(4, "Maximum 4 images allowed"),
 }).superRefine((obj, ctx) => {
   if (obj.colors.length !== obj.imagesMeta.length) {
-    // Add error to both arrays
-    ctx.addIssue({
-      path: ["colors"],
-      code: z.ZodIssueCode.custom,
-      message: `Number of colors (${obj.colors.length}) must match number of images (${obj.imagesMeta.length})`,
-    });
-    ctx.addIssue({
-      path: ["imagesMeta"],
-      code: z.ZodIssueCode.custom,
-      message: `Number of images (${obj.imagesMeta.length}) must match number of colors (${obj.colors.length})`,
-    });
-    // Also add error to root level for general display
+    const msg = `Number of colors (${obj.colors.length}) must match number of images (${obj.imagesMeta.length})`;
+
     ctx.addIssue({
       path: [],
       code: z.ZodIssueCode.custom,
-      message: `Number of colors and images must match`,
+      message: msg,
+    });
+
+    ctx.addIssue({
+      path: ["colors"],
+      code: z.ZodIssueCode.custom,
+      message: msg,
+    });
+
+    ctx.addIssue({
+      path: ["imagesMeta"],
+      code: z.ZodIssueCode.custom,
+      message: msg,
     });
   }
 });
+
 
 
 

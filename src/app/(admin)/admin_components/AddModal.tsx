@@ -5,7 +5,26 @@ import Image from "next/image";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import SizesStock from "../admin/products/@addproducts/SizesStock";
+import imageCompression from "browser-image-compression";
 
+const compressImage = async (
+  file: File,
+  maxSizeMB = 2,
+  maxWidthOrHeight = 2000
+) => {
+  const options = {
+    maxSizeMB, // target max file size in MB
+    maxWidthOrHeight, // resize if larger
+    useWebWorker: true,
+  };
+  try {
+    const compressedFile = await imageCompression(file, options);
+    return compressedFile;
+  } catch (err) {
+    console.error("Image compression failed:", err);
+    return file; // fallback to original
+  }
+};
 export const AddModal = ({
   setIsAddDialogOpen,
 }: {
@@ -82,32 +101,79 @@ export const AddModal = ({
       return;
     }
     const formData = new FormData();
+    const payload = {
+      ...data,
+      product: {
+        ...data.product,
+        categoryId: Number(data.product.categoryId), // number for API
+      },
+      imagesMeta: data.imagesMeta.map((img) => ({
+        color: img.color,
+        alt: img.alt,
+      })),
+    };
 
-    const { imagesMeta, ...restData } = data;
-    formData.append("data", JSON.stringify(restData));
+    formData.append("data", JSON.stringify(payload));
 
-    if (heroImage) formData.append("mainImage", heroImage);
+    setIsAddDialogOpen(false);
 
-    imagesMeta.forEach((img, index) => {
-      if (img.file) {
-        formData.append(`images[${index}]`, img.file);
+    const compressedHero = await compressImage(heroImage, 2); // compress to max 2MB
+    formData.append("mainImage", compressedHero);
+
+    for (let i = 0; i < data.imagesMeta.length; i++) {
+      const imgMeta = data.imagesMeta[i];
+      if (imgMeta.file) {
+        const compressedFile = await compressImage(imgMeta.file, 2);
+        formData.append("images", compressedFile);
       }
-    });
+    }
+
     for (let [key, value] of formData.entries()) {
       console.log(key, value);
     }
-    setIsAddDialogOpen(false);
+
+    try {
+      const res = await fetch("/api/private/admin/products", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text);
+      }
+
+      const json = await res.json();
+      console.log("Saved:", json);
+      alert("Product saved!");
+    } catch (err) {
+      console.error(err);
+      alert("Error saving product");
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
       <div className="bg-[#1a1c20] w-full lg:max-w-4xl 2xl:max-w-5xl max-h-[90vh] p-8 text-gray-200 rounded-2xl overflow-y-auto">
         <form onSubmit={handleSubmit(onSubmit)} className="">
+          aa
           {errors.root && (
             <div className="mb-4 p-3 bg-red-900/30 border border-red-700 rounded-lg">
-              <p className="text-red-400 text-sm">{errors.root.message}</p>
+              {/* If only one error */}
+              {errors.root.message && (
+                <p className="text-red-400 text-sm">{errors.root.message}</p>
+              )}
+
+              {/* If you want to support multiple */}
+              {Array.isArray(errors.root?.message) &&
+                errors.root.message.map((msg, idx) => (
+                  <p key={idx} className="text-red-400 text-sm">
+                    {msg}
+                  </p>
+                ))}
             </div>
           )}
+          <pre>{JSON.stringify(errors, null, 2)}</pre>
           <div className="grid grid-cols-12 gap-6">
             {/* General Information */}
             <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-6">
@@ -251,7 +317,7 @@ export const AddModal = ({
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={(e: any) => {
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         if (e.target.files?.[0]) {
                           const file = e.target.files[0];
                           if (file) addImg({ file, color: "", alt: "" });
@@ -283,7 +349,7 @@ export const AddModal = ({
                         ✕
                       </button>
                       {errors.imagesMeta?.[idx]?.file && (
-                        <p className="text-red-500 text-xs">
+                        <p className="flex flex-col mb-2 text-red-500 text-xs">
                           {errors.imagesMeta[idx]?.file?.message}
                         </p>
                       )}
@@ -320,7 +386,7 @@ export const AddModal = ({
             <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-6">
               {/* <h3 className="text-lg font-semibold mb-4">Sizes & Stock</h3> */}
               <div className="col-span-7">
-                <SizesStock register={register} />
+                <SizesStock control={control} register={register} />
                 {errors.sizes && (
                   <p className="text-red-500 text-xs">
                     {errors.sizes?.message}
@@ -334,7 +400,7 @@ export const AddModal = ({
                 <label className="flex items-center gap-2">
                   <input
                     type="radio"
-                    value={1}
+                    value={"1"}
                     {...register("product.categoryId")}
                     className="accent-[#212328]"
                   />
@@ -344,7 +410,7 @@ export const AddModal = ({
                 <label className="flex items-center gap-2">
                   <input
                     type="radio"
-                    value={2}
+                    value={"2"}
                     {...register("product.categoryId")}
                     className="accent-[#212328]"
                   />
@@ -457,7 +523,6 @@ export const AddModal = ({
               </button>
             </div>
           </div>
-
           {/* ________________________________ */}
           {/* price and tags */}
           <div className="grid grid-cols-12 gap-6">

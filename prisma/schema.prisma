@@ -15,7 +15,7 @@ model Product {
   sellingPrice  Decimal
   stockQty      Int
   discount      Decimal?
-  categoryId    String
+  categoryId    Int
   brand         String
   material      String
   originCountry String
@@ -98,7 +98,7 @@ model Review {
 }
 
 model Category {
-  id          String         @id @default(cuid())
+  id          Int            @id @default(autoincrement())
   name        GenderCategory
   description String
   products    Product[]
