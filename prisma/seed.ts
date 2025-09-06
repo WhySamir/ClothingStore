@@ -11,11 +11,11 @@ const customers: Prisma.CustomerCreateInput[] = [
     }
   ]
   const categories:Prisma.CategoryCreateInput[] = [{
-    id:"1",
+    id:1,
     name:"male",
     description:"Men's clothing"
   },{
-    id:"2",
+    id:2,
     name:"female",
     description:"Women's clothing"
   }]
@@ -29,8 +29,8 @@ const customers: Prisma.CustomerCreateInput[] = [
       stockQty: 100,
       category: {
         connectOrCreate: {where:{
-            id:"1"
-        },create: {id:"2",name:"female",description:"Women's clothing"} } 
+            id:1
+        },create: {id:2,name:"female",description:"Women's clothing"} } 
       },
       brand: "Brand A",
       material: "Cotton",
