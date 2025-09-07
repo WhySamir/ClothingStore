@@ -17,7 +17,6 @@ interface SelectedSize {
 export default function SizesStock({ register, control }: SizesStockProps) {
   const [selectedSizes, setSelectedSizes] = useState<SelectedSize[]>([]);
 
-  // Optional: Watch current form sizes to prefill on edit
   const watchedSizes = useWatch({
     control,
     name: "sizes",
@@ -43,9 +42,21 @@ export default function SizesStock({ register, control }: SizesStockProps) {
     });
   };
 
-  const handleQtyChange = (size: string, value: number) => {
+  const handleQtyChange = (size: string, value: number | string) => {
+    // If empty, allow it (user deleting)
+    if (value === "") {
+      setSelectedSizes((prev) =>
+        prev.map((s) => (s.size === size ? { ...s, stockQty: 0 } : s))
+      );
+      return;
+    }
+
+    // Convert to number and strip leading zeros
+    const sanitized = String(value).replace(/^0+(?=\d)/, "");
+    const parsed = Number(sanitized);
+
     setSelectedSizes((prev) =>
-      prev.map((s) => (s.size === size ? { ...s, stockQty: value } : s))
+      prev.map((s) => (s.size === size ? { ...s, stockQty: parsed } : s))
     );
   };
 
@@ -84,7 +95,9 @@ export default function SizesStock({ register, control }: SizesStockProps) {
                       `sizes.${selectedSizes.indexOf(selectedObj)}.stockQty`,
                       { valueAsNumber: true }
                     )}
-                    value={selectedObj.stockQty}
+                    value={
+                      selectedObj.stockQty === 0 ? "" : selectedObj.stockQty
+                    } // show empty if 0
                     onChange={(e) =>
                       handleQtyChange(size, Number(e.target.value))
                     }

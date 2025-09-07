@@ -156,7 +156,6 @@ export const AddModal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
       <div className="bg-[#1a1c20] w-full lg:max-w-4xl 2xl:max-w-5xl max-h-[90vh] p-8 text-gray-200 rounded-2xl overflow-y-auto">
         <form onSubmit={handleSubmit(onSubmit)} className="">
-          aa
           {errors.root && (
             <div className="mb-4 p-3 bg-red-900/30 border border-red-700 rounded-lg">
               {/* If only one error */}
