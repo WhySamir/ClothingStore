@@ -13,8 +13,8 @@ const compressImage = async (
   maxWidthOrHeight = 2000
 ) => {
   const options = {
-    maxSizeMB, // target max file size in MB
-    maxWidthOrHeight, // resize if larger
+    maxSizeMB,
+    maxWidthOrHeight,
     useWebWorker: true,
   };
   try {
@@ -172,7 +172,9 @@ export const AddModal = ({
                 ))}
             </div>
           )}
-          <pre>{JSON.stringify(errors, null, 2)}</pre>
+          <pre>
+            {JSON.stringify(errors, Object.getOwnPropertyNames(errors), 2)}
+          </pre>
           <div className="grid grid-cols-12 gap-6">
             {/* General Information */}
             <div className="col-span-7 bg-[#212328] p-6 rounded-2xl space-y-6">

@@ -6,8 +6,15 @@ function Page() {
   return (
     <>
       <StatCard
-        title="Total Revenue"
-        value="$3200"
+        title="Budget"
+        value="$24k"
+        details="+20.1% from last month"
+        detailsClassName="text-green-600"
+        icon={<DollarSign className="w-5 h-5" />}
+      />
+      <StatCard
+        title="Total Customers"
+        value="$32k"
         details="+20.1% from last month"
         detailsClassName="text-green-600"
         icon={<DollarSign className="w-5 h-5" />}
@@ -20,14 +27,7 @@ function Page() {
         icon={<DollarSign className="w-5 h-5" />}
       />
       <StatCard
-        title="Total Revenue"
-        value="$3200"
-        details="+20.1% from last month"
-        detailsClassName="text-green-600"
-        icon={<DollarSign className="w-5 h-5" />}
-      />
-      <StatCard
-        title="Total Revenue"
+        title="Total Profit"
         value="$3200"
         details="+20.1% from last month"
         detailsClassName="text-green-600"

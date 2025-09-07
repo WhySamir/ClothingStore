@@ -5,10 +5,12 @@ import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
 
 export async function GET() {
   try {
-    const products = await getOrSetCache(
-  `product:all`, 
-  21600, // 6 hr
-  () => prisma.product.findMany({
+    const products = 
+    // await getOrSetCache(
+  // `product:all`, 
+  // 21600, // 6 hr
+  // () =>
+    await prisma.product.findMany({
       select: {
         id: true,
         name: true,
@@ -16,11 +18,13 @@ export async function GET() {
         sellingPrice: true,
         brand: true,
         mainImgUrl: true,
+        stockQty:true,
         category: {
           select: { name: true }
         },
       },
-    }));
+    })
+  // );
     return ApiResponds(200, "Products got successfully", products);
   } catch (error) {
     return ApiError(500, error);

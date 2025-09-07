@@ -1,7 +1,7 @@
 import { prisma } from "@/app/lib/prisma";
 import { ApiError } from "@/utlis/ApiResponders/ApiError";
 import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { uploadMainProductImage, uploadColorProductImage } from "@/utlis/uploadProductImgonCloudinary";
 import { Prisma, type ProductColor } from "@prisma/client";
 
@@ -110,5 +110,31 @@ export async function POST(request: NextRequest) {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
+  }
+}
+export async function DELETE(req: NextRequest) {
+  try {
+    const { ids } = await req.json();
+
+    if (!ids || !Array.isArray(ids)) {
+      return NextResponse.json(
+        { success: false, message: "ids must be an array" },
+        { status: 400 }
+      );
+    }
+
+    await prisma.product.deleteMany({
+      where: { id: { in: ids } },
+    });
+
+    return NextResponse.json(
+      { success: true, message: "Products deleted", deletedIds: ids },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: 500 }
+    );
   }
 }
