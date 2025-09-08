@@ -131,9 +131,9 @@ export async function DELETE(req: NextRequest) {
       { success: true, message: "Products deleted", deletedIds: ids },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { success: false, message: error.message },
+      { success: false, message: error },
       { status: 500 }
     );
   }
