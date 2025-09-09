@@ -12,12 +12,32 @@ export async function GET(
   try {
     const product = await prisma.product.findUnique({
       where: { id },
-      include: {
-        category: true,
-        images: true,
-        sizes: true,
-        colors: true,
-      },
+      select:{
+          id:true,
+          name:true,
+          categoryId:true,
+          sellingPrice:true,
+          discount:true,
+          mainImgUrl:true,
+          colors:{
+            select:{
+              color:true,
+              hexCode:true,
+              stockQty:true
+            }
+          },
+          sizes:{
+            select:{
+              size:true,
+              stockQty:true
+            }
+          },
+          reviews:true,tags:{
+            select:{
+              name:true
+            }
+          }
+         }
     });
 
     if (!product) {
@@ -29,3 +49,4 @@ export async function GET(
     return ApiError(500, error);
   }
 }
+

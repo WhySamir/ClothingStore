@@ -3,7 +3,13 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const Modal = ({ children, id }: { children: React.ReactNode; id: number }) => {
+const Modal = ({
+  children,
+  id,
+}: {
+  children: React.ReactNode;
+  id: number | string;
+}) => {
   const router = useRouter();
 
   // close modal on Escape key

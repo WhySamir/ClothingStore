@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 // import { SortDropdown } from "@/components/sort-dropdown";
 import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
+import { ProductOrg } from "@/app/components/productcard/productType";
 // Mock product data
 const mockProducts = [
   {
@@ -118,6 +119,7 @@ export default function HomePage() {
     gender: ["women"],
   });
 
+  const [product, setProduct] = useState<ProductOrg[]>([]);
   // Filter products based on current filters
   const filteredProducts = mockProducts.filter((product) => {
     const matchesCategory =
@@ -161,6 +163,19 @@ export default function HomePage() {
       return updated;
     });
   };
+
+  useEffect(() => {
+    const fetchFemaleProducts = async () => {
+      const response = await fetch("/api/products/female");
+
+      const products = await response.json();
+      setProduct(products.data);
+    };
+    fetchFemaleProducts();
+  }, []);
+  useEffect(() => {
+    console.log("Updated product:", product);
+  }, [product]);
 
   const clearAllFilters = () => {
     setFilters({
@@ -207,7 +222,7 @@ export default function HomePage() {
 
             {/* Product Grid */}
 
-            {mockProducts.length === 0 ? (
+            {product.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   No products found matching your filters.
@@ -218,7 +233,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2  place-items-center  lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {mockProducts.map((product) => (
+                {product.map((product: ProductOrg) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
