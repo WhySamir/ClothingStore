@@ -38,7 +38,7 @@ model Product {
 model Tag {
   id        String   @id @default(cuid())
   name      String
-  Product   Product? @relation(fields: [productId], references: [id])
+  Product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String?
 }
 
@@ -48,8 +48,8 @@ model ProductImage {
   alt            String?
   productId      String
   productColorId String?
-  ProductColor   ProductColor? @relation(fields: [productColorId], references: [id])
-  product        Product       @relation(fields: [productId], references: [id])
+  ProductColor   ProductColor? @relation(fields: [productColorId], references: [id], onDelete: Cascade)
+  product        Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model ProductSize {
@@ -58,7 +58,7 @@ model ProductSize {
   size      String
   stockQty  Int
   cartItems Cart[]
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model ProductColor {
@@ -68,7 +68,7 @@ model ProductColor {
   hexCode   String?
   stockQty  Int            @default(1)
   cartItems Cart[]
-  product   Product        @relation(fields: [productId], references: [id])
+  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
   images    ProductImage[]
 }
 
@@ -77,7 +77,7 @@ model ProductFeature {
   productId String
   key       String
   value     String
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Review {
@@ -92,7 +92,7 @@ model Review {
   videos     String?
   title      String   @default("No title")
   customer   Customer @relation(fields: [customerId], references: [id])
-  product    Product  @relation(fields: [productId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([productId, customerId])
 }
@@ -130,7 +130,7 @@ model Cart {
   updatedAt  DateTime     @updatedAt
   color      ProductColor @relation(fields: [colorId], references: [id])
   customer   Customer     @relation(fields: [customerId], references: [id])
-  product    Product      @relation(fields: [productId], references: [id])
+  product    Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   size       ProductSize  @relation(fields: [sizeId], references: [id])
 
   @@unique([customerId, productId, colorId, sizeId])
@@ -142,7 +142,7 @@ model WishlistItem {
   productId  String
   createdAt  DateTime @default(now())
   customer   Customer @relation(fields: [customerId], references: [id])
-  product    Product  @relation(fields: [productId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([customerId, productId])
 }
@@ -168,14 +168,14 @@ model Order {
 model OrderItem {
   id             String   @id @default(cuid())
   orderId        String
-  productId      String
+  productId      String?
   quantity       Int
   price          Decimal
   couponDiscount Decimal?
   shippingCost   Decimal
   taxes          Decimal
   order          Order    @relation(fields: [orderId], references: [id])
-  product        Product  @relation(fields: [productId], references: [id])
+  product        Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 enum GenderCategory {

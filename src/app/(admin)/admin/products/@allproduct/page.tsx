@@ -45,7 +45,7 @@ const Page = () => {
       return;
     }
     try {
-      const res = await fetch("/api/products", {
+      const res = await fetch("/api/private/admin/products", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: selectedProducts }),
