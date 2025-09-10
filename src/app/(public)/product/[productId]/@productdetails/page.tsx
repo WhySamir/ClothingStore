@@ -1,39 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  Star,
-  Heart,
-  Facebook,
-  Twitter,
-  Linkedin,
-  Instagram,
-} from "lucide-react";
+import { Star, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import AddtoCart from "@/app/components/buttons/AddtoCart";
 import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
 import { updateQty } from "@/redux/AddtoCart/CartSlice";
 import { useDispatch } from "react-redux";
+import { useParams } from "next/navigation";
+import { ProductDetailsType } from "@/types/productDetailsType";
+import { AddToWishlistButton } from "@/app/components/buttons/AddtoWishlist";
 
-export default function ProductDetails({ productId }: { productId: string }) {
+export default function ProductDetails() {
+  const { productId } = useParams<{ productId: string }>();
+  const [product, setProduct] = useState<ProductDetailsType | null>(null);
+
+  useEffect(() => {
+    if (!productId) return;
+
+    const fetchProductDesc = async () => {
+      const res = await fetch(`/api/products/${productId}/productdetails`);
+      if (!res.ok) throw new Error("Failed to fetch  product details");
+      const { data }: { data: ProductDetailsType } = await res.json();
+      setProduct(data);
+    };
+
+    fetchProductDesc();
+  }, [productId]);
+
   const [selectedColor, setSelectedColor] = useState({
-    name: "brown",
-    borderClass: "amber-800",
+    name: product?.colors[0]?.color,
+    borderClass: product?.colors[0]?.hexCode,
   });
   const dispatch = useDispatch();
 
-  const [selectedSize, setSelectedSize] = useState("XXL");
-  const [quantity, setQuantity] = useState(4);
+  const [selectedSize, setSelectedSize] = useState("XL");
+  const [quantity, setQuantity] = useState(1);
 
-  const colors = [
-    { name: "brown", class: "amber-800" },
-    { name: "gray", class: "gray-400" },
-    { name: "teal", class: "teal-600" },
-    { name: "red", class: "red-600" },
-    { name: "blue", class: "blue-600" },
-  ];
-
-  const sizes = ["S", "M", "L", "XL", "XXL", "XXXL"];
+  const sizes = ["S", "M", "L", "XL", "XXL"];
   const handleQuantityChange = (productId: string, newQty: number) => {
     setQuantity(newQty);
     dispatch(updateQty({ id: productId, itemQty: newQty }));
@@ -42,9 +46,11 @@ export default function ProductDetails({ productId }: { productId: string }) {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-sm text-gray-600 my-2">Coats</p>
+        <p className="text-sm text-gray-600 my-2">
+          {product?.tags.map((tag) => tag.name).join(" ")}
+        </p>
         <h1 className="text-3xl font-semibold text-gray-900 mb-4">
-          Trendy Brown Coat
+          {product?.name}
         </h1>
 
         {/* Rating */}
@@ -58,21 +64,22 @@ export default function ProductDetails({ productId }: { productId: string }) {
             ))}
           </div>
           <span className="text-sm font-medium tracking-wider">
-            4.8 (241 Review)
+            {product?.reviews.length} Reviews
           </span>
         </div>
 
         {/* Price */}
         <div className="flex items-center gap-3 mb-6">
-          <span className="text-3xl font-semibold text-gray-900">$75.00</span>
-          <span className="text-xl text-gray-500 line-through">$150.00</span>
+          <span className="text-3xl font-semibold text-gray-900">
+            ${(Number(product?.sellingPrice) + 0).toFixed(2)}
+          </span>
+          <span className="text-xl text-gray-500 line-through">
+            ${(Number(product?.sellingPrice) + 25).toFixed(2)}
+          </span>
         </div>
 
         {/* Description */}
-        <p className="text-gray-600 mb-6">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
+        <p className="text-gray-600 mb-6">{product?.description}</p>
       </div>
 
       {/* Color Selection */}
@@ -82,23 +89,24 @@ export default function ProductDetails({ productId }: { productId: string }) {
           <span className="capitalize">{selectedColor.name}</span>
         </div>
         <div className="flex gap-2">
-          {colors.map((color) => (
+          {product?.colors.map((color) => (
             <button
-              key={color.name}
+              key={color.hexCode}
               onClick={() =>
                 setSelectedColor({
-                  name: color.name,
-                  borderClass: color.class,
+                  name: color.color,
+                  borderClass: color.hexCode,
                 })
               }
               className={`w-8 h-8 flex items-center justify-center rounded-full   border-2  ${
-                selectedColor.name === color.name
-                  ? `border-${color.class}`
+                selectedColor.name === color.color
+                  ? `border-${color.hexCode}`
                   : "border-gray-200"
               }`}
             >
               <div
-                className={`color w-6 h-6 rounded-full flex items-center justify-center bg-${color.class} `}
+                style={{ backgroundColor: color.hexCode }}
+                className={`color w-6 h-6 rounded-full flex items-center justify-center } `}
               ></div>
             </button>
           ))}
@@ -150,20 +158,20 @@ export default function ProductDetails({ productId }: { productId: string }) {
           Buy Now
         </button>
 
-        <button>
-          <Heart className="w-5 h-5" />
-        </button>
+        {product && <AddToWishlistButton productId={product.id} />}
       </div>
 
       {/* Product Info */}
       <div className="space-y-2 pt-6 border-t">
         <div className="flex gap-2">
           <span className="font-medium">SKU :</span>
-          <span className="text-gray-600">GHFT95245AAA</span>
+          <span className="text-gray-600">{product?.id}</span>
         </div>
         <div className="flex gap-2">
           <span className="font-medium">Tags :</span>
-          <span className="text-gray-600">Women, Coat, Fashion, Jacket</span>
+          <span className="text-gray-600">
+            {product?.features.map((feature) => feature.value).join(", ")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="font-medium">Share :</span>

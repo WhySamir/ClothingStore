@@ -1,105 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 // import { SortDropdown } from "@/components/sort-dropdown";
 import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
+import { ProductOrg } from "@/app/components/productcard/productType";
 // Mock product data
-const mockProducts = [
-  {
-    id: 1,
-    name: "Trendy Brown Coat",
-    category: "Coats",
-    price: 75.0,
-    originalPrice: 150.0,
-    discount: 50,
-    rating: 4.8,
-    image: "/brown-coat-model.png",
-    colors: ["brown"],
-    sizes: ["S", "M", "L"],
-    gender: "women",
-  },
-  {
-    id: 2,
-    name: "Classy Light Coat",
-    category: "Coats",
-    price: 165.0,
-    originalPrice: 220.0,
-    discount: 25,
-    rating: 4.9,
-    image: "/light-beige-coat-model.png",
-    colors: ["beige"],
-    sizes: ["M", "L", "XL"],
-    gender: "women",
-  },
-  {
-    id: 3,
-    name: "Modern Brown Dress",
-    category: "Dresses",
-    price: 90.0,
-    originalPrice: 100.0,
-    discount: 10,
-    rating: 4.8,
-    image: "/brown-off-shoulder-dress-model.png",
-    colors: ["brown"],
-    sizes: ["S", "M", "L"],
-    gender: "women",
-  },
-  {
-    id: 4,
-    name: "Modern Black Dress",
-    category: "Dresses",
-    price: 75.0,
-    originalPrice: 100.0,
-    discount: 25,
-    rating: 4.9,
-    image: "/black-polka-dot-dress-model.png",
-    colors: ["black"],
-    sizes: ["S", "M", "L", "XL"],
-    gender: "women",
-  },
-  {
-    id: 5,
-    name: "Light Brown Sweater",
-    category: "Sweater",
-    price: 63.0,
-    originalPrice: 70.0,
-    discount: 10,
-    rating: 4.7,
-    image: "/beige-knit-model.png",
-    colors: ["beige"],
-    sizes: ["S", "M", "L"],
-    gender: "women",
-  },
-  {
-    id: 6,
-    name: "Classic White Shirt",
-    category: "Shirt",
-    price: 45.0,
-    originalPrice: 50.0,
-    discount: 10,
-    rating: 5.0,
-    image: "/white-button-shirt-model.png",
-    colors: ["white"],
-    sizes: ["S", "M", "L", "XL"],
-    gender: "women",
-  },
-
-  {
-    id: 7,
-    name: "Classic White Shirt",
-    category: "Shirt",
-    price: 45.0,
-    originalPrice: 50.0,
-    discount: 10,
-    rating: 5.0,
-    image: "/white-button-shirt-model.png",
-    colors: ["white"],
-    sizes: ["S", "M", "L", "XL"],
-    gender: "women",
-  },
-];
 
 export interface Filters {
   categories: string[];
@@ -110,6 +17,8 @@ export interface Filters {
 }
 
 export default function HomePage() {
+  const [product, setProduct] = useState<ProductOrg[]>([]);
+
   const [filters, setFilters] = useState<Filters>({
     categories: [],
     priceRange: [25, 125],
@@ -118,31 +27,18 @@ export default function HomePage() {
     gender: ["men"],
   });
 
-  // Filter products based on current filters
-  const filteredProducts = mockProducts.filter((product) => {
-    const matchesCategory =
-      filters.categories.length === 0 ||
-      filters.categories.includes(product.category);
-    const matchesPrice =
-      product.price >= filters.priceRange[0] &&
-      product.price <= filters.priceRange[1];
-    const matchesColor =
-      filters.colors.length === 0 ||
-      filters.colors.some((color) => product.colors.includes(color));
-    const matchesSize =
-      filters.sizes.length === 0 ||
-      filters.sizes.some((size) => product.sizes.includes(size));
-    const matchesGender =
-      filters.gender.length === 0 || filters.gender.includes(product.gender);
+  useEffect(() => {
+    const fetchMaleProduct = async () => {
+      const response = await fetch("/api/products/male");
 
-    return (
-      matchesCategory &&
-      matchesPrice &&
-      matchesColor &&
-      matchesSize &&
-      matchesGender
-    );
-  });
+      const products = await response.json();
+      setProduct(products.data);
+    };
+    fetchMaleProduct();
+  }, []);
+  useEffect(() => {
+    console.log("Updated product:", product);
+  }, [product]);
 
   const updateFilters = (newFilters: Partial<Filters>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
@@ -180,7 +76,7 @@ export default function HomePage() {
             Filter Options
           </h1>
           <p className="text-muted-foreground">
-            Showing 1-2 of {mockProducts.length} results
+            Showing 1-2 of {product.length} results
           </p>
         </div>
         <div className="flex flex-col lg:flex-row gap-8">
@@ -207,7 +103,7 @@ export default function HomePage() {
 
             {/* Product Grid */}
 
-            {mockProducts.length === 0 ? (
+            {product.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   No products found matching your filters.
@@ -218,7 +114,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2  place-items-center  lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {mockProducts.map((product) => (
+                {product.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>

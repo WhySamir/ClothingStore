@@ -79,7 +79,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             ${Number(product.sellingPrice).toFixed(2)}
           </span>
           <span className="text-sm text-gray-500 line-through">
-            ${Number(product.sellingPrice + "25").toFixed(2)}
+            ${(Number(product?.sellingPrice) + 25).toFixed(2)}
           </span>
         </div>
       </div>

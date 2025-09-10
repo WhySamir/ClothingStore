@@ -1,34 +1,52 @@
 "use client";
 
 import { useState } from "react";
-import { Product, ProductOrg } from "./productcard/productType";
+import { ProductOrg } from "./productcard/productType";
 import ProductCard from "./productcard/ProductCard";
 
 const products: ProductOrg[] = [
   {
-    id: "cmf8i3kbn0001sie0qmx2y2z0",
+    id: "cmfegth2q000fsi6giiczko1d",
     name: "Trendy Brown Coat",
     categoryId: 2,
     sellingPrice: "75",
     discount: null,
     mainImgUrl:
-      "https://res.cloudinary.com/dcfrlqakq/image/upload/v1757177473/clothingstore/productImage/main/tmcpkcen2ak1jpl4he7c.png",
+      "https://res.cloudinary.com/dcfrlqakq/image/upload/v1757533916/clothingstore/productImage/main/ub3klqdx0phv6xnuud5f.png",
     colors: [
       {
-        color: "Blue",
-        hexCode: "#00102D",
+        color: "Brown",
+        hexCode: "#733121",
+        stockQty: 1,
+      },
+      {
+        color: "Dark Red",
+        hexCode: "#2F0904",
         stockQty: 1,
       },
       {
         color: "Green",
-        hexCode: "#003727",
+        hexCode: "#011E19",
+        stockQty: 1,
+      },
+      {
+        color: "Black-purple",
+        hexCode: "#170A0A",
         stockQty: 1,
       },
     ],
     sizes: [
       {
+        size: "XL",
+        stockQty: 5,
+      },
+      {
+        size: "XXL",
+        stockQty: 7,
+      },
+      {
         size: "L",
-        stockQty: 10,
+        stockQty: 4,
       },
     ],
     reviews: [],

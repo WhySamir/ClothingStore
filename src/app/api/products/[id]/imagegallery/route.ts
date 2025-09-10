@@ -14,29 +14,13 @@ export async function GET(
       where: { id },
       select:{
           id:true,
-          name:true,
-          categoryId:true,
-          sellingPrice:true,
-          discount:true,
-          mainImgUrl:true,
-          colors:{
+         mainImgUrl:true,
+         
+         images:{
             select:{
-              color:true,
-              hexCode:true,
-              stockQty:true
+                url:true
             }
-          },
-          sizes:{
-            select:{
-              size:true,
-              stockQty:true
-            }
-          },
-          tags:{
-            select:{
-              name:true
-            }
-          }
+         }
          }
     });
 

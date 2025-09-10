@@ -48,6 +48,7 @@ export const AddModal = ({
       colors: [
         { color: "", hexCode: "" },
         { color: "", hexCode: "" },
+        { color: "", hexCode: "" },
       ],
       imagesMeta: [],
       features: [{ key: "", value: "" }],
@@ -93,10 +94,12 @@ export const AddModal = ({
     }
     setNoImage(false);
 
-    if (data.colors.length !== data.imagesMeta.length) {
+    if (data.colors.length !== data.imagesMeta.length + 1) {
       setError("colors", {
         type: "manual",
-        message: `Number of colors (${data.colors.length}) must match number of images (${data.imagesMeta.length})`,
+        message: `Number of colors (${
+          data.colors.length
+        }) must match number of images (${data.imagesMeta.length + 1})`,
       });
       return;
     }

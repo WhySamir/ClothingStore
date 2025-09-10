@@ -1,6 +1,10 @@
 import { ProductGrid } from "@/app/components/Youmightlike";
 
-export default function ProductPage() {
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ productId: string }>;
+}) {
   return (
     <>
       <div className=" h-full w-full  text-black  md:pt-[10vh]">

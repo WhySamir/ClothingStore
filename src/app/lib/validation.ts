@@ -106,8 +106,8 @@ colors: z.array(
     })
   ).min(2, "At least 2 images are required").max(4, "Maximum 4 images allowed"),
 }).superRefine((obj, ctx) => {
-  if (obj.colors.length !== obj.imagesMeta.length) {
-    const msg = `Number of colors (${obj.colors.length}) must match number of images (${obj.imagesMeta.length})`;
+  if (obj.colors.length  !== obj.imagesMeta.length +1) {
+    const msg = `Number of colors (${obj.colors.length }) must match number of images (${obj.imagesMeta.length +1})`;
 
     ctx.addIssue({
       path: [],
