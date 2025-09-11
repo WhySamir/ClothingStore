@@ -120,7 +120,7 @@ const Review = () => {
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
                         <div>
                           <h3 className="font-medium text-gray-900">
-                            {review?.customer.name}
+                            {review.customer.name || "Anonymous"}
                             {review?.verified && (
                               <span className="text-gray-500 font-normal">
                                 {" "}
@@ -177,7 +177,7 @@ const Review = () => {
         {/* review form */}
         <h1 className="text-2xl font-semibold mt-8 mb-2">Add your review</h1>
         <p className="mb-2">Your feedback is valuable to us.</p>
-        {/* <ReviewForm /> */}
+        <ReviewForm />
       </div>
     </>
   );
