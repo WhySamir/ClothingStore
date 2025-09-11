@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { Star, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Star } from "lucide-react";
 import AddtoCart from "@/app/components/buttons/AddtoCart";
 import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
 import { updateQty } from "@/redux/AddtoCart/CartSlice";
@@ -79,7 +79,9 @@ export default function ProductDetails() {
         </div>
 
         {/* Description */}
-        <p className="text-gray-600 mb-6">{product?.description}</p>
+        <p className="text-gray-600 mb-6  line-clamp-2">
+          {product?.description}
+        </p>
       </div>
 
       {/* Color Selection */}
@@ -141,8 +143,13 @@ export default function ProductDetails() {
 
       {/* Clear and Stock Status */}
       <div className="flex gap-2">
-        <button className="bg-gray-100">Clear ×</button>
-        <button className="bg-green-100 text-green-800">In Stock</button>
+        {product && product.stockQty <= 1 ? (
+          <button className="bg-red-400 px-2 text-black-800">
+            Out of Stock
+          </button>
+        ) : (
+          <button className="bg-green-100 px-2 text-green-800">In Stock</button>
+        )}
       </div>
 
       {/* Quantity and Actions */}
@@ -154,7 +161,7 @@ export default function ProductDetails() {
         />
         <AddtoCart />
 
-        <button className="bg-yellow-400 border border-yellow-400  py-2 text-black px-8">
+        <button className="bg-yellow-200 border border-yellow-200  py-2 text-black px-8">
           Buy Now
         </button>
 
@@ -173,7 +180,7 @@ export default function ProductDetails() {
             {product?.features.map((feature) => feature.value).join(", ")}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <span className="font-medium">Share :</span>
           <div className="flex gap-2">
             <Facebook className="w-5 h-5 text-gray-600 hover:text-blue-600 cursor-pointer" />
@@ -181,7 +188,7 @@ export default function ProductDetails() {
             <Linkedin className="w-5 h-5 text-gray-600 hover:text-blue-700 cursor-pointer" />
             <Twitter className="w-5 h-5 text-gray-600 hover:text-blue-400 cursor-pointer" />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

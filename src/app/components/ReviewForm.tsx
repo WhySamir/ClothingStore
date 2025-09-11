@@ -31,7 +31,7 @@ interface RatingProps {
   emptySymbol: ReactElement;
   fullSymbol: ReactElement;
 }
-export default function ReviewForm() {
+const ReviewForm = () => {
   const Rating = RatingLib as unknown as React.FC<RatingProps>;
   const [rating, setRating] = useState(0);
   const [mediaError, setMediaError] = useState<string | null>(null);
@@ -145,4 +145,6 @@ export default function ReviewForm() {
       </button>
     </form>
   );
-}
+};
+
+export default ReviewForm;

@@ -16,15 +16,17 @@ interface ImageType {
 
 export default function ImageGallery() {
   const { productId } = useParams<{ productId: string }>();
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [allImages, setAllImages] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!productId) return;
-
     const fetchProductImages = async () => {
       const res = await fetch(`/api/products/${productId}/imagegallery`);
-      if (!res.ok) throw new Error("Failed to fetch product images");
+      if (!res.ok) {
+        window.location.href = "/404";
+        return;
+      }
       const { data }: { data: ImageType } = await res.json();
 
       // merge main image + gallery into one array
@@ -45,14 +47,14 @@ export default function ImageGallery() {
     );
   };
 
-  if (allImages.length === 0) return <p>Loading images...</p>;
+  // if (allImages.length === 0) return <p>Loading images...</p>;
 
   return (
     <div className="space-y-4">
       {/* Main Image */}
       <div className="relative aspect-square bg-gray-100 overflow-hidden">
         <Image
-          src={allImages[selectedImage]}
+          src={allImages[selectedImage] || "/placeholder.svg"}
           alt={`Product image ${selectedImage + 1}`}
           fill
           className="object-cover "

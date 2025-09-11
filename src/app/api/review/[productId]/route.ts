@@ -9,19 +9,20 @@ export async function POST(req:NextRequest, context: { params: Promise<{ product
 
   try {
     const body = await req.json();
-    const { rating, comment } = body;
+    const { rating, comment,title } = body;
 
     const user = await verifyUser(req)
     const customerId=user.id
 
-if (rating === undefined || comment.trim() === "") {
+if (rating === undefined || comment.trim() === "" || title.trim() === "") {
 
-      return ApiError(400, "Rating and comment are required");
+      return ApiError(400, "Rating, comment and title are required");
     }
 
     if (!customerId || !productId) {
       return ApiError(400, "Customer and Product ID is required");
     }
+    
     const existingReview = await prisma.review.findFirst({
       where: { productId, customerId },
     });
@@ -35,6 +36,7 @@ if (rating === undefined || comment.trim() === "") {
         productId: productId,
         rating,
         comment,
+        title,
         customerId
       },
     });
@@ -49,11 +51,14 @@ export async function DELETE(req:NextRequest, context: { params: Promise<{ produ
   const { productId } = await context.params;
 
   try {
+    const {reviewId} = await req.json();
     const user = await verifyUser(req)
     const customerId=user.id
 
-    if (!customerId || !productId) {
-      return ApiError(400, "Customer and Product ID is required");
+    
+
+    if (!reviewId || !customerId || !productId) {
+      return ApiError(400, "Review Id, Customer and Product ID is required");
     }
     const existingReview = await prisma.review.findFirst({
       where: { productId, customerId },
@@ -64,7 +69,7 @@ export async function DELETE(req:NextRequest, context: { params: Promise<{ produ
 
 
      await prisma.review.delete({
-      where: { id: existingReview.id },
+      where: { id:reviewId },
     });
 
     return ApiResponds(200, "Review deleted successfully");
@@ -72,43 +77,63 @@ export async function DELETE(req:NextRequest, context: { params: Promise<{ produ
     return ApiError(500, error);
   }
 }
-export async function GET(req:NextRequest, context: { params: Promise<{ productId: string }> }) {
+
+export async function GET(req:NextRequest,
+  context: { params: Promise<{ productId: string }> }   
+) {
   const { productId } = await context.params;
 
   try {
-    const user = await verifyUser(req)
-    const customerId=user.id
-
-    if (!customerId || !productId) {
-      return ApiError(400, "Customer and Product ID is required");
-    }
-    const existingReview = await prisma.review.findFirst({
-      where: { productId, customerId },
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      select:{
+        reviews:
+        {
+          select:{
+            id:true,
+            rating:true,
+            title:true,
+            comment:true,
+            createdAt:true,
+            images:true,
+            verified:true,
+            videos:true,
+            customer:{
+              select:{
+               
+                name:true,
+                userAvatarUrl:true
+              }
+            }
+          }
+        }
+      }
     });
-    if(existingReview){
-      return ApiResponds(200,"Review",existingReview)
+
+    if (!product) {
+      return ApiError(404, "Product not found");
     }
 
-
-    return ApiResponds(200, "No review found");
+    return ApiResponds(200, "Product details fetched", product);
   } catch (error) {
     return ApiError(500, error);
   }
 }
+
 
 export async function PATCH(req:NextRequest, context: { params: Promise<{ productId: string }> }) {
   const { productId } = await context.params;
 
   try {
     const body = await req.json();
-    const { rating, comment } = body;
+    const { rating, comment,title } = body;
 
     const user = await verifyUser(req)
     const customerId=user.id
 
-if (rating === undefined || comment.trim() === "") {
+if (rating === undefined || comment.trim() === "" || title.trim() === "") {
 
-      return ApiError(400, "Rating and comment are required");
+      return ApiError(400, "Rating, comment and title are required");
     }
 
     if (!customerId || !productId) {
@@ -125,7 +150,7 @@ if (rating === undefined || comment.trim() === "") {
   const updatedReview = await prisma.review.update({
     where: { productId_customerId: { productId, customerId } },
     data: {
-      rating, comment
+      rating, comment,title
     }
   });
 

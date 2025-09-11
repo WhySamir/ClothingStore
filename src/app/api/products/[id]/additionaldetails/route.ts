@@ -13,41 +13,20 @@ export async function GET(
     const product = await prisma.product.findUnique({
       where: { id },
       select:{
-        tags:{
-          select:{
-            name:true
-          }
-        },
-        id:true,
-        name:true,
-        reviews:{
-            select:{
-                rating:true
-            }
-        },
-        sellingPrice:true,
-        description:true,
-        stockQty:true,
-        discount:true,
-        categoryId:true,
-        colors:{
-            select:{
-                color:true,
-                hexCode:true,
-                stockQty:true
-            }
-        },
+        description: true,
+        material: true,
         sizes:{
             select:{
                 size:true,
-                stockQty:true
             }
         },
-        features:{
+        colors:{
             select:{
-                key:true,value:true
+                color:true,
             }
         },
+        originCountry:true,
+        brand:true
          }
     });
 
