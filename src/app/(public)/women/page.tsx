@@ -116,11 +116,11 @@ export default function HomePage() {
     priceRange: [25, 125],
     colors: [],
     sizes: [],
-    gender: ["women"],
+    gender: [],
   });
 
-  const [product, setProduct] = useState<ProductOrg[]>([]);
-  // Filter products based on current filters
+  const [product, setProduct] = useState<ProductOrg[] | null>(null);
+
   const filteredProducts = mockProducts.filter((product) => {
     const matchesCategory =
       filters.categories.length === 0 ||
@@ -222,7 +222,7 @@ export default function HomePage() {
 
             {/* Product Grid */}
 
-            {product.length === 0 ? (
+            {product?.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   No products found matching your filters.
@@ -233,7 +233,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2  place-items-center  lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {product.map((product: ProductOrg) => (
+                {product?.map((product: ProductOrg) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>

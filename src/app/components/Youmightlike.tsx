@@ -10,7 +10,7 @@ const products: ProductOrg[] = [
     name: "Trendy Brown Coat",
     categoryId: 2,
     sellingPrice: "75",
-    discount: null,
+    discount: 15,
     mainImgUrl:
       "https://res.cloudinary.com/dcfrlqakq/image/upload/v1757533916/clothingstore/productImage/main/ub3klqdx0phv6xnuud5f.png",
     colors: [
@@ -55,6 +55,7 @@ const products: ProductOrg[] = [
         name: "Coats",
       },
     ],
+    hasCountdown: true,
   },
   {
     id: "cmfa2x6770001si444r136drp",

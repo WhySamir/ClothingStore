@@ -35,8 +35,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         />
 
         {/* Discount Badge */}
-        <div className="absolute top-4 left-4 text-green font-bold px-2 py-1 rounded bg-white text-green-300">
-          {product.discount}% off
+        <div
+          className={`${
+            product.discount !== null
+              ? "absolute top-4 left-4 text-green font-bold px-2 py-1 rounded bg-white text-green-300"
+              : "hidden"
+          }`}
+        >
+          {`${product.discount}% off`}
         </div>
 
         {/* Action Icons */}

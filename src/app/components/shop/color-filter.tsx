@@ -13,7 +13,7 @@ const colors = [
   { name: "Orange", value: "orange", color: "#FFA500" },
   { name: "Blue", value: "blue", color: "#0000FF" },
   { name: "Pink", value: "pink", color: "#FFC0CB" },
-  { name: "White", value: "white", color: "#FFFFFF" },
+  // { name: "White", value: "white", color: "#FFFFFF" },
 ];
 
 export function ColorFilter({ selectedColors, onChange }: ColorFilterProps) {

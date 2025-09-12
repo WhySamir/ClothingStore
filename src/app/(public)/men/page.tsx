@@ -17,25 +17,31 @@ export interface Filters {
 }
 
 export default function HomePage() {
-  const [product, setProduct] = useState<ProductOrg[]>([]);
+  const [product, setProduct] = useState<ProductOrg[] | null>(null);
 
   const [filters, setFilters] = useState<Filters>({
     categories: [],
     priceRange: [25, 125],
     colors: [],
     sizes: [],
-    gender: ["men"],
+    gender: [],
   });
 
   useEffect(() => {
     const fetchMaleProduct = async () => {
-      const response = await fetch("/api/products/male");
-
-      const products = await response.json();
-      setProduct(products.data);
+      try {
+        const response = await fetch("/api/products/male");
+        const products = await response.json();
+        setProduct(products.data || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProduct([]);
+      }
     };
+
     fetchMaleProduct();
   }, []);
+
   useEffect(() => {
     console.log("Updated product:", product);
   }, [product]);
@@ -76,7 +82,7 @@ export default function HomePage() {
             Filter Options
           </h1>
           <p className="text-muted-foreground">
-            Showing 1-2 of {product.length} results
+            Showing 1-2 of {product?.length} results
           </p>
         </div>
         <div className="flex flex-col lg:flex-row gap-8">
@@ -103,7 +109,7 @@ export default function HomePage() {
 
             {/* Product Grid */}
 
-            {product.length === 0 ? (
+            {product?.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   No products found matching your filters.
@@ -114,8 +120,8 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2  place-items-center  lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {product.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                {product?.map((product) => (
+                  <ProductCard key={product?.id} product={product} />
                 ))}
               </div>
             )}

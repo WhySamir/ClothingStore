@@ -5,7 +5,7 @@ interface SizeFilterProps {
   onChange: (sizes: string[]) => void;
 }
 
-const sizes = ["S", "M", "L", "XL", "XXL", "XXXL"];
+const sizes = ["S", "M", "L", "XL", "XXL"];
 
 export function SizeFilter({ selectedSizes, onChange }: SizeFilterProps) {
   const handleSizeChange = (size: string) => {

@@ -1,12 +1,13 @@
 export type Product = {
   id: string | number;
   name: string;
-  image: string;
-  category: string;
-  rating: number;
-  price: number;
-  originalPrice:number;
+  mainImgUrl: string;
+  categoryId: string;
+  sellingPrice:number;
   discount: number;
+  tags: { name: string }[];
+  reviews: {  rating: number}[];
+
   hasCountdown?: boolean;
 };
 
