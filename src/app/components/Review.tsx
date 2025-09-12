@@ -44,6 +44,18 @@ const Review = () => {
     fetchReview();
   }, [productId]);
 
+  const totalReviews = reviews.length;
+  const avgRating = totalReviews
+    ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+    : 0;
+
+  const distribution = [5, 4, 3, 2, 1].map((stars) => {
+    const count = reviews.filter((r) => Math.floor(r.rating) === stars).length;
+    const percentage = totalReviews ? (count / totalReviews) * 100 : 0;
+
+    return { stars, count, percentage };
+  });
+
   return (
     <>
       <div className="desc  md:my-8 w-full">
@@ -53,23 +65,36 @@ const Review = () => {
             <div className=" space-y-5 md:grid  md:grid-cols-7 gap-4">
               <div className="col-span-2 flex flex-col items-center justify-center gap-4   md:border-r-1 border-gray-300 h-full w-full font-semibold text-gray-900">
                 <h3>
-                  <span className="text-4xl font-semibold">4.7</span> out of 5
+                  <span className="text-4xl font-semibold">{avgRating}</span>{" "}
+                  out of 5
                 </h3>
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-3 h-3  md:w-5 md:h-5 fill-yellow-400 text-yellow-400"
-                      />
-                    ))}
+                    {[...Array(5)].map((_, i) => {
+                      const rating = avgRating;
+                      const starIndex = i + 1;
+
+                      return (
+                        <span key={i}>
+                          {starIndex <= Math.floor(rating) ? (
+                            <Star className="w-3 h-3 md:w-5 md:h-5 fill-yellow-400 text-yellow-400" />
+                          ) : (
+                            <Star className="w-3 h-3 md:w-5 md:h-5 text-gray-300" />
+                          )}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
-                <span> (101 )reviews</span>
+                <span> {reviews.length} reviews</span>
               </div>
               <div className="w-full col-span-3 md:col-span-5 space-y-3  mb-4 md:mb-12">
-                {[5, 4, 3, 2, 1].map((stars) => (
-                  <RatingBar key={stars} stars={stars} percentage={60} />
+                {distribution.map(({ stars, percentage }) => (
+                  <RatingBar
+                    key={stars}
+                    stars={stars}
+                    percentage={percentage}
+                  />
                 ))}
               </div>
             </div>
@@ -83,7 +108,7 @@ const Review = () => {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Review List
             </h2>
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+            {/* <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
               <span className="text-gray-600 text-sm">
                 Showing 1-4 of 24 results
               </span>
@@ -96,7 +121,7 @@ const Review = () => {
                   <option value="lowest">Lowest Rated</option>
                 </select>
               </div>
-            </div>
+            </div> */}
             <div className="space-y-6">
               {reviews.map((review: Reviews) => (
                 <div
@@ -104,7 +129,7 @@ const Review = () => {
                   className="border-b border-gray-200 pb-6 last:border-b-0"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 flex-shrink-0 overflow-hidden rounded-full">
+                    <div className="w-10 h-10 flex-shrink-0 overflow-hidden rounded-full">
                       <Image
                         src={
                           review?.customer.userAvatarUrl || "/placeholder.svg"
@@ -130,8 +155,27 @@ const Review = () => {
                           </h3>
                         </div>
                         <span className="text-gray-500 text-sm flex-shrink-0">
-                          {review?.createdAt.toString()}
+                          {new Date(review?.createdAt).toLocaleString()}
                         </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex gap-1">
+                          {[...Array(5)].map((_, i) => {
+                            const rating = review.rating;
+                            const starIndex = i + 1;
+
+                            return (
+                              <span key={i}>
+                                {starIndex <= Math.floor(rating) ? (
+                                  <Star className="w-3 h-3 md:w-5 md:h-5 fill-yellow-400 text-yellow-400" />
+                                ) : (
+                                  <Star className="w-3 h-3 md:w-5 md:h-5 text-gray-300" />
+                                )}
+                              </span>
+                            );
+                          })}
+                        </div>
                       </div>
 
                       <h4 className="font-medium text-gray-900 mb-2">

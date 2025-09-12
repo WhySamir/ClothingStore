@@ -12,14 +12,14 @@ import { useParams } from "next/navigation";
 const reviewSchema = z.object({
   rating: z.number().min(0.1, "Please select a rating"),
   title: z.string().min(3, "Title must be at least 3 characters"),
-  detail: z.string().min(10, "Review must be at least 10 characters"),
+  comment: z.string().min(10, "Review must be at least 10 characters"),
   media: z.array(z.any()).max(4, "You can upload up to 4 files").optional(),
 });
 
 type ReviewFormData = {
   rating: number;
+  comment: string;
   title: string;
-  detail: string;
   media?: File[];
 };
 
@@ -40,7 +40,7 @@ const ReviewForm = () => {
     defaultValues: {
       rating: 0,
       title: "",
-      detail: "",
+      comment: "",
       media: [],
     },
   });
@@ -52,8 +52,8 @@ const ReviewForm = () => {
       const formData = new FormData();
 
       formData.append("rating", String(data.rating));
+      formData.append("comment", data.comment);
       formData.append("title", data.title);
-      formData.append("comment", data.detail);
 
       if (data.media) {
         data.media.forEach((file) => {
@@ -79,7 +79,7 @@ const ReviewForm = () => {
       reset({
         rating: 0,
         title: "",
-        detail: "",
+        comment: "",
         media: [],
       });
 
@@ -132,19 +132,19 @@ const ReviewForm = () => {
         )}
       </div>
 
-      {/* Review Detail */}
+      {/* Review comment */}
       <div>
         <label className="block text-sm font-medium mb-2">
           Add Detailed Review *
         </label>
         <textarea
-          {...register("detail")}
+          {...register("comment")}
           className="border border-gray-300 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
           rows={4}
           placeholder="Write here"
         />
-        {errors.detail && (
-          <p className="text-red-500 text-sm mt-1">{errors.detail.message}</p>
+        {errors.comment && (
+          <p className="text-red-500 text-sm mt-1">{errors.comment.message}</p>
         )}
       </div>
 

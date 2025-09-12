@@ -1,6 +1,8 @@
 import { prisma } from "@/app/lib/prisma";
 import { ApiError } from "@/utlis/ApiResponders/ApiError";
 import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
+import { uploadReviewImgonCloudinary } from "@/utlis/uploadReviewImgonCloudinary";
+import { uploadReviewVid } from "@/utlis/uploadReviewVid";
 import { verifyUser } from "@/utlis/verifyUser";
 import { NextRequest } from "next/server";
 
@@ -8,13 +10,18 @@ export async function POST(req:NextRequest, context: { params: Promise<{ product
   const { productId } = await context.params;
 
   try {
-    const body = await req.json();
-    const { rating, comment,title } = body;
+    const formData =  await req.formData()
+    const rating = formData.get("rating");
+    const comment = formData.get("comment")?.toString();
+    const title = formData.get("title")?.toString();
+
+    const images = formData.getAll("images") as File[];
+    const videos = formData.getAll("video") as File[];
 
     const user = await verifyUser(req)
     const customerId=user.id
 
-if (rating === undefined || comment.trim() === "" || title.trim() === "") {
+    if (rating === (0 || undefined) || comment?.trim() === "" || title?.trim() === "") {
 
       return ApiError(400, "Rating, comment and title are required");
     }
@@ -30,14 +37,29 @@ if (rating === undefined || comment.trim() === "" || title.trim() === "") {
       return ApiResponds(200,"One customer cannot have multiple reviews",existingReview)
     }
 
+   const imageUrl: string[] = await Promise.all(
+  images.map(async (image) => {
+    const arrayBuffer = await image.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    return uploadReviewImgonCloudinary(buffer, productId, image.name);
+  })
+);
+    let videoUrl = "";
+  if (videos[0]) {
+  const arrayBuffer = await videos[0].arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  videoUrl = await uploadReviewVid(buffer, productId, videos[0].name);
+}
 
     const review = await prisma.review.create({
       data: {
         productId: productId,
-        rating,
-        comment,
+        rating: Number(rating),
+        comment:comment!,
         title,
-        customerId
+        customerId,
+        images:imageUrl ,
+        videos:videoUrl,
       },
     });
 
@@ -100,7 +122,6 @@ export async function GET(req:NextRequest,
             videos:true,
             customer:{
               select:{
-               
                 name:true,
                 userAvatarUrl:true
               }
