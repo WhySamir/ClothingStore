@@ -46,6 +46,7 @@
     "@types/nodemailer": "^7.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-star-ratings": "^2.3.3",
     "eslint": "^9",
     "eslint-config-next": "15.4.1",
     "prisma": "^6.13.0",
