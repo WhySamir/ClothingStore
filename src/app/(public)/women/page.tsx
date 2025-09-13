@@ -7,101 +7,6 @@ import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
 import { ProductOrg } from "@/app/components/productcard/productType";
 import { Filters } from "@/types/FilterTypes";
-// Mock product data
-const mockProducts = [
-  {
-    id: 1,
-    name: "Trendy Brown Coat",
-    category: "Coats",
-    price: 75.0,
-    originalPrice: 150.0,
-    discount: 50,
-    rating: 4.8,
-    image: "/brown-coat-model.png",
-    colors: ["brown"],
-    sizes: ["S", "M", "L"],
-    gender: "women",
-  },
-  {
-    id: 2,
-    name: "Classy Light Coat",
-    category: "Coats",
-    price: 165.0,
-    originalPrice: 220.0,
-    discount: 25,
-    rating: 4.9,
-    image: "/light-beige-coat-model.png",
-    colors: ["beige"],
-    sizes: ["M", "L", "XL"],
-    gender: "women",
-  },
-  {
-    id: 3,
-    name: "Modern Brown Dress",
-    category: "Dresses",
-    price: 90.0,
-    originalPrice: 100.0,
-    discount: 10,
-    rating: 4.8,
-    image: "/brown-off-shoulder-dress-model.png",
-    colors: ["brown"],
-    sizes: ["S", "M", "L"],
-    gender: "women",
-  },
-  {
-    id: 4,
-    name: "Modern Black Dress",
-    category: "Dresses",
-    price: 75.0,
-    originalPrice: 100.0,
-    discount: 25,
-    rating: 4.9,
-    image: "/black-polka-dot-dress-model.png",
-    colors: ["black"],
-    sizes: ["S", "M", "L", "XL"],
-    gender: "women",
-  },
-  {
-    id: 5,
-    name: "Light Brown Sweater",
-    category: "Sweater",
-    price: 63.0,
-    originalPrice: 70.0,
-    discount: 10,
-    rating: 4.7,
-    image: "/beige-knit-model.png",
-    colors: ["beige"],
-    sizes: ["S", "M", "L"],
-    gender: "women",
-  },
-  {
-    id: 6,
-    name: "Classic White Shirt",
-    category: "Shirt",
-    price: 45.0,
-    originalPrice: 50.0,
-    discount: 10,
-    rating: 5.0,
-    image: "/white-button-shirt-model.png",
-    colors: ["white"],
-    sizes: ["S", "M", "L", "XL"],
-    gender: "women",
-  },
-
-  {
-    id: 7,
-    name: "Classic White Shirt",
-    category: "Shirt",
-    price: 45.0,
-    originalPrice: 50.0,
-    discount: 10,
-    rating: 5.0,
-    image: "/white-button-shirt-model.png",
-    colors: ["white"],
-    sizes: ["S", "M", "L", "XL"],
-    gender: "women",
-  },
-];
 
 export default function HomePage() {
   const [filters, setFilters] = useState<Filters>({
@@ -181,7 +86,7 @@ export default function HomePage() {
             Filter Options
           </h1>
           <p className="text-muted-foreground">
-            Showing 1-2 of {mockProducts.length} results
+            Showing 1-2 of {filteredProducts?.length} results
           </p>
         </div>
         <div className="flex flex-col lg:flex-row gap-8">

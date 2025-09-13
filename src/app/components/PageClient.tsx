@@ -1,10 +1,13 @@
 "use client";
-import Modal from "@/app/components/Modal";
-import { ProductOrg } from "@/app/components/productcard/productType";
-import { useEffect, useState } from "react";
 
-const page = ({ params }: { params: { productId: string } }) => {
-  const { productId } = params;
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ProductOrg } from "./productcard/productType";
+import Modal from "./Modal";
+
+const PageClient = () => {
+  const { productId } = useParams<{ productId: string }>();
+
   const [products, setProducts] = useState<ProductOrg[]>([]);
   useEffect(() => {
     const productFech = async () => {
@@ -23,15 +26,15 @@ const page = ({ params }: { params: { productId: string } }) => {
   }
 
   return (
-    // <></>
-    <Modal id={selectedImg.id}>
-      <div className="relative w-120 h-fit mb-4">
-        <p className="text-5xl ">
-          <img src={selectedImg.mainImgUrl} alt="" />
-        </p>
-      </div>
-    </Modal>
+    <>
+      <Modal id={selectedImg.id}>
+        <div className="relative w-120 h-fit mb-4">
+          <p className="text-5xl ">
+            <img src={selectedImg.mainImgUrl} alt="" />
+          </p>
+        </div>
+      </Modal>
+    </>
   );
 };
-
-export default page;
+export default PageClient;

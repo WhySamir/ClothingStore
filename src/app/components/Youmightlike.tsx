@@ -55,6 +55,7 @@ const products: ProductOrg[] = [
         name: "Coats",
       },
     ],
+    features: [{ key: "Material", value: "Wool Blend" }],
     hasCountdown: true,
   },
   {
@@ -93,6 +94,7 @@ const products: ProductOrg[] = [
         name: "Dresses",
       },
     ],
+    features: [{ key: "Material", value: "Wool Blend" }],
   },
 ];
 

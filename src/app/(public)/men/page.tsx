@@ -6,71 +6,75 @@ import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
 import { ProductOrg } from "@/app/components/productcard/productType";
-// Mock product data
-
-export interface Filters {
-  categories: string[];
-  priceRange: [number, number];
-  colors: string[];
-  sizes: string[];
-  gender: string[];
-}
+import { Filters } from "@/types/FilterTypes";
 
 export default function HomePage() {
-  const [product, setProduct] = useState<ProductOrg[] | null>(null);
-
   const [filters, setFilters] = useState<Filters>({
-    categories: [],
+    feature: null,
     priceRange: [25, 125],
-    colors: [],
-    sizes: [],
-    gender: [],
+    color: null,
+    size: null,
   });
 
-  useEffect(() => {
-    const fetchMaleProduct = async () => {
-      try {
-        const response = await fetch("/api/products/men");
-        const products = await response.json();
-        setProduct(products.data || []);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setProduct([]);
-      }
-    };
+  const [product, setProduct] = useState<ProductOrg[] | null>(null);
 
-    fetchMaleProduct();
-  }, []);
+  const filteredProducts = product?.filter((product) => {
+    const matchesPrice =
+      Number(product?.sellingPrice) >= filters.priceRange[0] &&
+      Number(product?.sellingPrice) <= filters.priceRange[1];
+    const matchesColor =
+      filters.color === null ||
+      product.colors.map((c) => c.color).includes(filters.color);
+    const matchesSize =
+      filters.size === null ||
+      product.sizes.map((s) => s.size).includes(filters.size);
+    const matchesFeature =
+      filters.feature === null ||
+      product.tags.map((t) => t.name).includes(filters.feature) ||
+      product.features.map((f) => f.value).includes(filters.feature);
 
-  useEffect(() => {
-    console.log("Updated product:", product);
-  }, [product]);
+    return matchesPrice && matchesColor && matchesSize && matchesFeature;
+  });
 
   const updateFilters = (newFilters: Partial<Filters>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
-  const removeFilter = (type: keyof Filters, value: string | number) => {
+  const removeFilter = (type: keyof Filters, value: string | number | null) => {
     setFilters((prev) => {
       const updated = { ...prev };
       if (type === "priceRange") {
         updated.priceRange = [25, 125];
-      } else if (Array.isArray(updated[type])) {
-        updated[type] = (updated[type] as string[]).filter(
-          (item) => item !== value
-        );
+      } else if (type === "size") {
+        updated.size = null;
+      } else if (type === "color") {
+        updated.color = null;
+      } else if (type === "feature") {
+        updated.feature = null;
       }
       return updated;
     });
   };
 
+  useEffect(() => {
+    const fetchMaleProducts = async () => {
+      const response = await fetch("/api/products/men");
+
+      const products = await response.json();
+      setProduct(products.data);
+    };
+    fetchMaleProducts();
+  }, []);
+  useEffect(() => {
+    console.log("Updated product:", product);
+  }, [product]);
+
   const clearAllFilters = () => {
     setFilters({
-      categories: [],
+      feature: null,
       priceRange: [25, 125],
-      colors: [],
-      sizes: [],
-      gender: [],
+      color: null,
+      size: null,
     });
   };
 
@@ -82,7 +86,7 @@ export default function HomePage() {
             Filter Options
           </h1>
           <p className="text-muted-foreground">
-            Showing 1-2 of {product?.length} results
+            Showing 1-2 of {filteredProducts?.length} results
           </p>
         </div>
         <div className="flex flex-col lg:flex-row gap-8">
@@ -109,7 +113,7 @@ export default function HomePage() {
 
             {/* Product Grid */}
 
-            {product?.length === 0 ? (
+            {filteredProducts?.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   No products found matching your filters.
@@ -120,8 +124,8 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2  place-items-center  lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {product?.map((product) => (
-                  <ProductCard key={product?.id} product={product} />
+                {filteredProducts?.map((product: ProductOrg) => (
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             )}
