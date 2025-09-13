@@ -4,7 +4,7 @@ import { CategoryFilter } from "@/app/components/shop/category";
 import { PriceRangeFilter } from "./price-range-filter";
 import { ColorFilter } from "@/app/components/shop/color-filter";
 import { SizeFilter } from "./size-filter";
-import type { Filters } from "@/app/(public)/men/page";
+import { Filters } from "@/types/FilterTypes";
 
 interface FilterSidebarProps {
   filters: Filters;
@@ -18,8 +18,8 @@ export function FilterSidebar({
   return (
     <div className="space-y-6 px-2 ">
       <CategoryFilter
-        selectedCategories={filters.categories}
-        onChange={(categories) => onFiltersChange({ categories })}
+        selectedCategories={filters.feature}
+        onChange={(feature) => onFiltersChange({ feature })}
       />
 
       <PriceRangeFilter
@@ -28,13 +28,13 @@ export function FilterSidebar({
       />
 
       <ColorFilter
-        selectedColors={filters.colors}
-        onChange={(colors) => onFiltersChange({ colors })}
+        selectedColors={filters.color}
+        onChange={(color) => onFiltersChange({ color })}
       />
 
       <SizeFilter
-        selectedSizes={filters.sizes}
-        onChange={(sizes) => onFiltersChange({ sizes })}
+        selectedSize={filters.size}
+        onChange={(size) => onFiltersChange({ size })}
       />
     </div>
   );

@@ -1,11 +1,11 @@
 "use client";
 
 interface CategoryFilterProps {
-  selectedCategories: string[];
-  onChange: (categories: string[]) => void;
+  selectedCategories: string | null;
+  onChange: (categories: string | null) => void;
 }
 
-const categories = ["Men", "Women", "T-Shirts", "Jackets and Coats", "Hat"];
+const categories = ["Dresses", "T-Shirts", "Coats", "Oversized"];
 
 export function CategoryFilter({
   selectedCategories,
@@ -13,9 +13,9 @@ export function CategoryFilter({
 }: CategoryFilterProps) {
   const handleCategoryChange = (category: string, checked: boolean) => {
     if (checked) {
-      onChange([...selectedCategories, category]);
+      onChange(category);
     } else {
-      onChange(selectedCategories.filter((c) => c !== category));
+      onChange(null);
     }
   };
 
@@ -29,7 +29,7 @@ export function CategoryFilter({
               className="accent-orange-950 bg-orange-950"
               type="checkbox"
               id={category}
-              checked={selectedCategories.includes(category)}
+              checked={selectedCategories === category}
               onChange={(e) => handleCategoryChange(category, e.target.checked)}
             />
             <label

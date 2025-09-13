@@ -30,7 +30,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchMaleProduct = async () => {
       try {
-        const response = await fetch("/api/products/male");
+        const response = await fetch("/api/products/men");
         const products = await response.json();
         setProduct(products.data || []);
       } catch (error) {

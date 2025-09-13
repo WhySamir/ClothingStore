@@ -7,6 +7,7 @@ import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Reviews } from "@/types/productDetailsType";
+import { useAuth } from "../auth-context";
 
 const RatingBar = ({
   stars,
@@ -29,6 +30,15 @@ const RatingBar = ({
 };
 
 const Review = () => {
+  const { user } = useAuth();
+  const isLoggedIn = !!user; //explict false if null
+
+  const [showReviewForm, setShowReviewForm] = useState(!isLoggedIn);
+
+  useEffect(() => {
+    setShowReviewForm(!isLoggedIn);
+  }, [isLoggedIn]);
+
   const [reviews, setReviews] = useState<Reviews[]>([]);
   const { productId } = useParams<{ productId: string }>();
 
@@ -219,9 +229,15 @@ const Review = () => {
         </div>
 
         {/* review form */}
-        <h1 className="text-2xl font-semibold mt-8 mb-2">Add your review</h1>
-        <p className="mb-2">Your feedback is valuable to us.</p>
-        <ReviewForm />
+        {!showReviewForm && (
+          <>
+            <h1 className="text-2xl font-semibold mt-8 mb-2">
+              Add your review
+            </h1>
+            <p className="mb-2">Your feedback is valuable to us.</p>
+            <ReviewForm />
+          </>
+        )}
       </div>
     </>
   );

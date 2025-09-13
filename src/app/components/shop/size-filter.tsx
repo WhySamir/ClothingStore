@@ -1,18 +1,18 @@
 "use client";
 
 interface SizeFilterProps {
-  selectedSizes: string[];
-  onChange: (sizes: string[]) => void;
+  selectedSize: string | null;
+  onChange: (sizes: string | null) => void;
 }
 
 const sizes = ["S", "M", "L", "XL", "XXL"];
 
-export function SizeFilter({ selectedSizes, onChange }: SizeFilterProps) {
+export function SizeFilter({ selectedSize, onChange }: SizeFilterProps) {
   const handleSizeChange = (size: string) => {
-    if (selectedSizes.includes(size)) {
-      onChange(selectedSizes.filter((s) => s !== size));
+    if (selectedSize === size) {
+      onChange(null);
     } else {
-      onChange([...selectedSizes, size]);
+      onChange(size);
     }
   };
 
@@ -25,7 +25,7 @@ export function SizeFilter({ selectedSizes, onChange }: SizeFilterProps) {
             <button
               onClick={() => handleSizeChange(size)}
               className={`w-4 h-4 rounded border transition-all flex-shrink-0 ${
-                selectedSizes.includes(size)
+                selectedSize === size
                   ? "accent-orange-950 bg-orange-950"
                   : "border-gray-300 hover:border-primary"
               }`}
@@ -33,7 +33,7 @@ export function SizeFilter({ selectedSizes, onChange }: SizeFilterProps) {
             />
             <span
               className={`text-sm cursor-pointer transition-colors ${
-                selectedSizes.includes(size)
+                selectedSize === size
                   ? "text-primary font-medium"
                   : "text-foreground hover:text-primary"
               }`}

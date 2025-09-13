@@ -90,6 +90,11 @@ export async function GET(req:NextRequest) {
             select:{
               name:true
             }
+          },features:{
+            select:{
+              key:true,
+              value:true
+            }
           }
          }
      })

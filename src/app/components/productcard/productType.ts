@@ -19,6 +19,7 @@ export type ProductOrg = {
   discount: number|null;
   mainImgUrl: string;
   colors: { color: string; hexCode: string; stockQty: number }[];
+  features: { key: string; value: string }[];
   sizes: { size: string; stockQty: number }[];
   reviews: {  rating: number}[];
   tags: { name: string }[];

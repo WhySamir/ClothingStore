@@ -1,27 +1,27 @@
 "use client";
 
 interface ColorFilterProps {
-  selectedColors: string[];
-  onChange: (colors: string[]) => void;
+  selectedColors: string | null;
+  onChange: (colors: string | null) => void;
 }
 
 const colors = [
-  { name: "Black", value: "black", color: "#000000" },
-  { name: "Grey", value: "grey", color: "#808080" },
-  { name: "Green", value: "green", color: "#008000" },
-  { name: "Red", value: "red", color: "#FF0000" },
-  { name: "Orange", value: "orange", color: "#FFA500" },
-  { name: "Blue", value: "blue", color: "#0000FF" },
-  { name: "Pink", value: "pink", color: "#FFC0CB" },
+  { name: "Black", value: "Black", color: "#000000" },
+  { name: "Brown", value: "Brown", color: "#733121" },
+  { name: "Green", value: "Green", color: "#008000" },
+  { name: "Red", value: "Red", color: "#FF0000" },
+  { name: "Orange", value: "Orange", color: "#FFA500" },
+  { name: "Blue", value: "Blue", color: "#0000FF" },
+  { name: "Dark Bluish", value: "Dark Bluish", color: "#FFC0CB" },
   // { name: "White", value: "white", color: "#FFFFFF" },
 ];
 
 export function ColorFilter({ selectedColors, onChange }: ColorFilterProps) {
   const handleColorChange = (colorValue: string) => {
-    if (selectedColors.includes(colorValue)) {
-      onChange(selectedColors.filter((c) => c !== colorValue));
+    if (selectedColors === colorValue) {
+      onChange(null);
     } else {
-      onChange([...selectedColors, colorValue]);
+      onChange(colorValue);
     }
   };
 
@@ -37,7 +37,7 @@ export function ColorFilter({ selectedColors, onChange }: ColorFilterProps) {
                 backgroundColor: color.color,
               }}
               className={`w-4 h-4 rounded-full flex-shrink-0 transition-all ${
-                selectedColors.includes(color.value)
+                selectedColors === color.value
                   ? "ring-2 ring-black ring-offset-2"
                   : "hover:scale-110"
               }`}
@@ -45,7 +45,7 @@ export function ColorFilter({ selectedColors, onChange }: ColorFilterProps) {
             />
             <span
               className={`text-sm cursor-pointer transition-colors ${
-                selectedColors.includes(color.value)
+                selectedColors === color.value
                   ? "text-primary font-medium"
                   : "text-foreground hover:text-primary"
               }`}

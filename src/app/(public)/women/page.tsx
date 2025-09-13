@@ -6,6 +6,7 @@ import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
 import { ProductOrg } from "@/app/components/productcard/productType";
+import { Filters } from "@/types/FilterTypes";
 // Mock product data
 const mockProducts = [
   {
@@ -102,63 +103,49 @@ const mockProducts = [
   },
 ];
 
-export interface Filters {
-  categories: string[];
-  priceRange: [number, number];
-  colors: string[];
-  sizes: string[];
-  gender: string[];
-}
-
 export default function HomePage() {
   const [filters, setFilters] = useState<Filters>({
-    categories: [],
+    feature: null,
     priceRange: [25, 125],
-    colors: [],
-    sizes: [],
-    gender: [],
+    color: null,
+    size: null,
   });
 
   const [product, setProduct] = useState<ProductOrg[] | null>(null);
 
-  const filteredProducts = mockProducts.filter((product) => {
-    const matchesCategory =
-      filters.categories.length === 0 ||
-      filters.categories.includes(product.category);
+  const filteredProducts = product?.filter((product) => {
     const matchesPrice =
-      product.price >= filters.priceRange[0] &&
-      product.price <= filters.priceRange[1];
+      Number(product?.sellingPrice) >= filters.priceRange[0] &&
+      Number(product?.sellingPrice) <= filters.priceRange[1];
     const matchesColor =
-      filters.colors.length === 0 ||
-      filters.colors.some((color) => product.colors.includes(color));
+      filters.color === null ||
+      product.colors.map((c) => c.color).includes(filters.color);
     const matchesSize =
-      filters.sizes.length === 0 ||
-      filters.sizes.some((size) => product.sizes.includes(size));
-    const matchesGender =
-      filters.gender.length === 0 || filters.gender.includes(product.gender);
+      filters.size === null ||
+      product.sizes.map((s) => s.size).includes(filters.size);
+    const matchesFeature =
+      filters.feature === null ||
+      product.tags.map((t) => t.name).includes(filters.feature) ||
+      product.features.map((f) => f.value).includes(filters.feature);
 
-    return (
-      matchesCategory &&
-      matchesPrice &&
-      matchesColor &&
-      matchesSize &&
-      matchesGender
-    );
+    return matchesPrice && matchesColor && matchesSize && matchesFeature;
   });
 
   const updateFilters = (newFilters: Partial<Filters>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
-  const removeFilter = (type: keyof Filters, value: string | number) => {
+  const removeFilter = (type: keyof Filters, value: string | number | null) => {
     setFilters((prev) => {
       const updated = { ...prev };
       if (type === "priceRange") {
         updated.priceRange = [25, 125];
-      } else if (Array.isArray(updated[type])) {
-        updated[type] = (updated[type] as string[]).filter(
-          (item) => item !== value
-        );
+      } else if (type === "size") {
+        updated.size = null;
+      } else if (type === "color") {
+        updated.color = null;
+      } else if (type === "feature") {
+        updated.feature = null;
       }
       return updated;
     });
@@ -179,11 +166,10 @@ export default function HomePage() {
 
   const clearAllFilters = () => {
     setFilters({
-      categories: [],
+      feature: null,
       priceRange: [25, 125],
-      colors: [],
-      sizes: [],
-      gender: [],
+      color: null,
+      size: null,
     });
   };
 
@@ -222,7 +208,7 @@ export default function HomePage() {
 
             {/* Product Grid */}
 
-            {product?.length === 0 ? (
+            {filteredProducts?.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   No products found matching your filters.
@@ -233,7 +219,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2  place-items-center  lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {product?.map((product: ProductOrg) => (
+                {filteredProducts?.map((product: ProductOrg) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
