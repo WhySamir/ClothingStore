@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 // import { SortDropdown } from "@/components/sort-dropdown";
@@ -11,7 +10,7 @@ import { Filters } from "@/types/FilterTypes";
 export default function HomePage() {
   const [filters, setFilters] = useState<Filters>({
     feature: null,
-    priceRange: [25, 125],
+    priceRange: [25, 2000],
     color: null,
     size: null,
   });
@@ -44,7 +43,7 @@ export default function HomePage() {
     setFilters((prev) => {
       const updated = { ...prev };
       if (type === "priceRange") {
-        updated.priceRange = [25, 125];
+        updated.priceRange = [25, 2000];
       } else if (type === "size") {
         updated.size = null;
       } else if (type === "color") {
@@ -72,7 +71,7 @@ export default function HomePage() {
   const clearAllFilters = () => {
     setFilters({
       feature: null,
-      priceRange: [25, 125],
+      priceRange: [25, 2000],
       color: null,
       size: null,
     });

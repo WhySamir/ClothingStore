@@ -28,7 +28,7 @@ export default function GoogleOneTap() {
         cancel_on_tap_outside: false,
       });
 
-      // This shows the floating bubble prompt
+      // for showings the floating bubble prompt
       window.google.accounts.id.prompt();
     };
 

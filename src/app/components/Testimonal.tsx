@@ -30,18 +30,21 @@ export default function InstagramTestimonials() {
               onMouseOver={() => setinstaHover(index)}
               onMouseOut={() => setinstaHover(null)}
             >
-              <Image
-                src={image}
-                alt={`Instagram post ${index + 1}`}
-                width={288}
-                height={256}
-                className="w-full max-w-72 h-64 object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              {instaHover === index && (
-                <div className="absolute inset-0 bg-neutral-900/80 flex items-center justify-center">
-                  <Instagram className="w-12 h-12 text-white" />
-                </div>
-              )}
+              <div className="relative w-full h-64 max-w-72 group overflow-hidden">
+                <Image
+                  src={image}
+                  alt={`Instagram post ${index + 1}`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+
+                {instaHover === index && (
+                  <div className="absolute inset-0 bg-neutral-900/80 flex items-center justify-center">
+                    <Instagram className="w-12 h-12 text-white" />
+                  </div>
+                )}
+              </div>
               {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" /> */}
             </div>
           ))}
@@ -74,6 +77,8 @@ export default function InstagramTestimonials() {
                   src="/women.png"
                   alt="Leslie Alexander"
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
                   style={{
                     objectFit: "cover",
                     objectPosition: "calc(100% + 60px) center",
@@ -83,12 +88,13 @@ export default function InstagramTestimonials() {
                 />
                 <div className="relative mb-6">
                   <div className="absolute top-0 right-0 w-12 h-12 bg-yellow-300  flex items-center justify-center">
-                    <span className="w-16 leading-none    text-center place-items-center font-bold text-gray-900">
+                    <span className="leading-none text-center place-items-center font-bold text-gray-900">
                       <Image
                         src="/quote.svg"
                         alt="Quote"
                         width={32}
                         height={40}
+                        className="w-16 h-auto"
                       />
                     </span>
                   </div>

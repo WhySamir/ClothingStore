@@ -25,6 +25,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Image
           src={product.mainImgUrl}
           alt={product.name}
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           fill
           style={{
             objectFit: "cover",

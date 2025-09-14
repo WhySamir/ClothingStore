@@ -5,13 +5,10 @@ import { getOrSetCache } from "@/app/lib/cache";
 import { ApiError } from "@/utlis/ApiResponders/ApiError";
 
 export async function GET(req:NextRequest) {
-    const user = await verifyUser(req)
-
-  if (!user) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-try {
   
+  try {
+    
+  const user = await verifyUser(req)
   const customerProfile = await getOrSetCache(
       `customer:${user.id}`, 
       3600, // ~1hr
@@ -19,14 +16,25 @@ try {
       select: { id: true, name: true, email: true, provider: true, userAvatarUrl: true } })
     );
 
+     if (!customerProfile) {
+      return Response.json(
+        { error: "Customer profile not found" },
+        { status: 404 }
+      );
+    }
+
   const [cartCount, wishlistCount] = await Promise.all([
   prisma.cart.count({ where: { customerId: user.id } }),
   prisma.wishlistItem.count({ where: { customerId: user.id } }),
 ]);
   
     return Response.json({...customerProfile,cartCount,wishlistCount});
-} catch (error) {
-  return ApiError(500,error)
+} catch (error: unknown) {
+  if (error instanceof Error) {
+    console.error("API /customers failed:", error.message, error.stack);
+  } else {
+    console.error("API /customers failed with non-Error:", error);
+  }
   
 }
 }

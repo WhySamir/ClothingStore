@@ -57,6 +57,7 @@ export default function ImageGallery() {
           src={allImages[selectedImage] || "/placeholder.svg"}
           alt={`Product image ${selectedImage + 1}`}
           fill
+          priority
           className="object-cover "
         />
         <button

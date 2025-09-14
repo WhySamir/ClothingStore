@@ -17,13 +17,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        // Only fetch if cookie exists
+        const cookies = document.cookie;
+        if (!cookies.includes("sb-access-token")) return;
+
         const res = await fetch("/api/customers");
         const data = await res.json();
         setCustomer(data);
       } catch (err) {
-        console.error("Failed to fetch user:", err);
+        console.log("Failed to fetch user:", err);
       }
     };
+
     fetchUser();
   }, []);
 
@@ -31,7 +36,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const getUser = async () => {
       const {
         data: { user },
+        error,
       } = await supabase.auth.getUser();
+
+      if (error) {
+        if (
+          error instanceof Error &&
+          error.message.includes("Auth session missing")
+        ) {
+          setUser(null);
+        } else {
+          console.error(error);
+        }
+        return;
+      }
       setUser(user);
     };
     getUser();
