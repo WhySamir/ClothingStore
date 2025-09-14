@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 interface Images {
   url: string;
@@ -18,32 +19,38 @@ export default function ImageGallery() {
   const { productId } = useParams<{ productId: string }>();
 
   const [selectedImage, setSelectedImage] = useState(0);
-  const [allImages, setAllImages] = useState<string[]>([]);
 
-  useEffect(() => {
-    const fetchProductImages = async () => {
-      const res = await fetch(`/api/products/${productId}/imagegallery`);
-      if (!res.ok) {
-        window.location.href = "/404";
-        return;
-      }
-      const { data }: { data: ImageType } = await res.json();
+  const fetchProductImages = async (): Promise<string[]> => {
+    if (!productId) return [];
 
-      // merge main image + gallery into one array
-      const merged = [data.mainImgUrl, ...data.images.map((img) => img.url)];
-      setAllImages(merged);
-    };
+    const res = await fetch(`/api/products/${productId}/imagegallery`);
+    if (!res.ok) {
+      window.location.href = "/404";
+      return [];
+    }
 
-    fetchProductImages();
-  }, [productId]);
+    const { data }: { data: ImageType } = await res.json();
+    const merged = [data.mainImgUrl, ...data.images.map((img) => img.url)];
+    return merged;
+  };
+
+  const {
+    data: productImages = [],
+    isLoading,
+    isError,
+  } = useQuery<string[]>({
+    queryKey: ["productImages", productId],
+    queryFn: fetchProductImages,
+    staleTime: 1000 * 60 * 5,
+  });
 
   const nextImage = () => {
-    setSelectedImage((prev) => (prev + 1) % allImages.length);
+    setSelectedImage((prev) => (prev + 1) % productImages.length);
   };
 
   const prevImage = () => {
     setSelectedImage(
-      (prev) => (prev - 1 + allImages.length) % allImages.length
+      (prev) => (prev - 1 + productImages.length) % productImages.length
     );
   };
 
@@ -53,13 +60,19 @@ export default function ImageGallery() {
     <div className="space-y-4">
       {/* Main Image */}
       <div className="relative aspect-square bg-gray-100 overflow-hidden">
-        <Image
-          src={allImages[selectedImage] || "/placeholder.svg"}
-          alt={`Product image ${selectedImage + 1}`}
-          fill
-          priority
-          className="object-cover "
-        />
+        {isLoading ? (
+          "Loading..."
+        ) : isError ? (
+          "Error fetching product image"
+        ) : (
+          <Image
+            src={productImages[selectedImage] || "/placeholder.svg"}
+            alt={`Product image ${selectedImage + 1}`}
+            fill
+            priority
+            className="object-cover "
+          />
+        )}
         <button
           onClick={prevImage}
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-yellow-200 border border-yellow-200 text-gray-900 p-2 md:p-4"
@@ -76,22 +89,28 @@ export default function ImageGallery() {
 
       {/* Thumbnails */}
       <div className="flex gap-2">
-        {allImages.map((url, index) => (
-          <button
-            key={index}
-            onClick={() => setSelectedImage(index)}
-            className={`relative w-20 h-20 overflow-hidden border-2 ${
-              selectedImage === index ? "border-amber-900" : "border-gray-200"
-            }`}
-          >
-            <Image
-              src={url || "/placeholder.svg"}
-              alt={`Thumbnail ${index + 1}`}
-              fill
-              className="object-cover"
-            />
-          </button>
-        ))}
+        {isLoading
+          ? "Loading..."
+          : isError
+          ? "Error fetching product images"
+          : productImages.map((url, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedImage(index)}
+                className={`relative w-20 h-20 overflow-hidden border-2 ${
+                  selectedImage === index
+                    ? "border-amber-900"
+                    : "border-gray-200"
+                }`}
+              >
+                <Image
+                  src={url || "/placeholder.svg"}
+                  alt={`Thumbnail ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </button>
+            ))}
       </div>
     </div>
   );

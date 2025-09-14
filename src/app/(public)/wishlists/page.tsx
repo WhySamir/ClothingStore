@@ -87,7 +87,7 @@ export default function Page() {
 
                   <div className="relative  aspect-square flex-shrink-0">
                     <Image
-                      src={item.product.mainImgUrl || "/placeholder.svg"}
+                      src={item.product?.mainImgUrl || "/placeholder.svg"}
                       alt={item.product.name}
                       height={36}
                       width={36}

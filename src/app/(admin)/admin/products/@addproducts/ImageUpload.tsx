@@ -13,7 +13,7 @@ interface ImageUploadProps {
 export function ImageUpload({
   files,
   onChange,
-  error,
+  // error,
   setError,
 }: ImageUploadProps) {
   const onDrop = useCallback(

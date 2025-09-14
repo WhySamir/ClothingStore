@@ -33,16 +33,16 @@ interface Sizes {
   stockQty: number;
 }
 
-interface CartItem {
-  id: string; // unique cart item id
-  productId: string;
-  itemQty: number;
-  colorId: string;
-  sizeId: string;
-  product: Product;
-  color: Color;
-  size: Sizes;
-}
+// interface CartItem {
+//   id: string; // unique cart item id
+//   productId: string;
+//   itemQty: number;
+//   colorId: string;
+//   sizeId: string;
+//   product: Product;
+//   color: Color;
+//   size: Sizes;
+// }
 
 export default function ShoppingCart() {
   const dispatch = useDispatch();

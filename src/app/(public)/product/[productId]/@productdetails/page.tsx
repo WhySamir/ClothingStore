@@ -7,26 +7,38 @@ import AddtoCart from "@/app/components/buttons/AddtoCart";
 import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
 import { updateQty } from "@/redux/AddtoCart/CartSlice";
 import { useDispatch } from "react-redux";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ProductDetailsType } from "@/types/productDetailsType";
 import { AddToWishlistButton } from "@/app/components/buttons/AddtoWishlist";
+import { useQuery } from "@tanstack/react-query";
+import { div } from "framer-motion/client";
 
 export default function ProductDetails() {
+  const router = useRouter();
   const { productId } = useParams<{ productId: string }>();
-  const [product, setProduct] = useState<ProductDetailsType | null>(null);
 
   useEffect(() => {
-    if (!productId) return;
+    if (!productId) {
+      router.push("/404");
+    }
+  }, [productId, router]);
 
-    const fetchProductDesc = async () => {
-      const res = await fetch(`/api/products/${productId}/productdetails`);
-      if (!res.ok) throw new Error("Failed to fetch  product details");
-      const { data }: { data: ProductDetailsType } = await res.json();
-      setProduct(data);
-    };
+  const fetchProductDesc = async (): Promise<ProductDetailsType | null> => {
+    const res = await fetch(`/api/products/${productId}/productdetails`);
+    if (!res.ok) throw new Error("Failed to fetch  product details");
+    const { data }: { data: ProductDetailsType } = await res.json();
+    return data;
+  };
 
-    fetchProductDesc();
-  }, [productId]);
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useQuery<ProductDetailsType | null>({
+    queryKey: ["productDetails", productId],
+    queryFn: fetchProductDesc,
+    staleTime: 1000 * 60 * 5,
+  });
 
   const [selectedColor, setSelectedColor] = useState({
     name: product?.colors[0]?.color,
@@ -45,44 +57,51 @@ export default function ProductDetails() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-sm text-gray-600 my-2">
-          {product?.tags.map((tag) => tag.name).join(" ")}
-        </p>
-        <h1 className="text-3xl font-semibold text-gray-900 mb-4">
-          {product?.name}
-        </h1>
+      {isLoading ? (
+        <div className="text-5xl mt-4">Loading...</div>
+      ) : isError ? (
+        "Error fetching product description"
+      ) : (
+        <div>
+          <p className="text-sm text-gray-600 my-2">
+            {product?.tags.map((tag) => tag.name).join(" ")}
+          </p>
+          <h1 className="text-3xl font-semibold text-gray-900 mb-4">
+            {product?.name}
+          </h1>
 
-        {/* Rating */}
-        <div className="flex items-center gap-2 mb-4">
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className="w-5 h-5 fill-yellow-400 text-yellow-400"
-              />
-            ))}
+          {/* Rating */}
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                />
+              ))}
+            </div>
+            <span className="text-sm font-medium tracking-wider">
+              {product?.reviews.length} Reviews
+            </span>
           </div>
-          <span className="text-sm font-medium tracking-wider">
-            {product?.reviews.length} Reviews
-          </span>
-        </div>
 
-        {/* Price */}
-        <div className="flex items-center gap-3 mb-6">
-          <span className="text-3xl font-semibold text-gray-900">
-            ${(Number(product?.sellingPrice) + 0).toFixed(2)}
-          </span>
-          <span className="text-xl text-gray-500 line-through">
-            ${(Number(product?.sellingPrice) + 25).toFixed(2)}
-          </span>
-        </div>
+          {/* Price */}
+          <div className="flex items-center gap-3 mb-6">
+            <span className="text-3xl font-semibold text-gray-900">
+              $ {(Number(product?.sellingPrice) + 0).toFixed(2)}
+            </span>
 
-        {/* Description */}
-        <p className="text-gray-600 mb-6  line-clamp-2">
-          {product?.description}
-        </p>
-      </div>
+            <span className="text-xl text-gray-500 line-through">
+              $ {(Number(product?.sellingPrice) + 25).toFixed(2)}
+            </span>
+          </div>
+
+          {/* Description */}
+          <p className="text-gray-600 mb-6  line-clamp-2">
+            {product?.description}
+          </p>
+        </div>
+      )}
 
       {/* Color Selection */}
       <div>

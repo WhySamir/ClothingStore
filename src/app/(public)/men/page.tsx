@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
-// import { SortDropdown } from "@/components/sort-dropdown";
 import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
 import { ProductOrg } from "@/app/components/productcard/productType";
 import { Filters } from "@/types/FilterTypes";
 
-export default function HomePage() {
+export default function Men() {
   const [filters, setFilters] = useState<Filters>({
     feature: null,
-    priceRange: [25, 125],
+    priceRange: [25, 2000],
     color: null,
     size: null,
   });
@@ -20,8 +19,9 @@ export default function HomePage() {
 
   const filteredProducts = product?.filter((product) => {
     const matchesPrice =
-      Number(product?.sellingPrice) >= filters.priceRange[0] &&
-      Number(product?.sellingPrice) <= filters.priceRange[1];
+      !filters.priceRange ||
+      (Number(product?.sellingPrice) >= filters.priceRange[0] &&
+        Number(product?.sellingPrice) <= filters.priceRange[1]);
     const matchesColor =
       filters.color === null ||
       product.colors.map((c) => c.color).includes(filters.color);
@@ -30,8 +30,8 @@ export default function HomePage() {
       product.sizes.map((s) => s.size).includes(filters.size);
     const matchesFeature =
       filters.feature === null ||
-      product.tags.map((t) => t.name).includes(filters.feature) ||
-      product.features.map((f) => f.value).includes(filters.feature);
+      (product.tags?.map((t) => t.name) ?? []).includes(filters.feature) ||
+      (product.features?.map((f) => f.value) ?? []).includes(filters.feature);
 
     return matchesPrice && matchesColor && matchesSize && matchesFeature;
   });
@@ -40,11 +40,11 @@ export default function HomePage() {
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
-  const removeFilter = (type: keyof Filters, value: string | number | null) => {
+  const removeFilter = (type: keyof Filters) => {
     setFilters((prev) => {
       const updated = { ...prev };
       if (type === "priceRange") {
-        updated.priceRange = [25, 125];
+        updated.priceRange = [25, 2000];
       } else if (type === "size") {
         updated.size = null;
       } else if (type === "color") {
@@ -72,7 +72,7 @@ export default function HomePage() {
   const clearAllFilters = () => {
     setFilters({
       feature: null,
-      priceRange: [25, 125],
+      priceRange: [25, 2000],
       color: null,
       size: null,
     });
@@ -86,7 +86,7 @@ export default function HomePage() {
             Filter Options
           </h1>
           <p className="text-muted-foreground">
-            Showing 1-2 of {filteredProducts?.length} results
+            Showing {filteredProducts?.length ?? 0} results
           </p>
         </div>
         <div className="flex flex-col lg:flex-row gap-8">
@@ -113,7 +113,7 @@ export default function HomePage() {
 
             {/* Product Grid */}
 
-            {filteredProducts?.length === 0 ? (
+            {!filteredProducts || filteredProducts.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   No products found matching your filters.
@@ -124,7 +124,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2  place-items-center  lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredProducts?.map((product: ProductOrg) => (
+                {filteredProducts.map((product: ProductOrg) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>

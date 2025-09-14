@@ -1,3 +1,4 @@
+import ClientProvider from "@/app/components/ReactQueryClientProvider";
 import type { ReactNode } from "react";
 
 interface ProductLayoutProps {
@@ -16,14 +17,16 @@ export default function ProductLayout({
 }: ProductLayoutProps) {
   return (
     <>
-      <div className="max-w-7xl mx-auto px-5 md:px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {imagegallery}
-          {productdetails}
+      <ClientProvider>
+        <div className="max-w-7xl mx-auto px-5 md:px-6 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {imagegallery}
+            {productdetails}
+          </div>
+          {descriptionandreview}
         </div>
-        {descriptionandreview}
-      </div>
-      {children}
+        {children}
+      </ClientProvider>
     </>
   );
 }

@@ -2,29 +2,41 @@
 
 import Review from "@/app/components/Review";
 import { ProductAdditionalDetailsType } from "@/types/productDetailsType";
-import { useParams } from "next/navigation";
-import { use, useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
-interface Stats {
-  averageRating: number;
-  totalReviews: number;
-  ratingDistribution: {
-    5: number;
-    4: number;
-    3: number;
-    2: number;
-    1: number;
-  };
-}
-
-export default function Page({ stats }: { stats?: Stats }) {
+export default function Page() {
+  const router = useRouter();
   const [select, setSelect] = useState<number>(0);
   const [lineStyle, setLineStyle] = useState({ width: 0, left: 0 });
   const tabRefs = useRef<HTMLHeadingElement[]>([]);
   const { productId } = useParams<{ productId: string }>();
 
-  const [productDetails, setProductDetails] =
-    useState<ProductAdditionalDetailsType | null>(null);
+  useEffect(() => {
+    if (!productId) {
+      router.push("/404");
+    }
+  }, [productId, router]);
+
+  const fetchProductionAdditionalInfo =
+    async (): Promise<ProductAdditionalDetailsType | null> => {
+      const response = await fetch(
+        `/api/products/${productId}/additionaldetails`
+      );
+      const data = await response.json();
+      return data.data;
+    };
+
+  const {
+    data: productDetails,
+    isLoading,
+    isError,
+  } = useQuery<ProductAdditionalDetailsType | null>({
+    queryKey: ["productDetails&Review", productId],
+    queryFn: fetchProductionAdditionalInfo,
+    staleTime: 1000 * 60 * 5,
+  });
 
   const tabs = ["Description", "Additional Information", "Review"];
 
@@ -44,18 +56,6 @@ export default function Page({ stats }: { stats?: Stats }) {
       window.removeEventListener("resize", updateLineStyle);
     };
   }, [select]);
-
-  useEffect(() => {
-    const fetchProductionAdditionalInfo = async () => {
-      if (!productId) return (window.location.href = "/404");
-      const response = await fetch(
-        `/api/products/${productId}/additionaldetails`
-      );
-      const data = await response.json();
-      setProductDetails(data.data);
-    };
-    fetchProductionAdditionalInfo();
-  }, []);
 
   const specs = productDetails
     ? [
@@ -108,7 +108,11 @@ export default function Page({ stats }: { stats?: Stats }) {
         {/* description */}
         {select === 0 && (
           <div className="desc my-8 md:px-12">
-            {productDetails?.description || "No description available."}
+            {isLoading
+              ? "Loading..."
+              : isError
+              ? "Error fetching product description"
+              : productDetails?.description || "No description available."}
           </div>
         )}
         {/* additional info */}

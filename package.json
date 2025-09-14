@@ -19,6 +19,7 @@
     "@supabase/auth-helpers-nextjs": "^0.7.4",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.52.1",
+    "@tanstack/react-query": "^5.87.4",
     "browser-image-compression": "^2.0.2",
     "cloudinary": "^2.7.0",
     "framer-motion": "^12.23.12",

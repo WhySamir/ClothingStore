@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Reviews } from "@/types/productDetailsType";
 import { useAuth } from "../auth-context";
+import { useQuery } from "@tanstack/react-query";
 
 const RatingBar = ({
   stars,
@@ -39,22 +40,28 @@ const Review = () => {
     setShowReviewForm(!isLoggedIn);
   }, [isLoggedIn]);
 
-  const [reviews, setReviews] = useState<Reviews[]>([]);
   const { productId } = useParams<{ productId: string }>();
 
-  useEffect(() => {
-    const fetchReview = async () => {
-      const res = await fetch(`/api/review/${productId}`);
-      const review = await res.json();
-      console.log(review.data);
-      setReviews(
-        Array.isArray(review.data?.reviews) ? review.data.reviews : []
-      );
-    };
-    fetchReview();
-  }, [productId]);
+  const fetchReview = async (): Promise<Reviews[] | []> => {
+    if (!productId) return [];
+    const res = await fetch(`/api/review/${productId}`);
+    if (!res.ok) throw new Error("Failed to fetch reviews");
 
-  const totalReviews = reviews.length;
+    const data = await res.json();
+    return Array.isArray(data?.data?.reviews) ? data.data.reviews : [];
+  };
+
+  const {
+    data: reviews = [],
+    isLoading,
+    isError,
+  } = useQuery<Reviews[]>({
+    queryKey: ["reviews", productId],
+    queryFn: fetchReview,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const totalReviews = reviews?.length;
   const avgRating = totalReviews
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
     : 0;
@@ -75,7 +82,9 @@ const Review = () => {
             <div className=" space-y-5 md:grid  md:grid-cols-7 gap-4">
               <div className="col-span-2 flex flex-col items-center justify-center gap-4   md:border-r-1 border-gray-300 h-full w-full font-semibold text-gray-900">
                 <h3>
-                  <span className="text-4xl font-semibold">{avgRating}</span>{" "}
+                  <span className="text-4xl font-semibold">
+                    {isLoading ? "Loading..." : isError ? "0" : avgRating}
+                  </span>{" "}
                   out of 5
                 </h3>
                 <div className="flex items-center gap-2">
@@ -133,97 +142,102 @@ const Review = () => {
               </div>
             </div> */}
             <div className="space-y-6">
-              {reviews.map((review: Reviews) => (
-                <div
-                  key={review.id}
-                  className="border-b border-gray-200 pb-6 last:border-b-0"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 flex-shrink-0 overflow-hidden rounded-full">
-                      <Image
-                        src={
-                          review?.customer.userAvatarUrl || "/placeholder.svg"
-                        }
-                        alt={review?.customer.name || "User Avatar"}
-                        width={48}
-                        height={48}
-                        className="object-cover rounded-full"
-                      />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
-                        <div>
-                          <h3 className="font-medium text-gray-900">
-                            {review.customer.name || "Anonymous"}
-                            {review?.verified && (
-                              <span className="text-gray-500 font-normal">
-                                {" "}
-                                (Verified)
-                              </span>
-                            )}
-                          </h3>
+              {isLoading
+                ? "Loading..."
+                : isError
+                ? "Error fetching product reviews"
+                : reviews.map((review: Reviews) => (
+                    <div
+                      key={review.id}
+                      className="border-b border-gray-200 pb-6 last:border-b-0"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 flex-shrink-0 overflow-hidden rounded-full">
+                          <Image
+                            src={
+                              review?.customer.userAvatarUrl ||
+                              "/placeholder.svg"
+                            }
+                            alt={review?.customer.name || "User Avatar"}
+                            width={48}
+                            height={48}
+                            className="object-cover rounded-full"
+                          />
                         </div>
-                        <span className="text-gray-500 text-sm flex-shrink-0">
-                          {new Date(review?.createdAt).toLocaleString()}
-                        </span>
-                      </div>
 
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex gap-1">
-                          {[...Array(5)].map((_, i) => {
-                            const rating = review.rating;
-                            const starIndex = i + 1;
-
-                            return (
-                              <span key={i}>
-                                {starIndex <= Math.floor(rating) ? (
-                                  <Star className="w-3 h-3 md:w-5 md:h-5 fill-yellow-400 text-yellow-400" />
-                                ) : (
-                                  <Star className="w-3 h-3 md:w-5 md:h-5 text-gray-300" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
+                            <div>
+                              <h3 className="font-medium text-gray-900">
+                                {review.customer.name || "Anonymous"}
+                                {review?.verified && (
+                                  <span className="text-gray-500 font-normal">
+                                    {" "}
+                                    (Verified)
+                                  </span>
                                 )}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      <h4 className="font-medium text-gray-900 mb-2">
-                        {review?.title}
-                      </h4>
-                      <p className="text-gray-600 mb-3 leading-relaxed">
-                        {review?.comment}
-                      </p>
-                      {/* <StarRating rating={review.rating} showNumber /> */}
-                      {review.images.length > 0 && (
-                        <div className="w-24 h-auto aspect-square">
-                          <div className="flex gap-2">
-                            {review.images.map((image, index) => (
-                              <Image
-                                key={index}
-                                src={image}
-                                alt={`Review image ${index + 1}`}
-                                height={96}
-                                width={96}
-                                className="object-cover "
-                              />
-                            ))}
+                              </h3>
+                            </div>
+                            <span className="text-gray-500 text-sm flex-shrink-0">
+                              {new Date(review?.createdAt).toLocaleString()}
+                            </span>
                           </div>
-                        </div>
-                      )}
-                      {review.videos && (
-                        <div className="w-24 h-auto aspect-square">
-                          <div className="flex gap-2">
-                            <div className="flex gap-2">
-                              <VideoPreview src={review.videos} />
+
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="flex gap-1">
+                              {[...Array(5)].map((_, i) => {
+                                const rating = review.rating;
+                                const starIndex = i + 1;
+
+                                return (
+                                  <span key={i}>
+                                    {starIndex <= Math.floor(rating) ? (
+                                      <Star className="w-3 h-3 md:w-5 md:h-5 fill-yellow-400 text-yellow-400" />
+                                    ) : (
+                                      <Star className="w-3 h-3 md:w-5 md:h-5 text-gray-300" />
+                                    )}
+                                  </span>
+                                );
+                              })}
                             </div>
                           </div>
+
+                          <h4 className="font-medium text-gray-900 mb-2">
+                            {review?.title}
+                          </h4>
+                          <p className="text-gray-600 mb-3 leading-relaxed">
+                            {review?.comment}
+                          </p>
+                          {/* <StarRating rating={review.rating} showNumber /> */}
+                          {review.images.length > 0 && (
+                            <div className="w-24 h-auto aspect-square">
+                              <div className="flex gap-2">
+                                {review.images.map((image, index) => (
+                                  <Image
+                                    key={index}
+                                    src={image}
+                                    alt={`Review image ${index + 1}`}
+                                    height={96}
+                                    width={96}
+                                    className="object-cover "
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {review.videos && (
+                            <div className="w-24 h-auto aspect-square">
+                              <div className="flex gap-2">
+                                <div className="flex gap-2">
+                                  <VideoPreview src={review.videos} />
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  ))}
             </div>
           </div>
         </div>
@@ -269,32 +283,5 @@ const Review = () => {
 //     images: [],
 //     video: "/review.mp4",
 //   },
-//   {
-//     id: 3,
-//     author: "Michael Chen",
-//     verified: true,
-//     timeAgo: "3 weeks ago",
-//     title: "Not what I expected",
-//     content:
-//       "It’s okay, but the color is different from what was shown online.",
-//     rating: 3,
-//     avatar: "/men.png",
-//     images: [],
-//     video: null,
-//   },
-//   {
-//     id: 4,
-//     author: "Lee Luth",
-//     verified: true,
-//     timeAgo: "1 month ago",
-//     title: "Love it!",
-//     content:
-//       "Perfect for my needs. Works as described and arrived on time. Will recommend to friends.",
-//     rating: 5,
-//     avatar: "/freemen.png",
-//     images: [],
-//     video: null,
-//   },
-// ];
 
 export default Review;

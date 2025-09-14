@@ -1,5 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+import { useState } from "react";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 // import { SortDropdown } from "@/components/sort-dropdown";
 import ProductCard from "@/app/components/productcard/ProductCard";
@@ -7,7 +9,13 @@ import { ActiveFilters } from "../../components/shop/activefilters";
 import { ProductOrg } from "@/app/components/productcard/productType";
 import { Filters } from "@/types/FilterTypes";
 
-export default function HomePage() {
+const fetchFemaleProducts = async (): Promise<ProductOrg[]> => {
+  const res = await fetch("/api/products/female");
+  if (!res.ok) throw new Error("Failed to fetch products");
+  const data = await res.json();
+  return data.data;
+};
+export default function Women() {
   const [filters, setFilters] = useState<Filters>({
     feature: null,
     priceRange: [25, 2000],
@@ -15,12 +23,20 @@ export default function HomePage() {
     size: null,
   });
 
-  const [product, setProduct] = useState<ProductOrg[] | null>(null);
-
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["products", "female"],
+    queryFn: fetchFemaleProducts,
+    staleTime: 1000 * 60 * 5,
+  });
   const filteredProducts = product?.filter((product) => {
     const matchesPrice =
-      Number(product?.sellingPrice) >= filters.priceRange[0] &&
-      Number(product?.sellingPrice) <= filters.priceRange[1];
+      !filters.priceRange ||
+      (Number(product?.sellingPrice) >= filters.priceRange[0] &&
+        Number(product?.sellingPrice) <= filters.priceRange[1]);
     const matchesColor =
       filters.color === null ||
       product.colors.map((c) => c.color).includes(filters.color);
@@ -39,7 +55,7 @@ export default function HomePage() {
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
-  const removeFilter = (type: keyof Filters, value: string | number | null) => {
+  const removeFilter = (type: keyof Filters) => {
     setFilters((prev) => {
       const updated = { ...prev };
       if (type === "priceRange") {
@@ -54,19 +70,6 @@ export default function HomePage() {
       return updated;
     });
   };
-
-  useEffect(() => {
-    const fetchFemaleProducts = async () => {
-      const response = await fetch("/api/products/female");
-
-      const products = await response.json();
-      setProduct(products.data);
-    };
-    fetchFemaleProducts();
-  }, []);
-  useEffect(() => {
-    console.log("Updated product:", product);
-  }, [product]);
 
   const clearAllFilters = () => {
     setFilters({
@@ -85,7 +88,11 @@ export default function HomePage() {
             Filter Options
           </h1>
           <p className="text-muted-foreground">
-            Showing 1-2 of {filteredProducts?.length} results
+            {isLoading
+              ? "Loading..."
+              : isError
+              ? "Error fetching products"
+              : `Showing ${filteredProducts?.length ?? 0} results`}
           </p>
         </div>
         <div className="flex flex-col lg:flex-row gap-8">
@@ -112,7 +119,9 @@ export default function HomePage() {
 
             {/* Product Grid */}
 
-            {filteredProducts?.length === 0 ? (
+            {isLoading ? (
+              <div className="text-center py-12">Loading products...</div>
+            ) : filteredProducts?.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   No products found matching your filters.
@@ -122,7 +131,7 @@ export default function HomePage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2  place-items-center  lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 place-items-center lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredProducts?.map((product: ProductOrg) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

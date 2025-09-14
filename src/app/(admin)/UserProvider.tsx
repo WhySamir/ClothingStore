@@ -28,7 +28,7 @@ export default function ShowUserData({
   if (loading) return <p>Loading session...</p>;
   if (!session) return <p className="text-red-500">Not logged in</p>;
 
-  const user: User = session.user;
+  // const user: User = session.user;
 
   return <>{children}</>;
 }

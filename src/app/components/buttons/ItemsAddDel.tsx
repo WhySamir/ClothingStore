@@ -16,7 +16,9 @@ export const ItemsAddDel = ({
   max,
 }: ItemsAddDelProps) => {
   return (
-    <div className={`flex items-center max-w-[9rem]  border rounded-md `}>
+    <div
+      className={`flex items-center max-w-[5.6rem] md:max-w-[9rem]  border rounded-md `}
+    >
       <button
         onClick={() => onChange(id, value - 1)}
         className="md:p-2 hover:bg-gray-100 disabled:opacity-50"
