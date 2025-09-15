@@ -41,18 +41,46 @@ export default function ProductDetails() {
   });
 
   const [selectedColor, setSelectedColor] = useState({
-    name: product?.colors[0]?.color,
-    borderClass: product?.colors[0]?.hexCode,
+    id: "",
+    name: "",
+    idx: 0,
+    borderClass: "",
   });
+
+  useEffect(() => {
+    if (product && product.colors && product.colors.length > 0) {
+      setSelectedColor({
+        id: product.colors[0].id,
+        idx: 0,
+        name: product.colors[0].color,
+        borderClass: product.colors[0].hexCode,
+      });
+    }
+    if (product && product.sizes && product.sizes.length > 0) {
+      const xlSize = product.sizes.find((size) => size.size === "XL");
+      setSelectedSize({
+        id: xlSize ? xlSize.id : "",
+        name: xlSize ? xlSize.size : "",
+      });
+    }
+  }, [product]);
   const dispatch = useDispatch();
 
-  const [selectedSize, setSelectedSize] = useState("XL");
+  const [selectedSize, setSelectedSize] = useState({
+    id: "",
+    name: "",
+  });
   const [quantity, setQuantity] = useState(1);
 
   const sizes = ["S", "M", "L", "XL", "XXL"];
   const handleQuantityChange = (productId: string, newQty: number) => {
     setQuantity(newQty);
     dispatch(updateQty({ id: productId, itemQty: newQty }));
+  };
+
+  const productCart = {
+    name: product?.name ?? "",
+    price: product?.sellingPrice ?? "",
   };
 
   return (
@@ -110,13 +138,15 @@ export default function ProductDetails() {
           <span className="capitalize">{selectedColor.name}</span>
         </div>
         <div className="flex gap-2">
-          {product?.colors.map((color) => (
+          {product?.colors.map((color, idx) => (
             <button
               key={color.hexCode}
               onClick={() =>
                 setSelectedColor({
+                  id: color.id,
                   name: color.color,
                   borderClass: color.hexCode,
+                  idx,
                 })
               }
               className={`w-8 h-8 flex items-center justify-center rounded-full   border-2  ${
@@ -138,15 +168,20 @@ export default function ProductDetails() {
       <div>
         <div className="flex items-center gap-2 mb-3">
           <span className="font-medium">Size :</span>
-          <span>{selectedSize}</span>
+          <span>{selectedSize.name}</span>
         </div>
         <div className="flex gap-2 mb-2 w-full flex-wrap">
           {sizes.map((size) => (
             <button
               key={size}
-              onClick={() => setSelectedSize(size)}
+              onClick={() =>
+                setSelectedSize({
+                  id: product?.sizes.find((s) => s.size === size)?.id ?? "",
+                  name: size,
+                })
+              }
               className={`px-4 py-2 border rounded-md ${
-                selectedSize === size
+                selectedSize.name === size
                   ? "bg-yellow-200 border border-yellow-200  text-black"
                   : "border-gray-300 hover:border-gray-400"
               }`}
@@ -178,7 +213,11 @@ export default function ProductDetails() {
           value={quantity}
           onChange={(id: string, qty: number) => handleQuantityChange(id, qty)}
         />
-        <AddtoCart />
+        <AddtoCart
+          productCart={productCart}
+          color={selectedColor}
+          size={selectedSize}
+        />
 
         <button className="bg-yellow-200 border border-yellow-200  py-2 text-black px-8">
           Buy Now

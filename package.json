@@ -37,8 +37,7 @@
     "react-redux": "^9.2.0",
     "react-star-ratings": "^2.3.0",
     "recharts": "^3.1.2",
-    "zod": "^4.0.17",
-    "zustand": "^5.0.8"
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

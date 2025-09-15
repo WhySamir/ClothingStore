@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useProductImage } from "@/app/ProductImageContext";
 
 interface Images {
   url: string;
@@ -19,6 +20,7 @@ export default function ImageGallery() {
   const { productId } = useParams<{ productId: string }>();
 
   const [selectedImage, setSelectedImage] = useState(0);
+  const { setImages, setMainImgUrl } = useProductImage();
 
   const fetchProductImages = async (): Promise<string[]> => {
     if (!productId) return [];
@@ -30,6 +32,8 @@ export default function ImageGallery() {
     }
 
     const { data }: { data: ImageType } = await res.json();
+    setImages(data.images.map((img) => img.url));
+    setMainImgUrl(data.mainImgUrl);
     const merged = [data.mainImgUrl, ...data.images.map((img) => img.url)];
     return merged;
   };

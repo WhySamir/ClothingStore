@@ -126,7 +126,7 @@ export default function Page() {
                   </div>
                 </div>
                 <div className="hidden  md:col-span-2 md:flex items-center justify-between gap-2">
-                  <AddtoCart />
+                  {/* <AddtoCart /> */}
                 </div>
               </div>
             ))}

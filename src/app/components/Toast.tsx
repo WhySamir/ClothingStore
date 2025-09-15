@@ -6,13 +6,19 @@ interface AddToCartToastProps {
   onClose: () => void;
   product: {
     name: string;
-    category: string;
-    size: string;
-    price: string;
-    image: string;
+    price: string | number;
+  };
+  color: {
+    id: string;
+    name: string;
+  };
+  size: {
+    id: string;
+    name: string;
   };
   bagCount: number;
   type: string;
+  image: string;
 }
 
 export function AddToCartToast({
@@ -20,7 +26,10 @@ export function AddToCartToast({
   onClose,
   product,
   bagCount,
+  color,
+  size,
   type,
+  image,
 }: AddToCartToastProps) {
   if (!isOpen) return null;
 
@@ -51,7 +60,7 @@ export function AddToCartToast({
         <div className="flex gap-3">
           <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
             <img
-              src={product.image || "/placeholder.svg"}
+              src={image || "/placeholder.svg"}
               alt={product.name}
               className="w-full h-full object-cover"
             />
@@ -60,9 +69,9 @@ export function AddToCartToast({
             <h3 className="font-medium text-gray-900 truncate">
               {product.name}
             </h3>
-            <p className="text-sm text-gray-600 mt-1">{product.category}</p>
-            <p className="text-sm text-gray-600">{product.size}</p>
-            <p className="font-medium text-gray-900 mt-1">{product.price}</p>
+            <p className="text-sm text-gray-600 mt-1">{color.name}</p>
+            <p className="text-sm text-gray-600">{size.name}</p>
+            <p className="font-medium text-gray-900 mt-1">${product.price}</p>
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-import ReviewForm from "@/app/components/ReviewForm";
 
 export interface ProductDetailsType {
   id: string;
@@ -11,11 +10,13 @@ export interface ProductDetailsType {
   tags: { name: string }[];
   reviews: { rating: number }[];
   colors: {
+    id:string;
     color: string;
     hexCode: string;
     stockQty: number;
   }[];
   sizes: {
+    id:string;
     size: string;
     stockQty: number;
   }[];

@@ -32,6 +32,7 @@ export async function GET(
         categoryId:true,
         colors:{
             select:{
+              id:true,
                 color:true,
                 hexCode:true,
                 stockQty:true
@@ -39,6 +40,7 @@ export async function GET(
         },
         sizes:{
             select:{
+              id:true,
                 size:true,
                 stockQty:true
             }
