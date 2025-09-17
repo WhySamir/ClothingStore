@@ -30,15 +30,46 @@ const AddtoCart = ({
   color,
   size,
   productCart,
+  quantity,
 }: {
   color: colorType;
   size: sizeType;
-  productCart: { name: string; price: string | number };
+  productCart: { id: string; name: string; price: string | number };
+  quantity: number;
 }) => {
   const [showToast, setShowToast] = useState(false);
-  const handleAddToCart = () => {
-    setShowToast(true);
+  const [loading, setLoading] = useState(false);
+
+  // useEffect(() => {
+  const addToCart = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: productCart.id,
+          colorId: color.id,
+          sizeId: size.id,
+          itemQty: quantity,
+        }),
+      });
+
+      const data = await res.json();
+      setShowToast(true);
+
+      console.log("Response:", data);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // addToCart();
+  // }, []);
 
   const { mainImgUrl, images } = useProductImage();
   let image = "";
@@ -50,7 +81,7 @@ const AddtoCart = ({
   return (
     <>
       <button
-        onClick={handleAddToCart}
+        onClick={addToCart}
         className="bg-orange-950 text-white py-2  px-5 md:px-8"
       >
         Add To Cart

@@ -79,6 +79,7 @@ export default function ProductDetails() {
   };
 
   const productCart = {
+    id: product?.id ?? "",
     name: product?.name ?? "",
     price: product?.sellingPrice ?? "",
   };
@@ -217,6 +218,7 @@ export default function ProductDetails() {
           productCart={productCart}
           color={selectedColor}
           size={selectedSize}
+          quantity={quantity}
         />
 
         <button className="bg-yellow-200 border border-yellow-200  py-2 text-black px-8">
