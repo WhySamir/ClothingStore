@@ -53,7 +53,7 @@ const AddtoCart = ({
           productId: productCart.id,
           colorId: color.id,
           sizeId: size.id,
-          itemQty: quantity,
+          itemQty: Number(quantity),
         }),
       });
 

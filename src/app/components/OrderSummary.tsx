@@ -81,8 +81,41 @@ const OrderSummary = ({
       </div>
 
       <button
-        onClick={() => router.push(buttonPath)}
-        className="w-full mt-6 bg-orange-950 hover:bg-amber-800 text-white py-3 text-base font-medium"
+        onClick={async () => {
+          if (pathname === "/payment") {
+            if (totalItems === 0) return; // safety check
+
+            try {
+              const res = await fetch("/api/order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  // send cart summary, items, payment info, etc.
+                  totalAmount: total,
+                  status: "PROCESSING",
+                }),
+              });
+
+              if (!res.ok) throw new Error("Failed to create order");
+
+              const data = await res.json();
+              console.log("Order created:", data);
+
+              router.push("/ordercompleted");
+            } catch (err) {
+              console.error(err);
+              alert("Something went wrong. Please try again.");
+            }
+          } else {
+            router.push(buttonPath);
+          }
+        }}
+        disabled={totalItems === 0} // disable if no items
+        className={`w-full mt-6 text-white py-3 text-base font-medium ${
+          totalItems === 0
+            ? "bg-gray-300 cursor-not-allowed"
+            : "bg-orange-950 hover:bg-amber-800"
+        }`}
       >
         {buttonLabel}
       </button>

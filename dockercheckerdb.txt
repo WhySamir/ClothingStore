@@ -1,0 +1,23 @@
+ npm test src/app/tests/product.integration.test.ts  
+ npm test src/app/tests/productsDel.test.ts 
+  npm test src/app/tests/orders.post.test.ts 
+
+docker exec -it ecommerce_postgres_test psql -U test_user -d ecommerce_test
+
+\conninfo
+
+\dt
+\q for esc
+
+SELECT id, name, brand, "categoryId", "stockQty" FROM "Product";
+
+
+
+SELECT * FROM "ProductSize";
+SELECT * FROM "Customer";
+
+
+SELECT * FROM "Category";
+SELECT * FROM "ProductColor";
+SELECT * FROM "ProductSize";
+SELECT * FROM "ProductImage";

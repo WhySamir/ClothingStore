@@ -110,6 +110,7 @@ export const AddModal = ({
         ...data.product,
         categoryId: Number(data.product.categoryId), // number for API
       },
+      sizes: data.sizes,
       imagesMeta: data.imagesMeta.map((img) => ({
         color: img.color,
         alt: img.alt,

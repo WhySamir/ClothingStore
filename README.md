@@ -34,3 +34,31 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+# Testing
+
+Packages:
+
+`````
+npm install -D jest @types/jest ts-jest supertest @types/supertest cross-env
+npm install --save-dev env-cmd
+````
+
+
+Edit Pakage.json:
+
+`````
+
+{
+"scripts": {
+"test": "env-cmd -f .env.test cross-env NODE_ENV=test jest --runInBand",
+"test:docker": "docker-compose -f docker-compose.test.yml up -d && env-cmd -f .env.test cross-env NODE_ENV=test jest --runInBand"
+}
+}
+
+```
+
+Used Docker for testing only for DB purpose:
+
+`docker compose up -d`
+```

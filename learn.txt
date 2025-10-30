@@ -2,3 +2,5 @@ form : useActionState instead of server actions
 for maps:
 npm install react-leaflet leaflet
 npm install -D @types/leaflet
+
+testing npm install -D jest @types/jest ts-jest supertest @types/supertest cross-env

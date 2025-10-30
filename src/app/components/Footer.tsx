@@ -11,7 +11,7 @@ export default function Footer() {
             <div className="w-10 h-10 bg-[#F4D3B4] rounded-full flex items-center justify-center text-[#4A2C1A] font-bold text-xl">
               C
             </div>
-            <span className="font-bold text-xl text-white">Clothing.</span>
+            <span className="font-bold text-xl text-white">Clodex.</span>
           </div>
           <p className="text-sm mb-4 max-w-120">
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi,

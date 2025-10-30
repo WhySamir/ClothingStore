@@ -14,7 +14,14 @@ export async function POST(req: NextRequest) {
 
   try {
     const existing = await prisma.cart.findUnique({
-      where: { customerId_productId_colorId_sizeId: { customerId: customer.id, productId, colorId, sizeId } }
+      where: {
+        customerId_productId_colorId_sizeId: {
+          customerId: customer.id,
+          productId,
+          colorId,
+          sizeId,
+        },
+      },
     });
 
     if (existing) {
@@ -22,15 +29,15 @@ export async function POST(req: NextRequest) {
     }
 
     const cartItem = await prisma.cart.create({
-      data: { customerId: customer.id, productId, colorId, sizeId, itemQty }
+      data: { customerId: customer.id, productId, colorId, sizeId, itemQty },
     });
 
     return ApiResponds(201, "Cart item added", cartItem);
   } catch (error) {
-    return ApiError(500, error);
+    console.error("Cart POST error:", error);
+    return ApiError(500, (error as Error).message);
   }
 }
-
 
 export async function GET(req: NextRequest) {
   const customer = await verifyUser(req);
@@ -40,33 +47,34 @@ export async function GET(req: NextRequest) {
     const items = await prisma.cart.findMany({
       where: { customerId: customer.id },
       select: {
+        id: true,
+        createdAt: true,
+        itemQty: true,
+        product: {
+          select: {
             id: true,
-            createdAt: true,
-            itemQty: true,
-            product: {
-              select: {
-                id: true,
-                name: true,
-                sellingPrice: true,
-               mainImgUrl:true,
-               stockQty:true,
-              }
-            },
-            color: {
-              select: {
-                id: true,
-                color: true,
-                hexCode: true, stockQty: true
-              }
-            },
-            size: {
-              select: {
-                id: true,
-                size: true,
-                stockQty: true
-              }
-            }
-          }
+            name: true,
+            sellingPrice: true,
+            mainImgUrl: true,
+            stockQty: true,
+          },
+        },
+        color: {
+          select: {
+            id: true,
+            color: true,
+            hexCode: true,
+            stockQty: true,
+          },
+        },
+        size: {
+          select: {
+            id: true,
+            size: true,
+            stockQty: true,
+          },
+        },
+      },
     });
 
     return ApiResponds(200, "Cart fetched successfully", items);
@@ -85,8 +93,8 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const updated = await prisma.cart.update({
-      where: {id:cartId  },
-      data: { itemQty }
+      where: { id: cartId },
+      data: { itemQty },
     });
 
     return ApiResponds(200, "Cart item updated", updated);
@@ -105,7 +113,7 @@ export async function DELETE(req: NextRequest) {
 
   try {
     const deleted = await prisma.cart.delete({
-      where: { id: cartId }
+      where: { id: cartId },
     });
 
     return ApiResponds(200, "Cart item deleted", deleted);
@@ -113,4 +121,3 @@ export async function DELETE(req: NextRequest) {
     return ApiError(500, error);
   }
 }
-
