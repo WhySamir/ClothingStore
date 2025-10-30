@@ -12,7 +12,7 @@ const products: ProductOrg[] = [
     sellingPrice: "75",
     discount: 15,
     mainImgUrl:
-      "https://res.cloudinary.com/dcfrlqakq/image/upload/v1757538127/clothingstore/productImage/colors/epky2ihzpar4mrmvfveo.png",
+      "https://res.cloudinary.com/dcfrlqakq/image/upload/v1757538122/clothingstore/productImage/main/lpymy4o7gfuzaqrrj3te.png",
     colors: [
       {
         color: "Brown",
