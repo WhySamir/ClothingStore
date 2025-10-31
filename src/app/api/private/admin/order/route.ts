@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const order = await prisma.order.findMany({
+    const orders = await prisma.order.findMany({
       select: {
         createdAt: true,
         customerId: true,
@@ -15,8 +15,7 @@ export async function GET() {
         totalAmount: true,
       },
     });
-    // );
-    return ApiResponds(200, "order got successfully", order);
+    return ApiResponds(200, "order got successfully", orders);
   } catch (error) {
     return ApiError(500, error);
   }
@@ -33,9 +32,21 @@ export async function DELETE(req: Request) {
       );
     }
 
+    // Filter out any null or invalid IDs
+    const validIds = ids.filter(
+      (id) => typeof id === "string" && id.length > 0
+    );
+
+    if (validIds.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "No valid order IDs provided" },
+        { status: 400 }
+      );
+    }
+
     // Find which IDs actually exist
     const existingOrders = await prisma.order.findMany({
-      where: { id: { in: ids } },
+      where: { id: { in: validIds } },
       select: { id: true },
     });
 
@@ -48,7 +59,12 @@ export async function DELETE(req: Request) {
 
     const existingIds = existingOrders.map((p) => p.id);
 
-    // Delete only existing ones
+    // Delete order items first (due to foreign key constraint)
+    await prisma.orderItem.deleteMany({
+      where: { orderId: { in: existingIds } },
+    });
+
+    // Then delete the orders
     await prisma.order.deleteMany({
       where: { id: { in: existingIds } },
     });
@@ -57,7 +73,7 @@ export async function DELETE(req: Request) {
       success: true,
       message: "orders deleted",
       deletedIds: existingIds,
-      notFoundIds: ids.filter((id) => !existingIds.includes(id)),
+      notFoundIds: validIds.filter((id) => !existingIds.includes(id)),
     });
   } catch (error) {
     console.error("DELETE /api/private/admin/orders error:", error);

@@ -172,24 +172,33 @@ export default function ProductDetails() {
           <span>{selectedSize.name}</span>
         </div>
         <div className="flex gap-2 mb-2 w-full flex-wrap">
-          {sizes.map((size) => (
-            <button
-              key={size}
-              onClick={() =>
-                setSelectedSize({
-                  id: product?.sizes.find((s) => s.size === size)?.id ?? "",
-                  name: size,
-                })
-              }
-              className={`px-4 py-2 border rounded-md ${
-                selectedSize.name === size
-                  ? "bg-yellow-200 border border-yellow-200  text-black"
-                  : "border-gray-300 hover:border-gray-400"
-              }`}
-            >
-              {size}
-            </button>
-          ))}
+          {sizes.map((size) => {
+            // check if this size is available in the product
+            const isAvailable = product?.sizes.some((s) => s.size === size);
+
+            return (
+              <button
+                key={size}
+                onClick={() =>
+                  isAvailable &&
+                  setSelectedSize({
+                    id: product?.sizes.find((s) => s.size === size)?.id ?? "",
+                    name: size,
+                  })
+                }
+                disabled={!isAvailable} // disable if not available
+                className={`px-4 py-2 border rounded-md ${
+                  selectedSize.name === size
+                    ? "bg-yellow-200 border-yellow-200 text-black"
+                    : isAvailable
+                    ? "border-gray-300 hover:border-gray-400"
+                    : "border-gray-300 text-gray-400 cursor-not-allowed" // style disabled sizes
+                }`}
+              >
+                {size}
+              </button>
+            );
+          })}
         </div>
         <button className="text-sm text-gray-600 underline">
           View Size Guide
