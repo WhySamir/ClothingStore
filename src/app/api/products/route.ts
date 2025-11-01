@@ -1,42 +1,31 @@
+import { getOrSetCache } from "@/app/lib/cache";
 import { prisma } from "@/app/lib/prisma";
 import { ApiError } from "@/utlis/ApiResponders/ApiError";
 import { ApiResponds } from "@/utlis/ApiResponders/ApiResponds";
 
 export async function GET() {
   try {
-    const male = await prisma.product.findMany({
-      where: {
-        categoryId: 1,
-      },
-      select: {
-        id: true,
-        name: true,
-        categoryId: true,
-        sellingPrice: true,
-        discount: true,
-        mainImgUrl: true,
-        colors: {
-          select: {
-            color: true,
-            hexCode: true,
-            stockQty: true,
+    const products =
+      // await getOrSetCache(
+      // `product:all`,
+      // 21600, // 6 hr
+      // () =>
+      await prisma.product.findMany({
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          sellingPrice: true,
+          brand: true,
+          mainImgUrl: true,
+          stockQty: true,
+          category: {
+            select: { name: true },
           },
         },
-        sizes: {
-          select: {
-            size: true,
-            stockQty: true,
-          },
-        },
-        reviews: true,
-        tags: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
-    return ApiResponds(200, "Female products fetched successfully", male);
+      });
+    // );
+    return ApiResponds(200, "Products got successfully", products);
   } catch (error) {
     return ApiError(500, error);
   }
