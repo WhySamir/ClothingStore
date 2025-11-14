@@ -3,9 +3,10 @@ import "./globals.css";
 
 import { Geist_Mono } from "next/font/google";
 import { AuthProvider } from "./auth-context";
-import Script from "next/script";
 import GoogleOneTap from "./components/GoogleOneTap";
 import { ReduxProvider } from "@/redux/Provider";
+
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const siteUrl = "https://clothing-store-pearl-psi.vercel.app";
 
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     siteName: "ClothingStore",
     images: [
       {
-        url: `${siteUrl}/metaImg.jpg`, // your SEO image
+        url: `${siteUrl}/metaImg.jpg`,
         width: 2400,
         height: 1260,
         alt: "ClothingStore — Fast Online Shopping",
@@ -54,15 +55,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={` ${geistMono.variable}  antialiased`}>
-        <Script
-          src="https://accounts.google.com/gsi/client"
-          strategy="afterInteractive"
-        />
         <GoogleOneTap />{" "}
         <AuthProvider>
           <ReduxProvider>{children}</ReduxProvider>
         </AuthProvider>
         {modal}
+        <GoogleAnalytics gaId="G-D3P2EM15QV" />
       </body>
     </html>
   );

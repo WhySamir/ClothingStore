@@ -17,6 +17,7 @@
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",
     "@hookform/resolvers": "^5.2.1",
+    "@next/third-parties": "^16.0.3",
     "@prisma/client": "^6.13.0",
     "@reduxjs/toolkit": "^2.8.2",
     "@serwist/next": "^9.2.1",
