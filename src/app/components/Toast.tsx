@@ -36,7 +36,7 @@ export function AddToCartToast({
   return (
     <div
       className={`
-        fixed top-16 md:top-20 right-4 md:right-8 z-50 w-80 bg-white border border-gray-200 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out"
+        fixed top-16 md:top-20 right-4 md:right-8 z-50 w-80 bg-white border border-gray-200 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out
         ${isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}
     >
       {/* Header */}

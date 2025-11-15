@@ -1,4 +1,4 @@
-import { ProductGrid } from "@/app/components/Youmightlike";
+import { ProductShowcase } from "@/app/components/Youmightlike";
 
 export default async function ProductPage({
   params,
@@ -15,7 +15,7 @@ export default async function ProductPage({
               Explore More Products
             </h1>
           </div>
-          <ProductGrid />
+          <ProductShowcase />
         </div>
       </div>
     </>

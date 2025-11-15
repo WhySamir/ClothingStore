@@ -1,9 +1,12 @@
+"use client";
+import { setPaymentError } from "@/redux/Payment/PaymentSlice";
+import { RootState } from "@/redux/store";
 import { usePathname, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 
 interface OrderSummaryProps {
   totalItems: number;
   subtotal: number;
-  shipping: number;
   taxes: number;
   couponDiscount: number;
   total: number;
@@ -12,12 +15,12 @@ interface OrderSummaryProps {
 const OrderSummary = ({
   totalItems,
   subtotal,
-  shipping,
   taxes,
   couponDiscount,
   total,
 }: OrderSummaryProps) => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const pathname = usePathname();
 
   let buttonLabel = "Proceed";
@@ -33,6 +36,8 @@ const OrderSummary = ({
     buttonLabel = "Confirm Payment";
     buttonPath = "/ordercompleted";
   }
+
+  const payment = useSelector((state: RootState) => state.payment);
 
   return (
     <div className="bg-white mx-1 border border-gray-200 p-6 shadow-sm">
@@ -54,9 +59,9 @@ const OrderSummary = ({
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-600">Shipping</span>
+          <span className="text-gray-600">transactionId</span>
           <span className="font-medium text-gray-900">
-            ${shipping.toFixed(2)}
+            {payment.transactionId}
           </span>
         </div>
 
@@ -84,27 +89,43 @@ const OrderSummary = ({
         onClick={async () => {
           if (pathname === "/payment") {
             if (totalItems === 0) return; // safety check
+            if (!payment.productName || payment.productName.trim().length < 3) {
+              dispatch(
+                setPaymentError(
+                  "Please enter valid remarks (min 3 characters)."
+                )
+              );
 
+              return;
+            }
+            dispatch(setPaymentError(""));
             try {
-              const res = await fetch("/api/order", {
+              // INITIATE PAYMENT (NOT ORDER)
+              const res = await fetch("/api/initiate-payment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  // send cart summary, items, payment info, etc.
-                  totalAmount: total,
-                  status: "PROCESSING",
+                  method: "khalti",
+                  amount: payment.amount,
+                  productName: payment.productName,
+                  transactionId: payment.transactionId,
                 }),
               });
 
-              if (!res.ok) throw new Error("Failed to create order");
+              if (!res.ok) throw new Error("Failed to initiate payment");
 
               const data = await res.json();
-              console.log("Order created:", data);
 
-              router.push("/ordercompleted");
+              if (!data.khaltiPaymentUrl)
+                throw new Error("No payment URL returned");
+
+              // Redirect user to Khalti page
+              window.location.href = data.khaltiPaymentUrl;
             } catch (err) {
               console.error(err);
-              alert("Something went wrong. Please try again.");
+              dispatch(
+                setPaymentError("Payment initiation failed. Try again.")
+              );
             }
           } else {
             router.push(buttonPath);

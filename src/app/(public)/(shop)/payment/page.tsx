@@ -1,12 +1,38 @@
-// app/(shop)/payment/page.tsx
-
 "use client";
 
 import DisableScrollRestoration from "@/app/components/DisableScroll";
-import { useState } from "react";
+import { setPaymentError, setProductName } from "@/redux/Payment/PaymentSlice";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export default function PaymentPage() {
-  const [selected, setSelected] = useState<string>("paypal");
+  const dispatch = useDispatch();
+
+  // Use Redux default so input is always controlled from start
+  const payment = useSelector((state: RootState) => state.payment);
+
+  const [remarks, setRemarks] = useState(payment.productName || "");
+
+  //  debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (remarks.length >= 3) {
+        dispatch(setProductName(remarks));
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [remarks, dispatch]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setRemarks(value);
+
+    if (value.length < 3)
+      dispatch(setPaymentError("Remarks must be at least 3 characters."));
+    else dispatch(setPaymentError(""));
+  };
 
   return (
     <>
@@ -15,123 +41,32 @@ export default function PaymentPage() {
         <h2 className="text-2xl font-semibold mb-6">Select Payment Method</h2>
 
         <div className="space-y-4">
-          {/* PayPal */}
           <label className="flex items-center gap-3 border rounded-md p-3 cursor-pointer hover:bg-gray-50">
-            <input
-              type="radio"
-              name="payment"
-              value="paypal"
-              checked={selected === "paypal"}
-              onChange={() => setSelected("paypal")}
-            />
-            {/* <FaPaypal className="text-blue-600 text-xl" /> */}
-            <span>Paypal</span>
+            <input type="radio" name="payment" value="Khalti" defaultChecked />
+            <span>Khalti</span>
           </label>
 
-          {/* Visa */}
-          <label className="flex items-center gap-3 border rounded-md p-3 cursor-pointer hover:bg-gray-50">
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Remarks <span className="text-red-500">*</span>
+            </label>
+
             <input
-              type="radio"
-              name="payment"
-              value="visa"
-              checked={selected === "visa"}
-              onChange={() => setSelected("visa")}
+              type="text"
+              value={remarks}
+              onChange={handleChange}
+              placeholder="Ex. Shirt"
+              className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring ${
+                payment.paymentError ? "border-red-500" : "focus:ring-amber-500"
+              }`}
             />
-            {/* <FaCcVisa className="text-blue-700 text-2xl" /> */}
-            <span>**** **** **** 8047</span>
-          </label>
 
-          {/* Google Pay */}
-          <label className="flex items-center gap-3 border rounded-md p-3 cursor-pointer hover:bg-gray-50">
-            <input
-              type="radio"
-              name="payment"
-              value="gpay"
-              checked={selected === "gpay"}
-              onChange={() => setSelected("gpay")}
-            />
-            {/* <FaGooglePay className="text-black text-2xl" /> */}
-            <span>Google Pay</span>
-          </label>
-
-          {/* COD */}
-          <label className="flex items-center gap-3 border rounded-md p-3 cursor-pointer hover:bg-gray-50">
-            <input
-              type="radio"
-              name="payment"
-              value="cod"
-              checked={selected === "cod"}
-              onChange={() => setSelected("cod")}
-            />
-            {/* <FaMoneyBillWave className="text-green-600 text-xl" /> */}
-            <span>Cash On Delivery</span>
-          </label>
-
-          {/* New Card */}
-          <label className="flex items-center gap-3 border rounded-md p-3 cursor-pointer hover:bg-gray-50">
-            <input
-              type="radio"
-              name="payment"
-              value="card"
-              checked={selected === "card"}
-              onChange={() => setSelected("card")}
-            />
-            <span className="font-medium">Add New Credit/Debit Card</span>
-          </label>
-
-          {/* Card Form (only if selected) */}
-          {selected === "card" && (
-            <div className="border rounded-md p-4 space-y-4 bg-gray-50">
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Card Holder Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ex. John Doe"
-                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-amber-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Card Number <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="4716 9627 1635 8047"
-                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-amber-500"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Expiry Date <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="02/30"
-                    className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-amber-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    CVV <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="000"
-                    className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-amber-500"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+            {payment.paymentError && (
+              <p className="text-red-500 text-sm mt-1">
+                {payment.paymentError}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </>

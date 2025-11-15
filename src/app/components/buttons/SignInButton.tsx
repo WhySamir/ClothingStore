@@ -4,9 +4,13 @@ import { createClient } from "@/utlis/supabase/client";
 
 interface OAuthButtonProps {
   buttonText: string;
+  className?: string;
 }
 
-export default function SignInButton({ buttonText }: OAuthButtonProps) {
+export default function SignInButton({
+  buttonText,
+  className,
+}: OAuthButtonProps) {
   const handleGoogleLogin = async () => {
     const supabase = createClient();
 
@@ -31,14 +35,21 @@ export default function SignInButton({ buttonText }: OAuthButtonProps) {
 
   return (
     <>
-      {buttonText === "Login" ? (
+      {buttonText === "Login" && !className ? (
         <button
           onClick={handleGoogleLogin}
-          className="md:block  absolute  hidden -left-4 mt-2 min-w-fit bg-white shadow-lg rounded-lg p-2 z-50"
+          className={`md:block  absolute  hidden -left-4 mt-2 min-w-fit bg-white shadow-lg rounded-lg p-2 z-50 ${className}`}
         >
           <p className="text-sm text-gray-500 cursor-pointer hover:text-black">
             {buttonText}
           </p>
+        </button>
+      ) : buttonText === "Login" && className ? (
+        <button
+          onClick={handleGoogleLogin}
+          className={` text-center ${className}`}
+        >
+          <p className="  cursor-pointer ">{buttonText}</p>
         </button>
       ) : (
         <button

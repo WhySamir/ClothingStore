@@ -11,7 +11,6 @@ import { useParams, useRouter } from "next/navigation";
 import { ProductDetailsType } from "@/types/productDetailsType";
 import { AddToWishlistButton } from "@/app/components/buttons/AddtoWishlist";
 import { useQuery } from "@tanstack/react-query";
-import { div } from "framer-motion/client";
 
 export default function ProductDetails() {
   const router = useRouter();
@@ -56,14 +55,16 @@ export default function ProductDetails() {
         borderClass: product.colors[0].hexCode,
       });
     }
+
     if (product && product.sizes && product.sizes.length > 0) {
-      const xlSize = product.sizes.find((size) => size.size === "XL");
+      const firstAvailable = product.sizes[0];
       setSelectedSize({
-        id: xlSize ? xlSize.id : "",
-        name: xlSize ? xlSize.size : "",
+        id: firstAvailable.id,
+        name: firstAvailable.size,
       });
     }
   }, [product]);
+
   const dispatch = useDispatch();
 
   const [selectedSize, setSelectedSize] = useState({

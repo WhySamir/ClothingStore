@@ -1,18 +1,35 @@
 "use client";
-import AddtoCart from "../../components/buttons/AddtoCart";
 import Image from "next/image";
 import { X } from "lucide-react";
 import PageHeader from "../../components/PageHeader";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   removeFromWishlist,
   setWishlist,
 } from "@/redux/AddtoWishlist/WishlistSlice";
 import { RootState } from "@/redux/store";
+import { useAuth } from "@/app/auth-context";
+import NoUser from "@/app/components/NoUser";
 
 export default function Page() {
   const dispatch = useDispatch();
+  const { user } = useAuth();
+
+  const wishlist = useSelector(
+    (state: RootState) => state.wishlist.wishlistItems
+  );
+
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // wait for user from context
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAuthChecked(true);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     async function fetchWishlist() {
@@ -21,18 +38,16 @@ export default function Page() {
         console.log(res);
         if (!res.ok) throw new Error("Failed to fetch wishlist");
         const items = await res.json();
+        // console.log(items);
         dispatch(setWishlist(items));
       } catch (err) {
         console.error(err);
       }
     }
-
-    fetchWishlist();
-  }, [dispatch]);
-
-  const wishlist = useSelector(
-    (state: RootState) => state.wishlist.wishlistItems
-  );
+    if (authChecked && user) {
+      fetchWishlist();
+    }
+  }, [authChecked, user, dispatch]);
 
   const handleRemoveitem = (productId: string | number) => {
     const existingItem = wishlist.find(
@@ -44,7 +59,16 @@ export default function Page() {
       dispatch(removeFromWishlist({ wishlistId: existingItem.id }));
     }
   };
-
+  if (!authChecked) {
+    return (
+      <div className="flex justify-center py-20 h-[60vh] text-gray-600">
+        Loading...
+      </div>
+    );
+  }
+  if (!user) {
+    return <NoUser />;
+  }
   console.log(wishlist, "from redux");
 
   return (
@@ -88,7 +112,7 @@ export default function Page() {
                   <div className="relative  aspect-square flex-shrink-0">
                     <Image
                       src={item.product?.mainImgUrl || "/placeholder.svg"}
-                      alt={item.product.name}
+                      alt={item.product?.name || "Product"}
                       height={36}
                       width={36}
                       className="object-cover rounded-md"
@@ -97,30 +121,32 @@ export default function Page() {
 
                   <div className="min-w-0 flex-1">
                     <h4 className="font-semibold text-gray-900 text-sm md:text-base">
-                      {item.product.name}
+                      {item.product?.name || "Unnamed Product"}
                     </h4>
                     <p className="text-gray-500 md:block hidden text-xs md:text-sm">
-                      Color: {item.product.colors[0]?.color} | Size:{" "}
-                      {item.product.sizes[0]?.size}
+                      Color: {item.product?.colors?.[0]?.color || "N/A"} | Size:{" "}
+                      {item.product?.sizes?.[0]?.size || "N/A"}
                     </p>
                   </div>
                 </div>
 
                 {/* Price */}
                 <div className="col-span-1 text-sm md:text-base font-medium text-gray-900">
-                  ${item.product.sellingPrice}
+                  ${item.product?.sellingPrice || "0"}
                 </div>
 
                 {/* Date Added */}
                 <div className="col-span-2 text-sm md:text-base text-gray-600">
-                  {item.createdAt}
+                  {item?.createdAt || "-"}
                 </div>
 
                 {/* Status & Add to Cart */}
                 <div className="col-span-1 flex flex-col  gap-2">
-                  {item.product.sizes[0]?.stockQty > 0
-                    ? "In Stock"
-                    : "Out of Stock"}
+                  <div className="col-span-1 flex flex-col gap-2">
+                    {item.product?.sizes?.[0]?.stockQty > 0
+                      ? "In Stock"
+                      : "Out of Stock"}
+                  </div>
                   <div className="block md:hidden w-8 bg-orange-950 text-white p-2 ">
                     +
                   </div>

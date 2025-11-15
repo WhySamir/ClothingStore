@@ -1,16 +1,25 @@
 "use client";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DisableScrollRestoration from "../../components/DisableScroll";
 import OrderSummary from "../../components/OrderSummary";
 import PageHeader from "../../components/PageHeader";
 import { usePathname } from "next/navigation";
 import { RootState } from "@/redux/store";
+import { useEffect } from "react";
+import {
+  regenerateTransactionId,
+  setAmount,
+} from "@/redux/Payment/PaymentSlice";
+import { useAuth } from "@/app/auth-context";
+import { setCart } from "@/redux/AddtoCart/CartSlice";
 
 export default function ShopLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const dispatch = useDispatch();
+  const { user } = useAuth();
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.itemQty, 0);
@@ -18,10 +27,35 @@ export default function ShopLayout({
     (sum, item) => sum + Number(item.product.sellingPrice) * item.itemQty,
     0
   );
-  const shipping = 0; // you can calculate this later
   const taxes = subtotal * 0.1; // example: 10% tax
-  const couponDiscount = 0; // can be derived later
-  const total = subtotal + shipping + taxes - couponDiscount;
+  const couponDiscount = 0;
+  const total = subtotal + taxes - couponDiscount;
+
+  useEffect(() => {
+    async function fetchCart() {
+      if (!user) return;
+
+      try {
+        const res = await fetch("/api/cart");
+        if (!res.ok) throw new Error("Failed to fetch cart");
+
+        const data = await res.json();
+        dispatch(setCart(data.data));
+      } catch (err) {
+        console.log("Cart fetch failed", err);
+      }
+    }
+
+    fetchCart();
+  }, [user, dispatch]);
+
+  useEffect(() => {
+    // update amount
+    dispatch(setAmount(String(Math.round(total * 141.81))));
+
+    // generate transactionId only on first load
+    dispatch(regenerateTransactionId());
+  }, [total, dispatch]);
 
   const pathname = usePathname();
 
@@ -50,7 +84,6 @@ export default function ShopLayout({
             <OrderSummary
               totalItems={totalItems}
               subtotal={subtotal}
-              shipping={shipping}
               taxes={taxes}
               couponDiscount={couponDiscount}
               total={total}

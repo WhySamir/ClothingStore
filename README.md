@@ -62,3 +62,8 @@ Used Docker for testing only for DB purpose:
 
 `docker compose up -d`
 ```
+
+For Payment with khalti part:
+phone no:9800000000 /1/2/3/4/5
+mpin:1111
+otp:987654

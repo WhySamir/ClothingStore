@@ -1,4 +1,5 @@
 "use client";
+import { useAuth } from "@/app/auth-context";
 import {
   addToWishlist,
   removeFromWishlist,
@@ -13,12 +14,16 @@ export const AddToWishlistButton = ({
   productId: string | number;
 }) => {
   const dispatch = useDispatch();
-
+  const { user } = useAuth();
   const wishlist = useSelector(
     (state: RootState) => state.wishlist.wishlistItems
   );
 
   const handleAddToWishlist = async () => {
+    if (!user) {
+      alert("Please login to add product in wishlist");
+      return;
+    }
     const existingItem = wishlist.find(
       (i) => i.product.id === productId
       // i.color === selectedColor &&
@@ -32,6 +37,7 @@ export const AddToWishlistButton = ({
       });
       const newItem = await res.json();
       dispatch(addToWishlist(newItem));
+      alert("Added to wishlist");
     }
   };
   return (

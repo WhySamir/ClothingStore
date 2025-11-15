@@ -1,111 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProductOrg } from "./productcard/productType";
 import ProductCard from "./productcard/ProductCard";
-
-const products: ProductOrg[] = [
-  {
-    id: "cmfegth2q000fsi6giiczko1d",
-    name: "Trendy Brown Coat",
-    categoryId: 2,
-    sellingPrice: "75",
-    discount: 15,
-    mainImgUrl:
-      "https://res.cloudinary.com/dcfrlqakq/image/upload/v1757538122/clothingstore/productImage/main/lpymy4o7gfuzaqrrj3te.png",
-    colors: [
-      {
-        color: "Brown",
-        hexCode: "#733121",
-        stockQty: 1,
-      },
-      {
-        color: "Dark Red",
-        hexCode: "#2F0904",
-        stockQty: 1,
-      },
-      {
-        color: "Green",
-        hexCode: "#011E19",
-        stockQty: 1,
-      },
-      {
-        color: "Black-purple",
-        hexCode: "#170A0A",
-        stockQty: 1,
-      },
-    ],
-    sizes: [
-      {
-        size: "XL",
-        stockQty: 5,
-      },
-      {
-        size: "XXL",
-        stockQty: 7,
-      },
-      {
-        size: "L",
-        stockQty: 4,
-      },
-    ],
-    reviews: [],
-    tags: [
-      {
-        name: "Coats",
-      },
-    ],
-    features: [{ key: "Material", value: "Wool Blend" }],
-    hasCountdown: true,
-  },
-  {
-    id: "cmfa2x6770001si444r136drp",
-    name: "Modern Black Dress",
-    categoryId: 2,
-    sellingPrice: "80",
-    discount: null,
-    mainImgUrl:
-      "https://res.cloudinary.com/dcfrlqakq/image/upload/v1757272915/clothingstore/productImage/main/yvul3dxyqegryv7j1kr9.png",
-    colors: [
-      {
-        color: "Dark Bluish",
-        hexCode: "#160D2C",
-        stockQty: 1,
-      },
-      {
-        color: "Green",
-        hexCode: "#081B18",
-        stockQty: 1,
-      },
-    ],
-    sizes: [
-      {
-        size: "XL",
-        stockQty: 3,
-      },
-      {
-        size: "XXL",
-        stockQty: 5,
-      },
-    ],
-    reviews: [],
-    tags: [
-      {
-        name: "Dresses",
-      },
-    ],
-    features: [{ key: "Material", value: "Wool Blend" }],
-  },
-];
 
 const categories = ["All", "Women", "Men"];
 
 function ProductShowcase() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [products, setProducts] = useState<ProductOrg[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/topsellproducts");
+        const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.message || "Failed to load products");
+          setLoading(false);
+          return;
+        }
+
+        setProducts(data.data);
+      } catch (err) {
+        setError("Something went wrong while fetching products");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
 
   return (
-    <div className=" h-full w-full  text-black  md:pt-[10vh]">
-      <div className=" w-full xl:max-w-[90vw] ml-auto px-4 xl:px-0 md:py-8">
+    <div className="h-full w-full text-black md:pt-[10vh]">
+      <div className="w-full xl:max-w-[90vw] ml-auto px-4 xl:px-0 md:py-8">
         {/* Header */}
         <div className="mb-8">
           <p className="text-gray-600 mb-2">Our Products</p>
@@ -132,17 +64,47 @@ function ProductShowcase() {
         </div>
 
         {/* Product Grid */}
-        <ProductGrid />
+        <ProductGrid
+          products={products}
+          loading={loading}
+          error={error}
+          activeCategory={activeCategory}
+        />
       </div>
     </div>
   );
 }
 
-function ProductGrid() {
+type GridProps = {
+  products: ProductOrg[];
+  loading: boolean;
+  error: string;
+  activeCategory: string;
+};
+
+function ProductGrid({ products, loading, error, activeCategory }: GridProps) {
+  if (loading)
+    return <div className="text-center py-10 text-lg">Loading products...</div>;
+
+  if (error)
+    return (
+      <div className="text-center py-10 text-red-500 text-lg">{error}</div>
+    );
+
+  // 👇 Filter products based on category
+  const filteredProducts =
+    activeCategory === "All"
+      ? products
+      : activeCategory === "Men"
+      ? products.filter((p) => p.categoryId === 1)
+      : products.filter((p) => p.categoryId === 2);
+  if (filteredProducts.length === 0)
+    return <div className="text-center py-10 text-lg">No products found</div>;
+
   return (
-    <div className="pt-6 w-full ">
+    <div className="pt-6 w-full">
       <div className="flex gap-4 overflow-x-auto custom-scrollbar">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

@@ -12,6 +12,11 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
 
+  // Safe fallback values
+  const firstTag = product.tags?.[0]?.name ?? "Product";
+  const rating = product.reviews?.[0]?.rating ?? "5.0";
+  const price = Number(product.sellingPrice) || 0;
+
   return (
     <div
       key={product.id}
@@ -31,21 +36,16 @@ export default function ProductCard({ product }: ProductCardProps) {
           style={{
             objectFit: "cover",
             objectPosition: "center calc(100% + 1rem)",
-            overflow: "hidden",
           }}
           className="group-hover:scale-105 transition-transform duration-300"
         />
 
         {/* Discount Badge */}
-        <div
-          className={`${
-            product.discount !== null
-              ? "absolute top-4 left-4 text-green font-bold px-2 py-1 rounded bg-white text-green-300"
-              : "hidden"
-          }`}
-        >
-          {`${product.discount}% off`}
-        </div>
+        {product.discount ? (
+          <div className="absolute top-4 left-4 text-green font-bold px-2 py-1 rounded bg-white text-green-300">
+            {product.discount}% off
+          </div>
+        ) : null}
 
         {/* Action Icons */}
         <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -68,14 +68,12 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Product Info */}
       <div className="p-4">
         <div className="flex justify-between items-center">
-          <p className="text-sm text-gray-500 mb-1">{product.tags[0].name}</p>
+          <p className="text-sm text-gray-500 mb-1">{firstTag}</p>
 
           {/* Rating */}
           <div className="flex items-center gap-1 mb-2">
             <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-            <span className="text-sm font-medium">
-              {product.reviews[0]?.rating}
-            </span>
+            <span className="text-sm font-medium">{rating}</span>
           </div>
         </div>
 
@@ -84,10 +82,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Price */}
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-gray-900">
-            ${Number(product.sellingPrice).toFixed(2)}
+            ${price.toFixed(2)}
           </span>
           <span className="text-sm text-gray-500 line-through">
-            ${(Number(product?.sellingPrice) + 25).toFixed(2)}
+            ${(price + 25).toFixed(2)}
           </span>
         </div>
       </div>

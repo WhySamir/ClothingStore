@@ -1,21 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AddToCartToast } from "../Toast";
-import { useParams } from "next/navigation";
 import { useProductImage } from "@/app/ProductImageContext";
+import { useAuth } from "@/app/auth-context";
 
-//productid bata images liyera au
-//then for the color only index ani size line
-
-//nono simply make backend from productId
-
-const sampleProduct = {
-  name: "Nike Run Defy",
-  category: "Men's Road Running Shoes",
-  size: "Size 9",
-  price: "$60",
-  image: "/nike-running-shoe.jpg",
-};
 interface sizeType {
   id: string;
   name: string;
@@ -37,11 +25,17 @@ const AddtoCart = ({
   productCart: { id: string; name: string; price: string | number };
   quantity: number;
 }) => {
+  const { user } = useAuth();
   const [showToast, setShowToast] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   const addToCart = async () => {
+    if (!user) {
+      alert("Please login before adding to card");
+      setShowToast(false);
+      return;
+    }
     try {
       setLoading(true);
       const res = await fetch("/api/cart", {
