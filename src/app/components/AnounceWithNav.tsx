@@ -2,78 +2,89 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/app/components/Navbar";
 import { Announcement } from "@/app/components/Announcement";
-import { useAuth } from "@/app/auth-context";
 import { useEffect, useRef, useState } from "react";
+import { createClient } from "@/utlis/supabase/client";
 
 export function AnnounceWithNav() {
-  const { user } = useAuth();
-  const isLoggedIn = !!user;
   const ref = useRef<HTMLDivElement>(null);
 
-  const [showAnnouncement, setShowAnnouncement] = useState(!isLoggedIn);
+  // 1. Initialize as false on server, will be hydrated correctly on client
+  const [showAnnouncement, setShowAnnouncement] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
   const [showStickyNavbar, setShowStickyNavbar] = useState(false);
 
+  // Handle sticky scroll logic
   useEffect(() => {
     let lastScrollTop = 0;
-    const navbarHeight = 140; // Height of navbar + announcement
-
     const handleScroll = () => {
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
-
-      // Hide sticky navbar only when at the very top
       if (scrollTop === 0) {
         setShowStickyNavbar(false);
-        lastScrollTop = scrollTop;
-        return;
+      } else if (scrollTop > 140) {
+        setShowStickyNavbar(scrollTop < lastScrollTop);
       }
-
-      // Show/hide sticky navbar based on scroll direction after navbar height
-      if (scrollTop > navbarHeight) {
-        if (scrollTop < lastScrollTop) {
-          // Scrolling up - show sticky navbar
-          setShowStickyNavbar(true);
-        } else {
-          // Scrolling down - hide sticky navbar
-          setShowStickyNavbar(false);
-        }
-      }
-
       lastScrollTop = scrollTop;
     };
-
     window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
-    console.log(ref.current?.offsetHeight);
-    setShowAnnouncement(!isLoggedIn);
-  }, [isLoggedIn]);
+    const supabase = createClient();
+
+    // 2. Sync state immediately on mount to be safe
+    const checkInitialAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      // Check localStorage for stored preference
+      const stored = localStorage.getItem("showAnnounceWithNav");
+      let shouldShow = !session;
+
+      if (stored !== null) {
+        shouldShow = stored !== "false";
+      }
+
+      setShowAnnouncement(shouldShow);
+      if (!session) {
+        localStorage.setItem("showAnnounceWithNav", "true");
+      }
+    };
+
+    checkInitialAuth();
+    setIsMounted(true);
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const shouldShow = !session;
+      setShowAnnouncement(shouldShow);
+      localStorage.setItem("showAnnounceWithNav", String(shouldShow));
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <>
-      {/* Default navbar that scrolls naturally with the page */}
       <motion.div
         ref={ref}
         layout
-        initial={false}
         className="relative box-border w-full z-[888]"
         transition={{ duration: 0.8, ease: "easeInOut" }}
       >
         <AnimatePresence mode="wait">
-          {showAnnouncement && (
+          {/* Only render once mounted to prevent hydration mismatch */}
+          {isMounted && showAnnouncement === true && (
             <Announcement setShow={() => setShowAnnouncement(false)} />
           )}
         </AnimatePresence>
         <Navbar />
       </motion.div>
 
-      {/* Sticky navbar that only appears when scrolling up */}
       {showStickyNavbar && (
         <motion.div
           initial={{ y: -140, opacity: 0 }}
@@ -81,8 +92,9 @@ export function AnnounceWithNav() {
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="fixed top-0 left-0 box-border w-full z-[999] bg-white shadow-md"
         >
+          {/* Only show navbar on sticky to save space, or keep announcement if desired */}
           <AnimatePresence mode="wait">
-            {showAnnouncement && (
+            {isMounted && showAnnouncement === true && (
               <Announcement setShow={() => setShowAnnouncement(false)} />
             )}
           </AnimatePresence>

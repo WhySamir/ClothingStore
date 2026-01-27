@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const FashionPromoComponent = () => {
@@ -42,9 +43,12 @@ const FashionPromoComponent = () => {
             {/* <button className="group bg-amber-800 hover:bg-amber-900 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 flex items-center justify-center w-fit hover:scale-105 shadow-lg hover:shadow-xl">
               Shop Now
             </button> */}
-            <button className="mt-6 px-6 py-3 bg-orange-950 text-white rounded hover:bg-[#4a1800]   flex items-center justify-center w-fit ">
+            <Link
+              className="mt-6 px-6 py-3 bg-orange-950 text-white rounded hover:bg-[#4a1800]   flex items-center justify-center w-fit "
+              href="/women"
+            >
               Shop Now →
-            </button>
+            </Link>
 
             {/* Decorative Elements */}
             <div className="absolute top-4 right-4 w-20 h-20 bg-gradient-to-br from-orange-200 to-amber-200 rounded-full opacity-20 blur-xl"></div>

@@ -1,0 +1,6 @@
+export const SET = 'SET'
+export const RESET = 'RESET'
+export const UPDATE = 'UPDATE'
+export const REMOVE = 'REMOVE'
+export const APPEND = 'APPEND'
+export const PREPEND = 'PREPEND'

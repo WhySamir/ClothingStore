@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AddToCartToast } from "../Toast";
 import { useProductImage } from "@/app/ProductImageContext";
 import { useAuth } from "@/app/auth-context";
+import Cart from "@/app/api/cart/cart";
 
 interface sizeType {
   id: string;
@@ -38,20 +39,15 @@ const AddtoCart = ({
     }
     try {
       setLoading(true);
-      const res = await fetch("/api/cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productId: productCart.id,
-          colorId: color.id,
-          sizeId: size.id,
-          itemQty: Number(quantity),
-        }),
-      });
 
-      const data = await res.json();
+      const payload = {
+        productId: productCart.id,
+        colorId: color.id,
+        sizeId: size.id,
+        itemQty: Number(quantity),
+      };
+      const data = Cart.addToCart(payload);
+
       setShowToast(true);
 
       console.log("Response:", data);
@@ -76,7 +72,7 @@ const AddtoCart = ({
     <>
       <button
         onClick={addToCart}
-        className="bg-orange-950 text-white py-2  px-5 md:px-8"
+        className="bg-orange-950 cursor-pointer text-white py-2  px-5 md:px-8"
       >
         Add To Cart
       </button>

@@ -79,3 +79,17 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.shadow-auth {
+  box-shadow: 0 2px 10px 0 rgba(221, 247, 248, 0.4);
+}
+
+.shadow-np {
+  box-shadow: 0 2px 10px 0 rgba(209, 184, 223, 0.2);
+}
+.shadow-2 {
+  box-shadow: 0 2px 10px 0 rgba(185, 185, 185, 0.21);
+}
+.shadow-box {
+  box-shadow: 0 2px 10px 0 rgba(185, 185, 185, 0.25);
+}

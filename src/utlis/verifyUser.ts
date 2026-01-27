@@ -1,26 +1,26 @@
 // utils/verifyUser.ts
-import { createBrowserClient, createServerClient } from '@supabase/ssr'
-import { NextRequest } from 'next/server'
+import { createBrowserClient, createServerClient } from "@supabase/ssr";
+import { NextRequest } from "next/server";
 
 export async function verifyUser(request: NextRequest) {
-  //only for postman 
-  const authHeader = request.headers.get('authorization')
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+  //only for postman
+  const authHeader = request.headers.get("authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
   if (token) {
     // use service role to verify user from Bearer token
     const supabaseAdmin = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    );
 
-    const { data, error } = await supabaseAdmin.auth.getUser(token)
+    const { data, error } = await supabaseAdmin.auth.getUser(token);
 
     if (error || !data.user) {
-      throw new Error('Unauthorized')
+      throw new Error("Unauthorized");
     }
 
-    return data.user
+    return data.user;
   }
 
   // mainpart
@@ -30,19 +30,21 @@ export async function verifyUser(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll()
+          return request.cookies.getAll();
         },
-        setAll() {
-        }
-      }
-    }
-  )
+        setAll() {},
+      },
+    },
+  );
 
-  const { data: { user }, error } = await supabase.auth.getUser()
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
   if (error || !user) {
-     throw new Response('Unauthorized', { status: 401 })
+    throw new Response("Unauthorized", { status: 401 });
   }
 
-  return user 
+  return user;
 }

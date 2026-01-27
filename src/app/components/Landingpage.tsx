@@ -1,5 +1,6 @@
 import { BadgePercent } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 export default function LandingPage() {
@@ -41,17 +42,21 @@ export default function LandingPage() {
               eiusmod tempor incididunt ut labore et dolore.
             </p>
 
-            <button className="mt-6 px-6 py-3 bg-orange-950 text-white rounded hover:bg-[#4a1800] transition">
+            <Link
+              href="/women"
+              className="mt-6 inline-block px-6 py-3 bg-orange-950 text-white rounded hover:bg-[#4a1800] transition"
+            >
               Shop Now →
-            </button>
+            </Link>
           </div>
 
           {/* Right Image & Callout */}
           <div className="relative">
             <div className="relative flex items-center justify-center md:items-end   md:justify-end  h-[448px] md:h-full  xl:h-[86dvh]   w-full">
               <Image
-                // src="/dito2.png"
-                src="https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen/v1754910154/heroine_bz6uqp.png"
+                src="/dito2.png"
+                // src="/heroine.png"
+                // src="https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen/v1754910154/heroine_bz6uqp.png"
                 alt="Model with sunglasses"
                 width={512}
                 height={512}

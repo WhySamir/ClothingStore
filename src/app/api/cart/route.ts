@@ -76,6 +76,7 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+    console.log(items);
 
     return ApiResponds(200, "Cart fetched successfully", items);
   } catch (error) {

@@ -99,7 +99,11 @@ function ProductGrid({ products, loading, error, activeCategory }: GridProps) {
       ? products.filter((p) => p.categoryId === 1)
       : products.filter((p) => p.categoryId === 2);
   if (filteredProducts.length === 0)
-    return <div className="text-center py-10 text-lg">No products found</div>;
+    return (
+      <div className="text-center py-10 text-lg">
+        No top seller products found
+      </div>
+    );
 
   return (
     <div className="pt-6 w-full">

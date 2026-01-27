@@ -1,6 +1,7 @@
 "use client";
 //could not use server action here because it is a client component
 import { createClient } from "@/utlis/supabase/client";
+import { useEffect } from "react";
 
 interface OAuthButtonProps {
   buttonText: string;
@@ -11,6 +12,41 @@ export default function SignInButton({
   buttonText,
   className,
 }: OAuthButtonProps) {
+  useEffect(() => {
+    const supabase = createClient();
+
+    // Check initial auth state
+    const checkAuthState = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        localStorage.setItem("showAnnounceWithNav", "false");
+      } else {
+        localStorage.setItem("showAnnounceWithNav", "true");
+      }
+    };
+
+    checkAuthState();
+
+    // Listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        localStorage.setItem("showAnnounceWithNav", "false");
+      } else {
+        localStorage.setItem("showAnnounceWithNav", "true");
+      }
+      // Dispatch custom event for same-tab updates
+      window.dispatchEvent(new Event("localStorageChange"));
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   const handleGoogleLogin = async () => {
     const supabase = createClient();
 

@@ -1,21 +1,16 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
-// import { SortDropdown } from "@/components/sort-dropdown";
 import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
 import { ProductOrg } from "@/app/components/productcard/productType";
 import { Filters } from "@/types/FilterTypes";
+import { RootState, Actions } from "@/redux/store";
+import ProductsApi from "@/app/api/products/productsApi";
 
-const fetchFemaleProducts = async (): Promise<ProductOrg[]> => {
-  const res = await fetch("/api/products/female");
-  if (!res.ok) throw new Error("Failed to fetch products");
-  const data = await res.json();
-  return data.data;
-};
 export default function Women() {
+  const dispatch = useDispatch();
   const [filters, setFilters] = useState<Filters>({
     feature: null,
     priceRange: [25, 2000],
@@ -23,16 +18,38 @@ export default function Women() {
     size: null,
   });
 
-  const {
-    data: product,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["products", "female"],
-    queryFn: fetchFemaleProducts,
-    staleTime: 1000 * 60 * 5,
-  });
-  const filteredProducts = product?.filter((product) => {
+  // Get women products from Redux
+  const womenProductsState = useSelector(
+    (state: RootState) => state.womenProducts,
+  );
+  const product = womenProductsState?.items || [];
+  const isLoading = womenProductsState?.loading || false;
+  const isError = false;
+
+  // Fetch women products on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        dispatch(
+          Actions.set("womenProducts", { loading: true, loadingState: true }),
+        );
+        await ProductsApi.fetchWomenProducts();
+      } catch (err) {
+        console.error("Error fetching women products:", err);
+        dispatch(
+          Actions.set("womenProducts", {
+            items: [],
+            loading: false,
+            loadingState: true,
+          }),
+        );
+      }
+    };
+
+    fetchProducts();
+  }, [dispatch]);
+
+  const filteredProducts = product?.filter((product: ProductOrg) => {
     const matchesPrice =
       !filters.priceRange ||
       (Number(product?.sellingPrice) >= filters.priceRange[0] &&
@@ -91,8 +108,8 @@ export default function Women() {
             {isLoading
               ? "Loading..."
               : isError
-              ? "Error fetching products"
-              : `Showing ${filteredProducts?.length ?? 0} results`}
+                ? "Error fetching products"
+                : `Showing ${filteredProducts?.length ?? 0} results`}
           </p>
         </div>
         <div className="flex flex-col lg:flex-row gap-8">

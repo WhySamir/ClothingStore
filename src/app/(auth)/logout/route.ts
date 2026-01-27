@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import redis from "@/app/lib/redis";
 import { verifyUser } from "@/utlis/verifyUser";
 
 export async function POST(req: NextRequest) {
@@ -7,7 +6,7 @@ export async function POST(req: NextRequest) {
     const user = await verifyUser(req);
 
     if (user) {
-      await redis.del(`customer:${user.id}`);
+      // await redis.del(`customer:${user.id}`);
     //   await redis.del(`cart:${user.id}`); 
     }
 

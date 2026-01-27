@@ -1,43 +1,51 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
 import { Star } from "lucide-react";
 import AddtoCart from "@/app/components/buttons/AddtoCart";
 import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
-import { updateQty } from "@/redux/AddtoCart/CartSlice";
-import { useDispatch } from "react-redux";
 import { useParams, useRouter } from "next/navigation";
 import { ProductDetailsType } from "@/types/productDetailsType";
 import { AddToWishlistButton } from "@/app/components/buttons/AddtoWishlist";
-import { useQuery } from "@tanstack/react-query";
+import { RootState, Actions } from "@/redux/store";
+import ProductsApi from "@/app/api/products/productsApi";
 
 export default function ProductDetails() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { productId } = useParams<{ productId: string }>();
 
+  // Get product details from Redux
+  const productState = useSelector((state: RootState) => state.productById);
+  const product = productState?.data;
+  const isLoading = productState?.loading || false;
+  const isError = false;
+
+  // Fetch product details on mount
   useEffect(() => {
     if (!productId) {
       router.push("/404");
+      return;
     }
-  }, [productId, router]);
 
-  const fetchProductDesc = async (): Promise<ProductDetailsType | null> => {
-    const res = await fetch(`/api/products/${productId}/productdetails`);
-    if (!res.ok) throw new Error("Failed to fetch  product details");
-    const { data }: { data: ProductDetailsType } = await res.json();
-    return data;
-  };
+    const fetchProduct = async () => {
+      try {
+        await ProductsApi.fetchProductById(productId as string);
+      } catch (err) {
+        console.error("Error fetching product details:", err);
+        dispatch(
+          Actions.set("productById", {
+            data: null,
+            loading: false,
+            loadingState: true,
+          }),
+        );
+      }
+    };
 
-  const {
-    data: product,
-    isLoading,
-    isError,
-  } = useQuery<ProductDetailsType | null>({
-    queryKey: ["productDetails", productId],
-    queryFn: fetchProductDesc,
-    staleTime: 1000 * 60 * 5,
-  });
+    fetchProduct();
+  }, [productId, dispatch, router]);
 
   const [selectedColor, setSelectedColor] = useState({
     id: "",
@@ -65,8 +73,6 @@ export default function ProductDetails() {
     }
   }, [product]);
 
-  const dispatch = useDispatch();
-
   const [selectedSize, setSelectedSize] = useState({
     id: "",
     name: "",
@@ -76,7 +82,6 @@ export default function ProductDetails() {
   const sizes = ["S", "M", "L", "XL", "XXL"];
   const handleQuantityChange = (productId: string, newQty: number) => {
     setQuantity(newQty);
-    dispatch(updateQty({ id: productId, itemQty: newQty }));
   };
 
   const productCart = {
@@ -88,13 +93,43 @@ export default function ProductDetails() {
   return (
     <div className="space-y-6">
       {isLoading ? (
-        <div className="text-5xl mt-4">Loading...</div>
+        <div className="space-y-6 animate-pulse">
+          {/* Tags Skeleton */}
+          <div className="h-4 bg-gray-200 rounded w-32"></div>
+
+          {/* Title Skeleton */}
+          <div className="space-y-2">
+            <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+          </div>
+
+          {/* Rating Skeleton */}
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="w-5 h-5 bg-gray-200 rounded"></div>
+              ))}
+            </div>
+            <div className="h-4 bg-gray-200 rounded w-24"></div>
+          </div>
+
+          {/* Price Skeleton */}
+          <div className="flex items-center gap-3">
+            <div className="h-8 bg-gray-200 rounded w-32"></div>
+            <div className="h-8 bg-gray-200 rounded w-32"></div>
+          </div>
+
+          {/* Description Skeleton */}
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+          </div>
+        </div>
       ) : isError ? (
         "Error fetching product description"
       ) : (
         <div>
           <p className="text-sm text-gray-600 my-2">
-            {product?.tags.map((tag) => tag.name).join(" ")}
+            {product?.tags.map((tag: any) => tag.name).join(" ")}
           </p>
           <h1 className="text-3xl font-semibold text-gray-900 mb-4">
             {product?.name}
@@ -140,9 +175,9 @@ export default function ProductDetails() {
           <span className="capitalize">{selectedColor.name}</span>
         </div>
         <div className="flex gap-2">
-          {product?.colors.map((color, idx) => (
+          {product?.colors.map((color: any, idx: number) => (
             <button
-              key={color.hexCode}
+              key={color.hexCode + idx}
               onClick={() =>
                 setSelectedColor({
                   id: color.id,
@@ -175,7 +210,9 @@ export default function ProductDetails() {
         <div className="flex gap-2 mb-2 w-full flex-wrap">
           {sizes.map((size) => {
             // check if this size is available in the product
-            const isAvailable = product?.sizes.some((s) => s.size === size);
+            const isAvailable = product?.sizes.some(
+              (s: any) => s.size === size,
+            );
 
             return (
               <button
@@ -183,7 +220,9 @@ export default function ProductDetails() {
                 onClick={() =>
                   isAvailable &&
                   setSelectedSize({
-                    id: product?.sizes.find((s) => s.size === size)?.id ?? "",
+                    id:
+                      product?.sizes.find((s: any) => s.size === size)?.id ??
+                      "",
                     name: size,
                   })
                 }
@@ -192,8 +231,8 @@ export default function ProductDetails() {
                   selectedSize.name === size
                     ? "bg-yellow-200 border-yellow-200 text-black"
                     : isAvailable
-                    ? "border-gray-300 hover:border-gray-400"
-                    : "border-gray-300 text-gray-400 cursor-not-allowed" // style disabled sizes
+                      ? "border-gray-300 hover:border-gray-400"
+                      : "border-gray-300 text-gray-400 cursor-not-allowed" // style disabled sizes
                 }`}
               >
                 {size}
@@ -231,9 +270,9 @@ export default function ProductDetails() {
           quantity={quantity}
         />
 
-        <button className="bg-yellow-200 border border-yellow-200  py-2 text-black px-8">
+        {/* <button className="bg-yellow-200 border border-yellow-200  py-2 text-black px-8">
           Buy Now
-        </button>
+        </button> */}
 
         {product && <AddToWishlistButton productId={product.id} />}
       </div>
@@ -247,7 +286,7 @@ export default function ProductDetails() {
         <div className="flex gap-2">
           <span className="font-medium">Tags :</span>
           <span className="text-gray-600">
-            {product?.features.map((feature) => feature.value).join(", ")}
+            {product?.features.map((feature: any) => feature.value).join(", ")}
           </span>
         </div>
         {/* <div className="flex items-center gap-2">

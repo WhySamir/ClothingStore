@@ -1,30 +1,25 @@
 "use client";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import DisableScrollRestoration from "../../components/DisableScroll";
 import OrderSummary from "../../components/OrderSummary";
 import PageHeader from "../../components/PageHeader";
 import { usePathname } from "next/navigation";
-import { RootState } from "@/redux/store";
 import { useEffect } from "react";
-import {
-  regenerateTransactionId,
-  setAmount,
-} from "@/redux/Payment/PaymentSlice";
 import { useAuth } from "@/app/auth-context";
-import { setCart } from "@/redux/AddtoCart/CartSlice";
+import Cart from "@/app/api/cart/cart";
+import Payment from "@/app/api/payment/payment";
 
 export default function ShopLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const dispatch = useDispatch();
   const { user } = useAuth();
-  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartItems = useSelector((state: any) => state.cartItems?.items || []);
 
-  const totalItems = cartItems.reduce((sum, item) => sum + item.itemQty, 0);
+  const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.itemQty, 0);
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + Number(item.product.sellingPrice) * item.itemQty,
+    (sum: number, item: any) => sum + Number(item.product.sellingPrice) * item.itemQty,
     0
   );
   const taxes = subtotal * 0.1; // example: 10% tax
@@ -36,26 +31,22 @@ export default function ShopLayout({
       if (!user) return;
 
       try {
-        const res = await fetch("/api/cart");
-        if (!res.ok) throw new Error("Failed to fetch cart");
-
-        const data = await res.json();
-        dispatch(setCart(data.data));
+        await Cart.fetchCart();
       } catch (err) {
         console.log("Cart fetch failed", err);
       }
     }
 
     fetchCart();
-  }, [user, dispatch]);
+  }, [user]);
 
   useEffect(() => {
     // update amount
-    dispatch(setAmount(String(Math.round(total * 141.81))));
+    Payment.setPaymentAmount(String(Math.round(total * 141.81)));
 
     // generate transactionId only on first load
-    dispatch(regenerateTransactionId());
-  }, [total, dispatch]);
+    Payment.regeneratePaymentTransactionId();
+  }, [total]);
 
   const pathname = usePathname();
 

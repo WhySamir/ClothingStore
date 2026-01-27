@@ -120,7 +120,7 @@ export default function CheckoutPage() {
                   checked={sameAsShipping}
                   onChange={() => setSameAsShipping(true)}
                 />
-                <span>Pickup point (GWARKO)</span>
+                <span>Pickup point </span>
               </label>
               <label className="flex items-center gap-2">
                 <input

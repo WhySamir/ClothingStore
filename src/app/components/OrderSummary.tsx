@@ -1,8 +1,7 @@
 "use client";
-import { setPaymentError } from "@/redux/Payment/PaymentSlice";
-import { RootState } from "@/redux/store";
 import { usePathname, useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import Payment from "@/app/api/payment/payment";
 
 interface OrderSummaryProps {
   totalItems: number;
@@ -20,7 +19,6 @@ const OrderSummary = ({
   total,
 }: OrderSummaryProps) => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const pathname = usePathname();
 
   let buttonLabel = "Proceed";
@@ -37,7 +35,15 @@ const OrderSummary = ({
     buttonPath = "/ordercompleted";
   }
 
-  const payment = useSelector((state: RootState) => state.payment);
+  const payment = useSelector(
+    (state: any) =>
+      state.payment?.data || {
+        amount: "",
+        productName: "",
+        transactionId: "",
+        paymentError: "",
+      }
+  );
 
   return (
     <div className="bg-white mx-1 border border-gray-200 p-6 shadow-sm">
@@ -88,19 +94,17 @@ const OrderSummary = ({
       <button
         onClick={async () => {
           if (pathname === "/payment") {
-            if (totalItems === 0) return; // safety check
+            if (totalItems === 0) return; //  check
             if (!payment.productName || payment.productName.trim().length < 3) {
-              dispatch(
-                setPaymentError(
-                  "Please enter valid remarks (min 3 characters)."
-                )
+              Payment.setPaymentError(
+                "Please enter valid remarks (min 3 characters)."
               );
 
               return;
             }
-            dispatch(setPaymentError(""));
+            Payment.setPaymentError("");
             try {
-              // INITIATE PAYMENT (NOT ORDER)
+              // INITIATE PAYMENT
               const res = await fetch("/api/initiate-payment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -123,9 +127,7 @@ const OrderSummary = ({
               window.location.href = data.khaltiPaymentUrl;
             } catch (err) {
               console.error(err);
-              dispatch(
-                setPaymentError("Payment initiation failed. Try again.")
-              );
+              Payment.setPaymentError("Payment initiation failed. Try again.");
             }
           } else {
             router.push(buttonPath);

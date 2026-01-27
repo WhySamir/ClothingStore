@@ -33,6 +33,9 @@ export default function Navbar() {
       await fetch("/logout", { method: "POST" });
     }
     await supabase.auth.signOut();
+    localStorage.setItem("showAnnounceWithNav", "true");
+    // Dispatch custom event for same-tab updates
+    window.dispatchEvent(new Event("localStorageChange"));
   };
 
   const toggleSearch = () => {
@@ -87,7 +90,7 @@ export default function Navbar() {
       <motion.nav
         layout
         transition={{ duration: 0.8, ease: "easeInOut" }}
-        className="w-full  bg-white relative z-20"
+        className="w-full  bg-white relative z-20 shadow-np" 
       >
         <div className={`${globalLayoutCss}`}>
           {/* Logo */}
@@ -145,7 +148,7 @@ export default function Navbar() {
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.4 }}
-                  className=" hidden md:flex items-center h-6  w-fit md:w-full md:max-w-[372px]"
+                  className=" hidden md:flex items-center h-6  cursor-pointer w-fit md:w-full md:max-w-[372px]"
                 >
                   <DesktopSearch />
                 </motion.div>
@@ -154,7 +157,7 @@ export default function Navbar() {
           )}
 
           {/* Icons */}
-          <div className="flex items-center gap-x-3 md:gap-x-6 text-gray-700 text-xl">
+          <div className="flex items-center gap-x-3 cursor-pointer  md:gap-x-6 text-gray-700 text-xl">
             {!searchOpen || smNavbar ? (
               <button
                 key="open"
@@ -177,7 +180,7 @@ export default function Navbar() {
             <Link href={"/carts"} className="hidden md:flex  h-6 w-6">
               <Image src="/cart.svg" alt="" height={24} width={24} />
             </Link>
-            <div className="relative " ref={dropdownRef}>
+            <div className="relative cursor-pointer" ref={dropdownRef}>
               <button
                 onClick={() => {
                   setUserDropdown((prev: boolean) => !prev);

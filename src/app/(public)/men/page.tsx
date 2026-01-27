@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
 import { ProductOrg } from "@/app/components/productcard/productType";
 import { Filters } from "@/types/FilterTypes";
+import { RootState, Actions } from "@/redux/store";
+import ProductsApi from "@/app/api/products/productsApi";
 
 export default function Men() {
+  const dispatch = useDispatch();
   const [filters, setFilters] = useState<Filters>({
     feature: null,
     priceRange: [25, 2000],
@@ -15,9 +19,35 @@ export default function Men() {
     size: null,
   });
 
-  const [product, setProduct] = useState<ProductOrg[] | null>(null);
+  // Get men products from Redux
+  const menProductsState = useSelector((state: RootState) => state.menProducts);
+  const product = menProductsState?.items || [];
+  const isLoading = menProductsState?.loading || false;
 
-  const filteredProducts = product?.filter((product) => {
+  // Fetch men products on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        dispatch(
+          Actions.set("menProducts", { loading: true, loadingState: true }),
+        );
+        await ProductsApi.fetchMenProducts();
+      } catch (err) {
+        console.error("Error fetching men products:", err);
+        dispatch(
+          Actions.set("menProducts", {
+            items: [],
+            loading: false,
+            loadingState: true,
+          }),
+        );
+      }
+    };
+
+    fetchProducts();
+  }, [dispatch]);
+
+  const filteredProducts = product?.filter((product: ProductOrg) => {
     const matchesPrice =
       !filters.priceRange ||
       (Number(product?.sellingPrice) >= filters.priceRange[0] &&
@@ -55,19 +85,6 @@ export default function Men() {
       return updated;
     });
   };
-
-  useEffect(() => {
-    const fetchMaleProducts = async () => {
-      const response = await fetch("/api/products/men");
-
-      const products = await response.json();
-      setProduct(products.data);
-    };
-    fetchMaleProducts();
-  }, []);
-  useEffect(() => {
-    console.log("Updated product:", product);
-  }, [product]);
 
   const clearAllFilters = () => {
     setFilters({

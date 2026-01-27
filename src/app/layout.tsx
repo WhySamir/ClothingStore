@@ -4,7 +4,7 @@ import "./globals.css";
 import { Geist_Mono } from "next/font/google";
 import { AuthProvider } from "./auth-context";
 import GoogleOneTap from "./components/GoogleOneTap";
-import { ReduxProvider } from "@/redux/Provider";
+import { ReduxProvider } from "./ReduxProvider";
 
 import { GoogleAnalytics } from "@next/third-parties/google";
 

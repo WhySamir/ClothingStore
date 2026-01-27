@@ -5,19 +5,14 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import { ItemsAddDel } from "../../../components/buttons/ItemsAddDel";
 import DisableScrollRestoration from "@/app/components/DisableScroll";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  removeFromCart,
-  setCart,
-  updateQty,
-} from "@/redux/AddtoCart/CartSlice";
-import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 import { useAuth } from "@/app/auth-context";
+import Cart from "@/app/api/cart/cart";
 
 export default function ShoppingCart() {
-  const dispatch = useDispatch();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const cartItems = useSelector((state: any) => state.cartItems?.items || []);
 
   useEffect(() => {
     async function fetchCartItems() {
@@ -26,12 +21,7 @@ export default function ShoppingCart() {
         return;
       }
       try {
-        const res = await fetch("/api/cart");
-
-        if (!res.ok) throw new Error("Failed to fetch cart items");
-        const items = await res.json();
-        console.log(items.data);
-        dispatch(setCart(items.data));
+        await Cart.fetchCart();
       } catch (err) {
         console.error(err);
       } finally {
@@ -40,32 +30,19 @@ export default function ShoppingCart() {
     }
 
     fetchCartItems();
-  }, [user, dispatch]);
-
-  const cartItems = useSelector((state: RootState) => state.cart.items);
-  // const [products, setProducts] = useState<CartItem[]>(cartItems);
+  }, [user]);
 
   const handleRemoveProduct = async (cartId: string) => {
-    await fetch("/api/cart", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ cartId }),
-    });
-    dispatch(removeFromCart({ id: cartId }));
+    try {
+      await Cart.deleteCartItem(cartId);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleQuantityChange = async (cartId: string, newQty: number) => {
     try {
-      // update backend
-      await fetch("/api/cart", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ cartId, itemQty: newQty }),
-      });
-
-      dispatch(updateQty({ id: cartId, itemQty: newQty }));
+      await Cart.updateCartItem(cartId, newQty);
     } catch (err) {
       console.error(err);
     }
@@ -108,7 +85,7 @@ export default function ShoppingCart() {
 
           {/* Items */}
           <div className="bg-white">
-            {cartItems.map((item) => (
+            {cartItems.map((item: any) => (
               <div
                 key={item.id}
                 className="grid grid-cols-12 md:gap-4 items-center py-6 px-2 md:px-6 border-b border-gray-100"
@@ -155,7 +132,7 @@ export default function ShoppingCart() {
                 <div className="col-span-3 md:col-span-2 text-center">
                   $
                   {(Number(item.product.sellingPrice) * item.itemQty).toFixed(
-                    2
+                    2,
                   )}
                 </div>
               </div>

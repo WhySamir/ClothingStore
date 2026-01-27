@@ -10,6 +10,9 @@ export default function AdminData() {
   const handleLogout = async () => {
     await fetch("/logout", { method: "POST" });
     await supabase.auth.signOut();
+    localStorage.setItem("showAnnounceWithNav", "true");
+    // Dispatch custom event for same-tab updates
+    window.dispatchEvent(new Event("localStorageChange"));
     router.push("/");
   };
 

@@ -9,14 +9,16 @@ const withSerwist = withSerwistInit({
 
 const baseConfig: NextConfig = {
   reactStrictMode: true,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true, // allow build even with type errors
   },
   images: {
-    domains: ["res.cloudinary.com"], // allow Cloudinary images
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+    ],
   },
 };
 

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const FashionCategories = () => {
   const features = [
@@ -60,7 +61,8 @@ const FashionCategories = () => {
       {/* Categories Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Womens Section */}
-        <div
+        <Link
+          href="/women"
           style={{
             backgroundImage: "url('/freepick.png')",
             backgroundPosition: "calc(100% - 40px) 30px", // 20px from right
@@ -103,11 +105,12 @@ const FashionCategories = () => {
           {/* Decorative Image Placeholder */}
           <div className="absolute md:block hidden -left-4 -bottom-4 w-32 h-32 bg-gradient-to-br from-blue-200 to-gray-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
           {/* <div className="absolute -right-4 -bottom-4 w-40 h-40 bg-gradient-to-br from-orange-200 to-pink-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div> */}
-        </div>
+        </Link>
 
         {/* Men's and Accessories Container */}
         {/* Men's Section */}
-        <div
+        <Link
+          href="/men"
           style={{
             backgroundImage: "url('/freemen.png')",
             backgroundPosition: "calc(100% - 10px) 30px", // 20px from right
@@ -150,7 +153,7 @@ const FashionCategories = () => {
 
           {/* Decorative Elements */}
           <div className="absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br from-blue-200 to-gray-200 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-700"></div>
-        </div>
+        </Link>
 
         {/* Accessories Section */}
       </div>
