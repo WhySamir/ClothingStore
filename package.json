@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "prisma generate && prisma migrate deploy && node --max-old-space-size=4096 node_modules/next/dist/bin/next build --webpack",
+    "dev": "next dev --webpack",
+    "build": "prisma generate && prisma migrate deploy && next build --webpack",
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint --no-error-on-warn",

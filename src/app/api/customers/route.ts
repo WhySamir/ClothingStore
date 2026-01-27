@@ -1,7 +1,6 @@
 import { prisma } from "@/app/lib/prisma";
 import { verifyUser } from "@/utlis/verifyUser";
 import { NextRequest } from "next/server";
-import { getOrSetCache } from "@/app/lib/cache";
 import { ApiError } from "@/utlis/ApiResponders/ApiError";
 
 export async function GET(req:NextRequest) {
@@ -9,12 +8,8 @@ export async function GET(req:NextRequest) {
   try {
     
   const user = await verifyUser(req)
-  const customerProfile = await getOrSetCache(
-      `customer:${user.id}`, 
-      3600, // ~1hr
-      () => prisma.customer.findUnique({ where: { id: user.id },
-      select: { id: true, name: true, email: true, provider: true, userAvatarUrl: true } })
-    );
+  const customerProfile = await prisma.customer.findUnique({ where: { id: user.id },
+      select: { id: true, name: true, email: true, provider: true, userAvatarUrl: true } });
 
      if (!customerProfile) {
       return Response.json(

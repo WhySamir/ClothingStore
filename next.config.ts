@@ -8,6 +8,7 @@ const withSerwist = withSerwistInit({
 });
 
 const baseConfig: NextConfig = {
+  turbopack: {},
   reactStrictMode: true,
   typescript: {
     ignoreBuildErrors: true, // allow build even with type errors
@@ -15,8 +16,8 @@ const baseConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
+        protocol: "https",
+        hostname: "res.cloudinary.com",
       },
     ],
   },
