@@ -63,15 +63,7 @@ const FashionCategories = () => {
         {/* Womens Section */}
         <Link
           href="/women"
-          style={{
-            backgroundImage: "url('/freepick.png')",
-            backgroundPosition: "calc(100% - 40px) 30px", // 20px from right
-            backgroundRepeat: "no-repeat", // don't tile
-            backgroundSize: "220px auto",
-            // "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen,e_saturation:30/v1754908581/photo-1483985988355-763728e1935b_icxxqo.jpg')",
-            // "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto/q_auto/w_650/c_fill/g_auto/e_sharpen/v1754909322/3080381c-1ed1-42f2-beda-b4edf3f331f0-converted_q3iius.png')",
-          }}
-          className="bg-[#f6f6f6] md:bg-[url('/freepick.png')]    relative  rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
+          className="bg-[#f6f6f6] md:bg-[url('/freepick.png')] md:bg-[position:right_40px_top_30px] md:bg-[length:220px_auto] bg-no-repeat relative rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
         >
           <div className="z-10 flex-1 max-w-lg">
             <div className="mb-4">
@@ -111,15 +103,7 @@ const FashionCategories = () => {
         {/* Men's Section */}
         <Link
           href="/men"
-          style={{
-            backgroundImage: "url('/freemen.png')",
-            backgroundPosition: "calc(100% - 10px) 30px", // 20px from right
-            backgroundRepeat: "no-repeat", // don't tile
-            backgroundSize: "300px auto",
-            // "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto,q_auto,w_1000,c_fill,g_auto,e_sharpen,e_saturation:30/v1754908581/photo-1483985988355-763728e1935b_icxxqo.jpg')",
-            // "url('https://res.cloudinary.com/dcfrlqakq/image/upload/f_auto/q_auto/w_650/c_fill/g_auto/e_sharpen/v1754909322/3080381c-1ed1-42f2-beda-b4edf3f331f0-converted_q3iius.png')",
-          }}
-          className="bg-[#f6f6f6] min-h-100   relative  rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
+          className="bg-[#f6f6f6] md:bg-[url('/freemen.png')] md:bg-[position:right_10px_top_30px] md:bg-[length:300px_auto] bg-no-repeat relative rounded-3xl p-8 overflow-hidden group hover:shadow-xl transition-all duration-500"
         >
           {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-gray-100/30 opacity-0  transition-opacity duration-500"></div> */}
 

@@ -9,18 +9,16 @@ export function Announcement({ setShow }: { setShow: () => void }) {
     <motion.div
       layout
       initial={{
-        opacity: 1,
-        height: "auto",
-        paddingTop: 16,
-        paddingBottom: 16,
-        // scaleY: 1,
+        opacity: 0,
+        height: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
       }}
       animate={{
         opacity: 1,
         height: "auto",
         paddingTop: 16,
         paddingBottom: 16,
-        // scaleY: 1,
       }}
       exit={{
         // opacity: 0,

@@ -8,8 +8,9 @@ import { createClient } from "@/utlis/supabase/client";
 export function AnnounceWithNav() {
   const ref = useRef<HTMLDivElement>(null);
 
-  // 1. Initialize as false on server, will be hydrated correctly on client
-  const [showAnnouncement, setShowAnnouncement] = useState(false);
+  // 1. Optimistic UI: Default to TRUE so SSR renders it.
+  // This ensures Navbar and Announcement appear "together" immediately.
+  const [showAnnouncement, setShowAnnouncement] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
 
   const [showStickyNavbar, setShowStickyNavbar] = useState(false);
@@ -32,30 +33,27 @@ export function AnnounceWithNav() {
   }, []);
 
   useEffect(() => {
+    setIsMounted(true);
     const supabase = createClient();
 
-    // 2. Sync state immediately on mount to be safe
-    const checkInitialAuth = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      // Check localStorage for stored preference
+    // 2. Check LocalStorage & Session to potentially HIDE it
+    const checkInitialState = async () => {
+      // Immediate check from storage (fastest)
       const stored = localStorage.getItem("showAnnounceWithNav");
-      let shouldShow = !session;
-
-      if (stored !== null) {
-        shouldShow = stored !== "false";
-      }
-
-      setShowAnnouncement(shouldShow);
-      if (!session) {
-        localStorage.setItem("showAnnounceWithNav", "true");
+      
+      if (stored === "false") {
+        setShowAnnouncement(false);
+      } else {
+        // If not explicitly closed, check session
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setShowAnnouncement(false);
+          localStorage.setItem("showAnnounceWithNav", "false");
+        }
       }
     };
 
-    checkInitialAuth();
-    setIsMounted(true);
+    checkInitialState();
 
     const {
       data: { subscription },
@@ -74,11 +72,10 @@ export function AnnounceWithNav() {
         ref={ref}
         layout
         className="relative box-border w-full z-[888]"
-        transition={{ duration: 0.8, ease: "easeInOut" }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <AnimatePresence mode="wait">
-          {/* Only render once mounted to prevent hydration mismatch */}
-          {isMounted && showAnnouncement === true && (
+        <AnimatePresence mode="popLayout">
+          {showAnnouncement && (
             <Announcement setShow={() => setShowAnnouncement(false)} />
           )}
         </AnimatePresence>
@@ -92,12 +89,7 @@ export function AnnounceWithNav() {
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="fixed top-0 left-0 box-border w-full z-[999] bg-white shadow-md"
         >
-          {/* Only show navbar on sticky to save space, or keep announcement if desired */}
-          <AnimatePresence mode="wait">
-            {isMounted && showAnnouncement === true && (
-              <Announcement setShow={() => setShowAnnouncement(false)} />
-            )}
-          </AnimatePresence>
+          {/* Clean sticky navbar without announcement for better UX */}
           <Navbar />
         </motion.div>
       )}
