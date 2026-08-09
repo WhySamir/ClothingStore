@@ -1,12 +1,9 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Star } from "lucide-react";
 import AddtoCart from "@/app/components/buttons/AddtoCart";
 import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
 import { useParams, useRouter } from "next/navigation";
-import { ProductDetailsType } from "@/types/productDetailsType";
 import { AddToWishlistButton } from "@/app/components/buttons/AddtoWishlist";
 import { RootState, Actions } from "@/redux/store";
 import ProductsApi from "@/app/api/products/productsApi";
