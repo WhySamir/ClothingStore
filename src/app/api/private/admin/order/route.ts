@@ -28,19 +28,19 @@ export async function DELETE(req: Request) {
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
       return NextResponse.json(
         { success: false, message: "No order IDs provided" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Filter out any null or invalid IDs
     const validIds = ids.filter(
-      (id) => typeof id === "string" && id.length > 0
+      (id) => typeof id === "string" && id.length > 0,
     );
 
     if (validIds.length === 0) {
       return NextResponse.json(
         { success: false, message: "No valid order IDs provided" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -53,7 +53,7 @@ export async function DELETE(req: Request) {
     if (existingOrders.length === 0) {
       return NextResponse.json(
         { success: false, message: "No order found for the provided IDs" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -76,10 +76,10 @@ export async function DELETE(req: Request) {
       notFoundIds: validIds.filter((id) => !existingIds.includes(id)),
     });
   } catch (error) {
-    console.error("DELETE /api/private/admin/orders error:", error);
+    //console.error("DELETE /api/private/admin/orders error:", error);
     return NextResponse.json(
       { success: false, message: "Server error", error: `${error}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

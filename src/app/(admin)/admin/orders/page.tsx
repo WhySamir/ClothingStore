@@ -34,10 +34,10 @@ export default function OrdersManagement() {
       try {
         const response = await fetch("/api/private/admin/order");
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setOrders(data.data || []);
       } catch (error) {
-        console.error("Failed to fetch orders:", error);
+        // console.error("Failed to fetch orders:", error);
       } finally {
         setLoading(false);
       }
@@ -47,7 +47,7 @@ export default function OrdersManagement() {
 
   const toggleSelect = (id: string) => {
     setSelectedOrders((prev) =>
-      prev.includes(id) ? prev.filter((oid) => oid !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((oid) => oid !== id) : [...prev, id],
     );
   };
 
@@ -67,10 +67,10 @@ export default function OrdersManagement() {
         setOrders((prev) => prev.filter((o) => !selectedOrders.includes(o.id)));
         setSelectedOrders([]);
       } else {
-        console.error("Delete failed:", data.message);
+        // console.error("Delete failed:", data.message);
       }
     } catch (err) {
-      console.error("Error deleting orders:", err);
+      // console.error("Error deleting orders:", err);
     }
   };
 
@@ -163,8 +163,8 @@ export default function OrdersManagement() {
                 order.status === "completed"
                   ? "text-green-400"
                   : order.status === "pending"
-                  ? "text-yellow-400"
-                  : "text-red-400"
+                    ? "text-yellow-400"
+                    : "text-red-400"
               }`}
             >
               {order.status}

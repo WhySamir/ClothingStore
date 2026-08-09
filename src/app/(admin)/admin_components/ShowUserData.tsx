@@ -12,7 +12,7 @@ export default function ShowUserData() {
 
     supabase.auth.getSession().then(({ data, error }) => {
       if (error) {
-        console.error("Error fetching session:", error.message);
+        // console.error("Error fetching session:", error.message);
         setSession(null);
       } else {
         setSession(data.session);

@@ -42,7 +42,7 @@ const OrderSummary = ({
         productName: "",
         transactionId: "",
         paymentError: "",
-      }
+      },
   );
 
   return (
@@ -97,7 +97,7 @@ const OrderSummary = ({
             if (totalItems === 0) return; //  check
             if (!payment.productName || payment.productName.trim().length < 3) {
               Payment.setPaymentError(
-                "Please enter valid remarks (min 3 characters)."
+                "Please enter valid remarks (min 3 characters).",
               );
 
               return;
@@ -126,7 +126,6 @@ const OrderSummary = ({
               // Redirect user to Khalti page
               window.location.href = data.khaltiPaymentUrl;
             } catch (err) {
-              console.error(err);
               Payment.setPaymentError("Payment initiation failed. Try again.");
             }
           } else {

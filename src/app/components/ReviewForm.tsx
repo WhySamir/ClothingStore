@@ -74,7 +74,6 @@ const ReviewForm = () => {
       }
 
       const result = await response.json();
-      console.log("Review submitted:", result);
 
       reset({
         rating: 0,
@@ -84,9 +83,7 @@ const ReviewForm = () => {
       });
 
       setRating(0);
-    } catch (err) {
-      console.error("Error submitting review:", err);
-    }
+    } catch (err) {}
   };
 
   const changeRating = (newRating: number) => {

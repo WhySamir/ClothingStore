@@ -38,6 +38,7 @@ export async function GET() {
     });
     return ApiResponds(200, "Female products fetched successfully", female);
   } catch (error) {
-    return ApiError(500, error);
+    //console.error("Female products error:", error);
+    return ApiError(500, "Unable to fetch products right now.");
   }
 }

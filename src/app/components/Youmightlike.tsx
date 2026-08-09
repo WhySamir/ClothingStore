@@ -1,38 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { ProductOrg } from "./productcard/productType";
 import ProductCard from "./productcard/ProductCard";
+import { fetchTopSellProducts } from "../api/products/productsApi";
+import { RootState } from "@/redux/store";
+import { ProductSkeletonRow } from "./skeletons/ProductSkeleton";
 
 const categories = ["All", "Women", "Men"];
 
 function ProductShowcase() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [products, setProducts] = useState<ProductOrg[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch("/api/topsellproducts");
-        const data = await res.json();
+  // Get top sell products from Redux store
+  const topSellState = useSelector(
+    (state: RootState) => (state as any).topSellProducts,
+  );
+  const products: ProductOrg[] = topSellState?.items || [];
+  const loading = topSellState?.loading ?? true;
 
-        if (!res.ok) {
-          setError(data.message || "Failed to load products");
-          setLoading(false);
-          return;
-        }
-
-        setProducts(data.data);
-      } catch (err) {
-        setError("Something went wrong while fetching products");
-      } finally {
-        setLoading(false);
-      }
+  const loadTopProducts = async () => {
+    setError("");
+    try {
+      await fetchTopSellProducts();
+    } catch (err: any) {
+      setError(err?.message || "Something went wrong while fetching products");
     }
+  };
 
-    fetchProducts();
+  useEffect(() => {
+    loadTopProducts();
   }, []);
 
   return (
@@ -69,6 +68,7 @@ function ProductShowcase() {
           loading={loading}
           error={error}
           activeCategory={activeCategory}
+          onRetry={loadTopProducts}
         />
       </div>
     </div>
@@ -80,24 +80,65 @@ type GridProps = {
   loading: boolean;
   error: string;
   activeCategory: string;
+  onRetry?: () => void;
 };
 
-function ProductGrid({ products, loading, error, activeCategory }: GridProps) {
-  if (loading)
-    return <div className="text-center py-10 text-lg">Loading products...</div>;
+function ProductGrid({
+  products,
+  loading,
+  error,
+  activeCategory,
+  onRetry,
+}: GridProps) {
+  if (loading) return <ProductSkeletonRow count={4} />;
 
-  if (error)
+  if (error) {
+    const isTechnicalError =
+      /prisma|findmany|enotfound|fatal|database|sql/i.test(error);
+    const displayMessage = isTechnicalError
+      ? "Unable to load top seller products right now."
+      : error;
+
     return (
-      <div className="text-center py-10 text-red-500 text-lg">{error}</div>
+      <div className="py-12 px-6 flex flex-col items-center justify-center text-center">
+        <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center mb-3">
+          <svg
+            className="w-6 h-6 text-orange-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+        </div>
+        <p className="text-gray-700 text-sm font-medium mb-3">
+          {displayMessage}
+        </p>
+        {onRetry && (
+          <button
+            onClick={onRetry}
+            className="px-4 py-1.5 text-md font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+          >
+            Try again
+          </button>
+        )}
+      </div>
     );
+  }
 
   // 👇 Filter products based on category
   const filteredProducts =
     activeCategory === "All"
       ? products
       : activeCategory === "Men"
-      ? products.filter((p) => p.categoryId === 1)
-      : products.filter((p) => p.categoryId === 2);
+        ? products.filter((p) => p.categoryId === 1)
+        : products.filter((p) => p.categoryId === 2);
+
   if (filteredProducts.length === 0)
     return (
       <div className="text-center py-10 text-lg">
@@ -117,3 +158,4 @@ function ProductGrid({ products, loading, error, activeCategory }: GridProps) {
 }
 
 export { ProductShowcase, ProductGrid };
+

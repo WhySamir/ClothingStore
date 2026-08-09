@@ -9,7 +9,7 @@ cloudinary.config({
 export const uploadReviewVid = async (
   buffer: Buffer,
   productId?: string,
-  filename?: string
+  filename?: string,
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     const upload = cloudinary.uploader.upload_stream(
@@ -18,19 +18,19 @@ export const uploadReviewVid = async (
         public_id: filename
           ? filename.split(".")[0]
           : productId
-          ? `product-${productId}`
-          : undefined,
+            ? `product-${productId}`
+            : undefined,
         resource_type: "video",
         fetch_format: "auto",
         quality: "auto",
       },
       (err, result) => {
         if (err) {
-          console.error("Main Image Upload Failed:", err);
+          //console.error("Main Image Upload Failed:", err);
           return reject(err);
         }
         resolve(result?.secure_url || "");
-      }
+      },
     );
 
     upload.end(buffer);

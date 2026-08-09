@@ -1,69 +1,63 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
 import { ProductOrg } from "@/app/components/productcard/productType";
 import { Filters } from "@/types/FilterTypes";
-import { RootState, Actions } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import ProductsApi from "@/app/api/products/productsApi";
+import { ProductSkeletonGrid } from "@/app/components/skeletons/ProductSkeleton";
 
 export default function Women() {
-  const dispatch = useDispatch();
   const [filters, setFilters] = useState<Filters>({
     feature: null,
     priceRange: [25, 2000],
     color: null,
     size: null,
   });
+  const [error, setError] = useState<string>("");
 
   // Get women products from Redux
   const womenProductsState = useSelector(
     (state: RootState) => state.womenProducts,
   );
-  const product = womenProductsState?.items || [];
-  const isLoading = womenProductsState?.loading || false;
-  const isError = false;
+  const products: ProductOrg[] =
+    womenProductsState?.items ||
+    (Array.isArray(womenProductsState) ? (womenProductsState as any) : []);
+  const loading = womenProductsState?.loading ?? true;
+
+  const fetchProducts = async () => {
+    setError("");
+    try {
+      await ProductsApi.fetchWomenProducts();
+    } catch (err: any) {
+      // console.error("Women products fetch error:", err);
+      setError(err?.message || "Unable to fetch women products right now.");
+    }
+  };
 
   // Fetch women products on mount
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        dispatch(
-          Actions.set("womenProducts", { loading: true, loadingState: true }),
-        );
-        await ProductsApi.fetchWomenProducts();
-      } catch (err) {
-        console.error("Error fetching women products:", err);
-        dispatch(
-          Actions.set("womenProducts", {
-            items: [],
-            loading: false,
-            loadingState: true,
-          }),
-        );
-      }
-    };
-
     fetchProducts();
-  }, [dispatch]);
+  }, []);
 
-  const filteredProducts = product?.filter((product: ProductOrg) => {
+  const filteredProducts = products?.filter((product: ProductOrg) => {
     const matchesPrice =
       !filters.priceRange ||
       (Number(product?.sellingPrice) >= filters.priceRange[0] &&
         Number(product?.sellingPrice) <= filters.priceRange[1]);
     const matchesColor =
       filters.color === null ||
-      product.colors.map((c) => c.color).includes(filters.color);
+      product.colors?.map((c) => c.color).includes(filters.color);
     const matchesSize =
       filters.size === null ||
-      product.sizes.map((s) => s.size).includes(filters.size);
+      product.sizes?.map((s) => s.size).includes(filters.size);
     const matchesFeature =
       filters.feature === null ||
-      product.tags.map((t) => t.name).includes(filters.feature) ||
-      product.features.map((f) => f.value).includes(filters.feature);
+      (product.tags?.map((t) => t.name) ?? []).includes(filters.feature) ||
+      (product.features?.map((f) => f.value) ?? []).includes(filters.feature);
 
     return matchesPrice && matchesColor && matchesSize && matchesFeature;
   });
@@ -105,9 +99,9 @@ export default function Women() {
             Filter Options
           </h1>
           <p className="text-muted-foreground">
-            {isLoading
+            {loading
               ? "Loading..."
-              : isError
+              : error
                 ? "Error fetching products"
                 : `Showing ${filteredProducts?.length ?? 0} results`}
           </p>
@@ -125,8 +119,6 @@ export default function Women() {
 
           {/* Main Content */}
           <div className="flex-1">
-            {/* Header with results count and sort */}
-
             {/* Active Filters */}
             <ActiveFilters
               filters={filters}
@@ -136,9 +128,38 @@ export default function Women() {
 
             {/* Product Grid */}
 
-            {isLoading ? (
-              <div className="text-center py-12">Loading products...</div>
-            ) : filteredProducts?.length === 0 ? (
+            {loading ? (
+              <ProductSkeletonGrid count={6} />
+            ) : error ? (
+              <div className="py-12 px-6 flex flex-col items-center justify-center text-center">
+                <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center mb-3">
+                  <svg
+                    className="w-6 h-6 text-orange-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                </div>
+                <p className="text-gray-700 text-sm font-medium mb-3">
+                  {/prisma|findmany|enotfound|fatal|database|sql/i.test(error)
+                    ? "Unable to load women products right now."
+                    : error}
+                </p>
+                <button
+                  onClick={fetchProducts}
+                  className="px-4 py-1.5 text-md font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                >
+                  Try again
+                </button>
+              </div>
+            ) : !filteredProducts || filteredProducts.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   No products found matching your filters.

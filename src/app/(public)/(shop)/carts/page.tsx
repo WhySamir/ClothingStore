@@ -23,7 +23,7 @@ export default function ShoppingCart() {
       try {
         await Cart.fetchCart();
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       } finally {
         setLoading(false);
       }
@@ -36,7 +36,7 @@ export default function ShoppingCart() {
     try {
       await Cart.deleteCartItem(cartId);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     }
   };
 
@@ -44,7 +44,7 @@ export default function ShoppingCart() {
     try {
       await Cart.updateCartItem(cartId, newQty);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     }
   };
 

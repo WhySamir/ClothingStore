@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 
 const Map = dynamic(
   () => import("@/app/components/Map").then((component) => component.Map),
-  { ssr: false }
+  { ssr: false },
 );
 
 const locations = [
@@ -42,11 +42,11 @@ function Page() {
         setTimeout(() => setSent(false), 3000);
       } else {
         alert(
-          "Failed to send message, rate limiter hitted success please send message tommorow"
+          "Failed to send message, rate limiter hitted success please send message tommorow",
         );
       }
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert("Something went wrong");
     }
   };
@@ -161,8 +161,8 @@ function Page() {
                   {sent
                     ? " Sent Successfully!"
                     : isSubmitting
-                    ? "Sending..."
-                    : "Send Message"}
+                      ? "Sending..."
+                      : "Send Message"}
                 </button>
               </form>
             </div>

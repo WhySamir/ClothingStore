@@ -15,7 +15,7 @@ function validateEnvironmentVariables() {
 }
 
 export async function POST(req: Request) {
-  console.log("Received POST request to /api/checkout-session");
+  //console.log("Received POST request to /api/checkout-session");
 
   try {
     validateEnvironmentVariables();
@@ -25,16 +25,16 @@ export async function POST(req: Request) {
     const { amount, productName, transactionId, method } = paymentData;
 
     if (!amount || !productName || !transactionId || !method) {
-      console.error("Missing required fields:", paymentData);
+      //console.error("Missing required fields:", paymentData);
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     switch (method as PaymentMethod) {
       case "khalti": {
-        console.log("Initiating Khalti payment");
+        //console.log("Initiating Khalti payment");
         const khaltiConfig = {
           return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?method=khalti`,
           website_url: process.env.NEXT_PUBLIC_BASE_URL!,
@@ -57,39 +57,39 @@ export async function POST(req: Request) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(khaltiConfig),
-          }
+          },
         );
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error("Khalti API Error:", errorData);
+          //console.error("Khalti API Error:", errorData);
           throw new Error(
-            `Khalti payment initiation failed: ${JSON.stringify(errorData)}`
+            `Khalti payment initiation failed: ${JSON.stringify(errorData)}`,
           );
         }
 
         const khaltiResponse = await response.json();
-        console.log("Khalti payment initiated:", khaltiResponse);
+        //console.log("Khalti payment initiated:", khaltiResponse);
         return NextResponse.json({
           khaltiPaymentUrl: khaltiResponse.payment_url,
         });
       }
 
       default:
-        console.error("Invalid payment method:", method);
+        //console.error("Invalid payment method:", method);
         return NextResponse.json(
           { error: "Invalid payment method" },
-          { status: 400 }
+          { status: 400 },
         );
     }
   } catch (err) {
-    console.error("Payment API Error:", err);
+    //console.error("Payment API Error:", err);
     return NextResponse.json(
       {
         error: "Error creating payment session",
         details: err instanceof Error ? err.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

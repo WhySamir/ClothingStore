@@ -9,7 +9,7 @@ import { ApiRequestConfig } from "@/types/api";
 export const createApiConfig = (
   url: string,
   method: "get" | "post" | "put" | "patch" | "delete" = "get",
-  options: Partial<ApiRequestConfig> = {}
+  options: Partial<ApiRequestConfig> = {},
 ): ApiRequestConfig => ({
   url,
   method,
@@ -36,7 +36,7 @@ export const apiGet = async (url: string, storeKey?: string, params?: any) => {
           },
         }),
       },
-    })
+    }),
   );
 };
 
@@ -48,7 +48,7 @@ export const apiPost = async (
     storeKey?: string;
     successMsg?: string;
     storeAction?: "set" | "append" | "prepend";
-  } = {}
+  } = {},
 ) => {
   return request(
     createApiConfig(url, "post", {
@@ -63,7 +63,7 @@ export const apiPost = async (
           },
         }),
       },
-    })
+    }),
   );
 };
 
@@ -74,7 +74,7 @@ export const apiPatch = async (
   options: {
     storeKey?: string;
     successMsg?: string;
-  } = {}
+  } = {},
 ) => {
   return request(
     createApiConfig(url, "patch", {
@@ -89,7 +89,7 @@ export const apiPatch = async (
           },
         }),
       },
-    })
+    }),
   );
 };
 
@@ -99,7 +99,7 @@ export const apiDelete = async (
   options: {
     storeKey?: string;
     successMsg?: string;
-  } = {}
+  } = {},
 ) => {
   return request(
     createApiConfig(url, "delete", {
@@ -113,7 +113,7 @@ export const apiDelete = async (
           },
         }),
       },
-    })
+    }),
   );
 };
 
@@ -125,7 +125,7 @@ export const apiUpload = async (
     storeKey?: string;
     successMsg?: string;
     additionalData?: any;
-  } = {}
+  } = {},
 ) => {
   // Convert file to base64
   const base64 = await new Promise<string>((resolve) => {
@@ -154,14 +154,14 @@ export const apiUpload = async (
 // Helper for handling async operations with loading states
 export const withLoading = async <T>(
   operation: () => Promise<T>,
-  loadingCallback?: (loading: boolean) => void
+  loadingCallback?: (loading: boolean) => void,
 ): Promise<T> => {
   try {
     loadingCallback?.(true);
     const result = await operation();
     return result;
   } catch (error) {
-    console.error("Operation failed:", error);
+    //console.error("Operation failed:", error);
     throw error;
   } finally {
     loadingCallback?.(false);
@@ -173,7 +173,7 @@ export const apiGetPaginated = async (
   url: string,
   page: number = 1,
   limit: number = 10,
-  storeKey?: string
+  storeKey?: string,
 ) => {
   return apiGet(`${url}?page=${page}&limit=${limit}`, storeKey);
 };

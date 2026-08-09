@@ -23,10 +23,9 @@ export default function CustomersManagement() {
       try {
         const response = await fetch("/api/private/admin/customers");
         const data = await response.json();
-        console.log(data.data);
         setCustomers(data.data || []);
       } catch (error) {
-        console.error("Failed to fetch customers:", error);
+        // console.error("Failed to fetch customers:", error);
       } finally {
         setLoading(false);
       }
@@ -36,13 +35,13 @@ export default function CustomersManagement() {
 
   const toggleSelect = (id: string) => {
     setSelectedCustomers((prev) =>
-      prev.includes(id) ? prev.filter((cid) => cid !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((cid) => cid !== id) : [...prev, id],
     );
   };
 
   const handleDelete = async () => {
     const confirmed = confirm(
-      "Do you really want to delete selected customers?"
+      "Do you really want to delete selected customers?",
     );
     if (!confirmed) return;
 
@@ -55,17 +54,17 @@ export default function CustomersManagement() {
 
         if (!res.ok) {
           const data = await res.json();
-          console.error(`Failed to delete customer ${id}:`, data.message);
+          // console.error(`Failed to delete customer ${id}:`, data.message);
         }
       }
 
       // Remove deleted customers from state
       setCustomers((prev) =>
-        prev.filter((c) => !selectedCustomers.includes(c.id))
+        prev.filter((c) => !selectedCustomers.includes(c.id)),
       );
       setSelectedCustomers([]);
     } catch (err) {
-      console.error("Error deleting customers:", err);
+      // console.error("Error deleting customers:", err);
     }
   };
 

@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     return ApiResponds(201, "Cart item added", cartItem);
   } catch (error) {
-    console.error("Cart POST error:", error);
+    //console.error("Cart POST error:", error);
     return ApiError(500, (error as Error).message);
   }
 }
@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
         },
       },
     });
-    console.log(items);
+    //console.log(items);
 
     return ApiResponds(200, "Cart fetched successfully", items);
   } catch (error) {

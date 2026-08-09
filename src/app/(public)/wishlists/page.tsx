@@ -42,7 +42,6 @@ export default function Page() {
       setLoading(true);
       try {
         const response = await Wishlist.fetchWishlist();
-        console.log("Wishlist response:", response);
 
         // response is already the array from API responder extracting resp.data.data
         const wishlistData = Array.isArray(response) ? response : [];
@@ -50,7 +49,7 @@ export default function Page() {
         // Set wishlist items in Redux - the set reducer will handle wrapping in items
         dispatch(Actions.set("wishlistItems", wishlistData));
       } catch (err) {
-        console.error("Error fetching wishlist:", err);
+        // console.error("Error fetching wishlist:", err);
         dispatch(Actions.set("wishlistItems", []));
       } finally {
         setLoading(false);
@@ -66,7 +65,7 @@ export default function Page() {
       // Remove from Redux
       dispatch(Actions.remove("wishlistItems", productId));
     } catch (err) {
-      console.error("Error removing from wishlist:", err);
+      // console.error("Error removing from wishlist:", err);
     }
   };
 

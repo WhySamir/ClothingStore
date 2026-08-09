@@ -27,7 +27,7 @@ export const AddToWishlistButton = ({
       // Dispatch to Redux to update wishlist state
       dispatch(Actions.append("wishlistItems", response));
     } catch (error) {
-      console.error("Error adding to wishlist:", error);
+      //console.error("Error adding to wishlist:", error);
     }
   };
   return (

@@ -53,7 +53,7 @@ export default function ImageGallery() {
         // Set to Redux
         dispatch(Actions.set("productImages", merged));
       } catch (err) {
-        console.error("Error fetching images:", err);
+        // console.error("Error fetching images:", err);
         dispatch(Actions.set("productImages", []));
       }
     };

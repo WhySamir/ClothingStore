@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     return ApiResponds(201, "Customer created successfully", customer);
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     return ApiResponds(500, "Server error");
   }
 }

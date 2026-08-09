@@ -20,7 +20,7 @@ export const fetchWomenProducts = async (): Promise<ProductOrg[]> => {
     const response = await request(config);
     return response;
   } catch (err: any) {
-    throw new Error(err.message || "Network Error");
+    throw err;
   }
 };
 
@@ -41,9 +41,10 @@ export const fetchMenProducts = async (): Promise<ProductOrg[]> => {
     const response = await request(config);
     return response;
   } catch (err: any) {
-    throw new Error(err.message || "Network Error");
+    throw err;
   }
 };
+
 
 export const fetchProductById = async (productId: string): Promise<any> => {
   try {
@@ -156,6 +157,27 @@ export const fetchProductImages = async (productId: string): Promise<any[]> => {
   }
 };
 
+export const fetchTopSellProducts = async (): Promise<ProductOrg[]> => {
+  try {
+    const config: ReturnType = {
+      url: "api/topsellproducts",
+      method: "get",
+      config: {
+        showErr: false,
+        store: {
+          action: "set",
+          key: "topSellProducts",
+        },
+      },
+    };
+
+    const response = await request(config);
+    return response;
+  } catch (err: any) {
+    throw new Error(err.message || "Network Error");
+  }
+};
+
 const ProductsApi = {
   fetchWomenProducts,
   fetchMenProducts,
@@ -164,6 +186,7 @@ const ProductsApi = {
   fetchProductAdditionalDetails,
   fetchProductReviews,
   fetchProductImages,
+  fetchTopSellProducts,
 };
 
 export default ProductsApi;

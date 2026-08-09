@@ -63,9 +63,9 @@ export default function SignInButton({
     });
 
     if (error) {
-      console.error("Error during sign-in:", error);
+      //console.error("Error during sign-in:", error);
     } else {
-      console.log("Sign-in initiated:", data);
+      //console.log("Sign-in initiated:", data);
     }
   };
 

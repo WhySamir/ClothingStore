@@ -17,10 +17,14 @@ export default function ShopLayout({
   const { user } = useAuth();
   const cartItems = useSelector((state: any) => state.cartItems?.items || []);
 
-  const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.itemQty, 0);
+  const totalItems = cartItems.reduce(
+    (sum: number, item: any) => sum + item.itemQty,
+    0,
+  );
   const subtotal = cartItems.reduce(
-    (sum: number, item: any) => sum + Number(item.product.sellingPrice) * item.itemQty,
-    0
+    (sum: number, item: any) =>
+      sum + Number(item.product.sellingPrice) * item.itemQty,
+    0,
   );
   const taxes = subtotal * 0.1; // example: 10% tax
   const couponDiscount = 0;
@@ -33,7 +37,7 @@ export default function ShopLayout({
       try {
         await Cart.fetchCart();
       } catch (err) {
-        console.log("Cart fetch failed", err);
+        // console.log("Cart fetch failed", err);
       }
     }
 

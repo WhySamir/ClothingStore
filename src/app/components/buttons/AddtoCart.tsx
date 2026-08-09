@@ -49,10 +49,8 @@ const AddtoCart = ({
       const data = Cart.addToCart(payload);
 
       setShowToast(true);
-
-      console.log("Response:", data);
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      //console.error("Error adding to cart:", error);
     } finally {
       setLoading(false);
     }

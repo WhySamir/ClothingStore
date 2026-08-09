@@ -40,7 +40,6 @@ export default function Navbar() {
 
   const toggleSearch = () => {
     if (smNavbar) {
-      console.log(true);
       setSearchOpen(false);
       setSmSearchOpen((s: boolean) => !s);
       if (show) {
@@ -90,7 +89,7 @@ export default function Navbar() {
       <motion.nav
         layout
         transition={{ duration: 0.8, ease: "easeInOut" }}
-        className="w-full  bg-white relative z-20 shadow-np" 
+        className="w-full  bg-white relative z-20 shadow-np"
       >
         <div className={`${globalLayoutCss}`}>
           {/* Logo */}

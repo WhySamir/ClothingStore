@@ -50,7 +50,7 @@ export default function Page() {
         );
         await ProductsApi.fetchProductDescription(productId as string);
       } catch (err) {
-        console.error("Error fetching description:", err);
+        // console.error("Error fetching description:", err);
       }
     };
 
@@ -72,7 +72,7 @@ export default function Page() {
         );
         await ProductsApi.fetchProductAdditionalDetails(productId as string);
       } catch (err) {
-        console.error("Error fetching additional details:", err);
+        // console.error("Error fetching additional details:", err);
       }
     } else if (tabIndex === 2 && reviews.length === 0) {
       try {
@@ -81,7 +81,7 @@ export default function Page() {
         );
         await ProductsApi.fetchProductReviews(productId as string);
       } catch (err) {
-        console.error("Error fetching reviews:", err);
+        // console.error("Error fetching reviews:", err);
       }
     }
   };

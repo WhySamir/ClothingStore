@@ -6,7 +6,6 @@ export async function GET() {
   try {
     const topProducts = await prisma.product.findMany({
       orderBy: { stockQty: "desc" },
-      take: 3,
       select: {
         id: true,
         name: true,
@@ -24,6 +23,7 @@ export async function GET() {
 
     return ApiResponds(200, "Top selling products fetched", topProducts);
   } catch (error) {
-    return ApiError(500, error);
+    //console.error("Top seller products error:", error);
+    return ApiError(500, "Unable to fetch top selling products right now.");
   }
 }

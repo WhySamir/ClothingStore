@@ -26,7 +26,7 @@ const Page = () => {
         const allproducts = await response.json();
         setProducts(allproducts.data);
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        // console.error("Failed to fetch products:", error);
       } finally {
         setLoading(false);
       }
@@ -36,7 +36,7 @@ const Page = () => {
 
   const toggleSelect = (id: string) => {
     setSelectedProducts((prev) =>
-      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id],
     );
   };
   const handleDelete = async () => {
@@ -53,16 +53,16 @@ const Page = () => {
 
       const data = await res.json();
       if (res.ok) {
-        console.log("Deleted:", data);
+        // console.log("Deleted:", data);
         setProducts((prev) =>
-          prev.filter((p) => !selectedProducts.includes(p.id))
+          prev.filter((p) => !selectedProducts.includes(p.id)),
         );
         setSelectedProducts([]);
       } else {
-        console.error("Delete failed:", data.message);
+        // console.error("Delete failed:", data.message);
       }
     } catch (err) {
-      console.error("Error deleting products:", err);
+      // console.error("Error deleting products:", err);
     }
   };
 

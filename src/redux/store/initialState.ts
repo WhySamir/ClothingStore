@@ -19,6 +19,7 @@ interface RootState {
   cartItems: ObjectState<any>;
   wishlistItems: ObjectState<any>;
   payment: ObjectState<any>;
+  topSellProducts: ListState<any>;
   womenProducts: ListState<any>;
   menProducts: ListState<any>;
   productById: ObjectState<any>;
@@ -53,6 +54,11 @@ const initialState: RootState = {
       transactionId: "",
       paymentError: "",
     },
+  },
+  topSellProducts: {
+    loading: true,
+    loadingState: true,
+    items: [],
   },
   womenProducts: {
     loading: true,
@@ -92,3 +98,4 @@ const initialState: RootState = {
 };
 
 export default initialState;
+

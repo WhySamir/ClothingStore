@@ -17,7 +17,7 @@ const getFormat = (filename?: string) => {
 export const uploadMainProductImage = async (
   buffer: Buffer,
   productId?: string,
-  filename?: string
+  filename?: string,
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     const upload = cloudinary.uploader.upload_stream(
@@ -32,11 +32,11 @@ export const uploadMainProductImage = async (
       },
       (err, result) => {
         if (err) {
-          console.error("Main Image Upload Failed:", err);
+          //console.error("Main Image Upload Failed:", err);
           return reject(err);
         }
         resolve(result?.secure_url || "");
-      }
+      },
     );
 
     upload.end(buffer);
@@ -47,9 +47,10 @@ export const uploadColorProductImage = async (
   buffer: Buffer,
   productId?: string,
   color?: string,
-  filename?: string
+  filename?: string,
 ): Promise<string> => {
-  const publicId = productId && color ? `product-${productId}-${color}` : undefined;
+  const publicId =
+    productId && color ? `product-${productId}-${color}` : undefined;
 
   return new Promise((resolve, reject) => {
     const upload = cloudinary.uploader.upload_stream(
@@ -64,11 +65,11 @@ export const uploadColorProductImage = async (
       },
       (err, result) => {
         if (err) {
-          console.error("Color Image Upload Failed:", err);
+          //console.error("Color Image Upload Failed:", err);
           return reject(err);
         }
         resolve(result?.secure_url || "");
-      }
+      },
     );
 
     upload.end(buffer);

@@ -7,10 +7,13 @@ export default function SuccessInner() {
   const pidx = searchParams.get("pidx");
   const router = useRouter();
 
-  const [status, setStatus] = useState("Verifying...");
+  const [status, setStatus] = useState("Verifying payment...");
 
   useEffect(() => {
-    if (!pidx) return;
+    if (!pidx) {
+      router.push("/");
+      return;
+    }
 
     async function verify() {
       try {
@@ -23,7 +26,10 @@ export default function SuccessInner() {
         const data = await res.json();
 
         if (data.status !== "Completed") {
-          setStatus("Payment Failed");
+          setStatus("Payment failed. Redirecting to home...");
+          setTimeout(() => {
+            router.push("/");
+          }, 1200);
           return;
         }
 
@@ -44,15 +50,22 @@ export default function SuccessInner() {
           setStatus("Payment Verified & Order Created");
           router.push(`/ordercompleted?id=${orderData.data.id}`);
         } else {
-          setStatus("Payment Verified but Order Failed");
+          setStatus("Payment verified, but order failed. Redirecting to home...");
+          setTimeout(() => {
+            router.push("/");
+          }, 1200);
         }
       } catch (err) {
-        setStatus("Verification Error");
+        setStatus("Payment verification error. Redirecting to home...");
+        setTimeout(() => {
+          router.push("/");
+        }, 1200);
       }
     }
 
     verify();
-  }, [pidx]);
+  }, [pidx, router]);
 
-  return <div className="p-10 text-center text-xl">{status}</div>;
+  return <div className="p-10 text-center text-xl font-medium">{status}</div>;
 }
+

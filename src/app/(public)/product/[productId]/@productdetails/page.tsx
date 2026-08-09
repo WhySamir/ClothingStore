@@ -33,7 +33,7 @@ export default function ProductDetails() {
       try {
         await ProductsApi.fetchProductById(productId as string);
       } catch (err) {
-        console.error("Error fetching product details:", err);
+        // console.error("Error fetching product details:", err);
         dispatch(
           Actions.set("productById", {
             data: null,

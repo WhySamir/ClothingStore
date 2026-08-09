@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     if (sizes?.length) {
       totalStockQty = sizes.reduce(
         (sum: number, s: { stockQty: number }) => sum + Number(s.stockQty || 0),
-        0
+        0,
       );
       await prisma.productSize.createMany({
         data: sizes.map((s: { size: string; stockQty: number }) => ({
@@ -77,8 +77,8 @@ export async function POST(request: NextRequest) {
     if (colors?.length) {
       createdColors = await prisma.$transaction(
         colors.map((c: { color: string; hexCode?: string }) =>
-          prisma.productColor.create({ data: { ...c, productId } })
-        )
+          prisma.productColor.create({ data: { ...c, productId } }),
+        ),
       );
     }
 
@@ -86,8 +86,8 @@ export async function POST(request: NextRequest) {
     if (tags?.length) {
       await prisma.$transaction(
         tags.map((t: { name: string }) =>
-          prisma.tag.create({ data: { ...t, productId } })
-        )
+          prisma.tag.create({ data: { ...t, productId } }),
+        ),
       );
     }
 
@@ -127,13 +127,13 @@ export async function POST(request: NextRequest) {
       uploadedImages,
     });
   } catch (error) {
-    console.error("Product creation failed:", error);
+    //console.error("Product creation failed:", error);
     const errMsg =
       error instanceof Error
         ? error.message
         : typeof error === "string"
-        ? error
-        : JSON.stringify(error);
+          ? error
+          : JSON.stringify(error);
 
     return new Response(JSON.stringify({ success: false, message: errMsg }), {
       status: 500,
@@ -149,7 +149,7 @@ export async function DELETE(req: Request) {
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
       return NextResponse.json(
         { success: false, message: "No product IDs provided" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -162,7 +162,7 @@ export async function DELETE(req: Request) {
     if (existingProducts.length === 0) {
       return NextResponse.json(
         { success: false, message: "No products found for the provided IDs" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -180,10 +180,10 @@ export async function DELETE(req: Request) {
       notFoundIds: ids.filter((id) => !existingIds.includes(id)),
     });
   } catch (error) {
-    console.error("DELETE /api/private/admin/products error:", error);
+    //console.error("DELETE /api/private/admin/products error:", error);
     return NextResponse.json(
       { success: false, message: "Server error", error: `${error}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

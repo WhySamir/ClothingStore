@@ -46,7 +46,6 @@ export const fetchWishlist = async () => {
     };
 
     const response = await request(config);
-    console.log("res:", response);
     return response;
   } catch (err: any) {
     throw new Error(err.message || "Network Error");

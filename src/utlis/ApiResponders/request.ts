@@ -20,18 +20,20 @@ const storeProcess = async (config: any, data: any) => {
 
 const loadingProcess = async (config: any, loading = false) => {
   if (!isBrowser) return; // Skip in server
-  if (!!config?.store) {
+  const storeConfig = config?.config?.store || config?.store;
+  if (!!storeConfig) {
     const actionType: "set" | "update" | "remove" | "reset" =
-      config?.store?.action;
+      storeConfig?.action;
     if (actionType === "set" || actionType === "update") {
       const loadingData: any = {
         loading: loading,
         loadingState: true,
       };
-      store.dispatch(Actions[actionType](config?.store?.key, loadingData));
+      store.dispatch(Actions[actionType](storeConfig?.key, loadingData));
     }
   }
 };
+
 
 const request = async (configuration: any) => {
   const {  config, ...restConfiguration } = configuration;

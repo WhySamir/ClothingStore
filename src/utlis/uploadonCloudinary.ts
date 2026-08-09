@@ -8,35 +8,34 @@ cloudinary.config({
 
 export const uploadFromUrlToCloudinary = async (
   imageUrl: string,
-  userId: string
+  userId: string,
 ): Promise<string> => {
   try {
     const highResUrl = imageUrl.replace("=s96-c", "=s400-c");
 
     const result = await cloudinary.uploader.upload(highResUrl, {
-      folder: 'clothingstore/avatars',
-      public_id: `user_${userId}`,  
-      overwrite: false,             
-      fetch_format: 'auto',
-      quality: 'auto',
+      folder: "clothingstore/avatars",
+      public_id: `user_${userId}`,
+      overwrite: false,
+      fetch_format: "auto",
+      quality: "auto",
     });
 
     return result.secure_url;
-  } catch (error:unknown) {
+  } catch (error: unknown) {
     // If error is because public_id already exists, return constructed URL
     if (isCloudinaryError(error) && error.http_code === 409) {
       return cloudinary.url(`avatars/user_${userId}`, {
         secure: true,
-        fetch_format: 'auto',
-        quality: 'auto',
+        fetch_format: "auto",
+        quality: "auto",
       });
     }
 
-    console.error("Cloudinary URL upload failed:", error);
+    //console.error("Cloudinary URL upload failed:", error);
     return imageUrl; // fallback
   }
 };
-
 
 type CloudinaryError = {
   http_code: number;

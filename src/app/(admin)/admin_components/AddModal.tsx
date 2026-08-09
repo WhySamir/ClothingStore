@@ -10,7 +10,7 @@ import imageCompression from "browser-image-compression";
 const compressImage = async (
   file: File,
   maxSizeMB = 2,
-  maxWidthOrHeight = 2000
+  maxWidthOrHeight = 2000,
 ) => {
   const options = {
     maxSizeMB,
@@ -21,7 +21,7 @@ const compressImage = async (
     const compressedFile = await imageCompression(file, options);
     return compressedFile;
   } catch (err) {
-    console.error("Image compression failed:", err);
+    // console.error("Image compression failed:", err);
     return file; // fallback to original
   }
 };
@@ -148,10 +148,10 @@ export const AddModal = ({
       }
 
       const json = await res.json();
-      console.log("Saved:", json);
+      // console.log("Saved:", json);
       alert("Product saved!");
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert("Error saving product");
     }
   };
