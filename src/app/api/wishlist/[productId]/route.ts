@@ -43,12 +43,18 @@ export async function DELETE(
 ) {
   try {
     const { productId } = await context.params;  
-    const user =await verifyUser(req)
-    if (!productId || !user ) {
+    const user = await verifyUser(req);
+    if (!productId || !user) {
       return ApiError(400, "Product ID and Customer ID are required");
     }
     const existing = await prisma.wishlistItem.findFirst({
-      where: { productId, customerId:user.id },
+      where: {
+        customerId: user.id,
+        OR: [
+          { id: productId },
+          { productId: productId }
+        ]
+      },
     });
     if (!existing) {
       return ApiResponds(204, "No Wishlist item found to delete");

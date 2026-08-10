@@ -19,9 +19,9 @@ export default function Page() {
     Select.wishlistItems(state),
   );
   const wishlist = wishlistState?.items || [];
+  const isWishlistLoading = wishlistState?.loading ?? true;
 
   const [authChecked, setAuthChecked] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   // wait for user from context
   useEffect(() => {
@@ -32,40 +32,24 @@ export default function Page() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Fetch wishlist items on mount
+  // Fetch wishlist items on mount ONLY if not already loaded in Redux
   useEffect(() => {
-    if (!user) {
-      return;
-    }
+    if (!user) return;
 
-    const fetchCartItems = async () => {
-      setLoading(true);
-      try {
-        const response = await Wishlist.fetchWishlist();
-
-        // response is already the array from API responder extracting resp.data.data
-        const wishlistData = Array.isArray(response) ? response : [];
-
-        // Set wishlist items in Redux - the set reducer will handle wrapping in items
-        dispatch(Actions.set("wishlistItems", wishlistData));
-      } catch (err) {
-        // console.error("Error fetching wishlist:", err);
+    if (wishlistState?.loading) {
+      Wishlist.fetchWishlist().catch(() => {
         dispatch(Actions.set("wishlistItems", []));
-      } finally {
-        setLoading(false);
-      }
-    };
+      });
+    }
+  }, [user, wishlistState?.loading, dispatch]);
 
-    fetchCartItems();
-  }, [user, dispatch]);
-
-  const handleRemoveitem = async (productId: string | number) => {
+  const handleRemoveitem = async (itemId: string | number) => {
     try {
-      await Wishlist.removeFromWishlist(String(productId));
+      await Wishlist.removeFromWishlist(String(itemId));
       // Remove from Redux
-      dispatch(Actions.remove("wishlistItems", productId));
+      dispatch(Actions.remove("wishlistItems", itemId));
     } catch (err) {
-      // console.error("Error removing from wishlist:", err);
+      // console.error("Error removing from wishlist:", error);
     }
   };
 
@@ -84,7 +68,7 @@ export default function Page() {
     <>
       <PageHeader title="Wishlist" path="Wishlist" />
       <div className="max-w-7xl mx-auto  md:px-6  py-2 md:py-8">
-        {loading ? (
+        {isWishlistLoading && wishlist.length === 0 ? (
           <div className="flex justify-center py-20 h-[60vh] text-gray-600">
             Loading wishlist...
           </div>
@@ -92,7 +76,7 @@ export default function Page() {
           <div className="flex flex-col items-center justify-center py-20 h-[60vh]">
             <p className="text-gray-600 text-lg mb-4">Your wishlist is empty</p>
             <a
-              href="/shop"
+              href="/"
               className="bg-orange-950 text-white px-6 py-2 rounded-md hover:bg-orange-900"
             >
               Continue Shopping

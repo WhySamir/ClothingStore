@@ -12,22 +12,16 @@ export const addToWishlist = async (data: {
       url: `api/wishlist/${data.productId}`,
       method: "post",
       authorization: true,
-      config: {
-        successMsg: "Wishlist item added!",
-        store: {
-          action: "set",
-          key: "wishlistItems",
-        },
-      },
+      config: {},
     };
     const response = await request(config);
-    if (!response.success) {
-      toast.warning(response.message || "Already in wishlist");
-      return;
-    }
     return response;
   } catch (err: any) {
-    toast.error(err.message || "Network Error");
+    if (err.message && err.message.toLowerCase().includes("already in wishlist")) {
+      toast.warning("Already in wishlist");
+    } else {
+      toast.error(err.message || "Network Error");
+    }
   }
 };
 
@@ -82,10 +76,9 @@ export const updateWishlistItem = async (
 export const deleteWishlistItem = async (wishlistId: string | number) => {
   try {
     const config: ReturnType = {
-      url: "api/wishlist",
+      url: `api/wishlist/${wishlistId}`,
       method: "delete",
       authorization: true,
-      data: { wishlistId },
       config: {
         showErr: true,
         successMsg: "Wishlist item deleted",

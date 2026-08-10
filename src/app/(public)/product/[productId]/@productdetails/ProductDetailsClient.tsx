@@ -256,7 +256,12 @@ export default function ProductDetailsClient({ initialProduct }: { initialProduc
                     size={selectedSize}
                     quantity={quantity}
                 />
-                {product && <AddToWishlistButton productId={product.id} />}
+                {product && (
+                  <AddToWishlistButton
+                    productId={product.id}
+                    product={product}
+                  />
+                )}
             </div>
 
             {/* Product Info */}

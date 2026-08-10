@@ -37,3 +37,7 @@ export function useProductImage() {
     throw new Error("useProductImage must be used within ProductImageProvider");
   return ctx;
 }
+
+export function useOptionalProductImage() {
+  return useContext(ProductImageContext);
+}

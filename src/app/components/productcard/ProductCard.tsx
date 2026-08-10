@@ -49,7 +49,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Action Icons */}
         <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <AddToWishlistButton productId={product.id} />
+          <AddToWishlistButton productId={product.id} product={product} />
           <button
             onClick={(e) => {
               e.stopPropagation();

@@ -273,7 +273,9 @@ export default function ProductDetails() {
           Buy Now
         </button> */}
 
-        {product && <AddToWishlistButton productId={product.id} />}
+        {product && (
+          <AddToWishlistButton productId={product.id} product={product} />
+        )}
       </div>
 
       {/* Product Info */}
