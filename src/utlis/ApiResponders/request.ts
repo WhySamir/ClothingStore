@@ -1,7 +1,6 @@
 import axios from "axios";
 import { store, Actions } from "@/redux/store/index";
 import { toast } from "react-toastify";
-import helper from "./helper";
 
 const isBrowser = typeof window !== "undefined"; //  Safe check
 
@@ -34,9 +33,8 @@ const loadingProcess = async (config: any, loading = false) => {
   }
 };
 
-
 const request = async (configuration: any) => {
-  const {  config, ...restConfiguration } = configuration;
+  const { config, ...restConfiguration } = configuration;
   const headers: any = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -46,7 +44,8 @@ const request = async (configuration: any) => {
   return await axios({
     ...restConfiguration,
     url: `${APP_BASE_URL}/${restConfiguration?.url.toString()}`,
-    headers,withCredentials: true, 
+    headers,
+    withCredentials: true,
   })
     .then(async (resp) => {
       if (!!resp?.data?.errors) {
@@ -78,7 +77,6 @@ const request = async (configuration: any) => {
       ) {
         if (isBrowser) {
           if (message === "jwt expired" || message === "Unauthorized") {
-           
             setTimeout(() => {
               window.location.reload();
             }, 700);

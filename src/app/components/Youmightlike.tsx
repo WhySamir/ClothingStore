@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { ProductOrg } from "./productcard/productType";
 import ProductCard from "./productcard/ProductCard";
@@ -14,7 +14,8 @@ function ProductShowcase() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [error, setError] = useState("");
 
-  // Get top sell products from Redux store
+  const hasFetchedRef = useRef(false);
+
   const topSellState = useSelector(
     (state: RootState) => (state as any).topSellProducts,
   );
@@ -29,10 +30,12 @@ function ProductShowcase() {
       setError(err?.message || "Something went wrong while fetching products");
     }
   };
-
   useEffect(() => {
+    if (products.length > 0) return;
+    if (hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
     loadTopProducts();
-  }, []);
+  }, [products.length]);
 
   return (
     <div className="h-full w-full text-black md:pt-[10vh]">
@@ -158,4 +161,3 @@ function ProductGrid({
 }
 
 export { ProductShowcase, ProductGrid };
-

@@ -1,7 +1,9 @@
 import ClientProvider from "@/app/components/ReactQueryClientProvider";
+
 import { ProductImageProvider } from "@/app/ProductImageContext";
 import type { ReactNode } from "react";
 import { prisma } from "@/app/lib/prisma";
+import { ProductShowcase } from "@/app/components/Youmightlike";
 
 export const revalidate = 60; // ISR: Revalidate every 60 seconds
 
@@ -34,6 +36,7 @@ export default function ProductLayout({
 }: ProductLayoutProps) {
   return (
     <>
+      {" "}
       <ClientProvider>
         <div className="max-w-7xl mx-auto px-5 md:px-6 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -44,7 +47,18 @@ export default function ProductLayout({
           </div>
           {descriptionandreview}
         </div>
-        {children}
+        <div className=" h-full w-full  text-black  md:pt-[10vh]">
+          <div className=" w-full xl:max-w-[90vw] ml-auto px-4 xl:px-0 md:py-8">
+            <div className="mb-8 w-full text-center">
+              <p className="text-gray-600 mb-2">You Might Like</p>
+              <h1 className="text-4xl font-semibold text-gray-900 mb-8">
+                Explore More Products
+              </h1>
+            </div>
+            <ProductShowcase />
+          </div>
+        </div>
+        {/* {children} */}
       </ClientProvider>
     </>
   );

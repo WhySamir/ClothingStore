@@ -12,9 +12,6 @@ import Link from "next/link";
 import { createClient } from "@/utlis/supabase/client";
 import { useAuth } from "../auth-context";
 import SignInButton from "./buttons/SignInButton";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import Wishlist from "@/app/api/wishlist/wishlist";
 
 //80
 export default function Navbar() {
@@ -29,16 +26,6 @@ export default function Navbar() {
 
   const supabase = createClient();
   const { user } = useAuth();
-
-  const wishlistState = useSelector(
-    (state: RootState) => (state as any).wishlistItems,
-  );
-
-  useEffect(() => {
-    if (user && wishlistState?.loading) {
-      Wishlist.fetchWishlist().catch(() => {});
-    }
-  }, [user, wishlistState?.loading]);
 
   const handleLogout = async () => {
     setUserDropdown(false);
