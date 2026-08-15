@@ -1,5 +1,4 @@
 // components/Footer.tsx
-import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -26,15 +25,15 @@ export default function Footer() {
           <h3 className="font-semibold text-white mb-4">Company</h3>
           <ul className="space-y-4 text-sm">
             <li>
-              <Link href="/" className="hover:underline">
+              <a href="/" className="hover:underline">
                 About Us
-              </Link>
+              </a>
             </li>
 
             <li>
-              <Link href="/" className="hover:underline">
+              <a href="/" className="hover:underline">
                 Contact Us
-              </Link>
+              </a>
             </li>
           </ul>
         </div>
@@ -44,20 +43,20 @@ export default function Footer() {
           <h3 className="font-semibold text-white mb-4">Customer Services</h3>
           <ul className="space-y-4 text-sm">
             <li>
-              <Link href="/" className="hover:underline">
+              <a href="/" className="hover:underline">
                 My Account
-              </Link>
+              </a>
             </li>
             <li>
-              <Link href="/" className="hover:underline">
+              <a href="/" className="hover:underline">
                 Track Your Order
-              </Link>
+              </a>
             </li>
 
             <li>
-              <Link href="/" className="hover:underline">
+              <a href="/" className="hover:underline">
                 FAQ
-              </Link>
+              </a>
             </li>
           </ul>
         </div>
@@ -67,14 +66,14 @@ export default function Footer() {
           <h3 className="font-semibold text-white mb-4">Our Information</h3>
           <ul className="space-y-4 text-sm">
             <li>
-              <Link href="/" className="hover:underline">
+              <a href="/" className="hover:underline">
                 User Terms & Condition
-              </Link>
+              </a>
             </li>
             <li>
-              <Link href="/" className="hover:underline">
+              <a href="/" className="hover:underline">
                 Return Policy
-              </Link>
+              </a>
             </li>
           </ul>
         </div>

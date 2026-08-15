@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Expand, Star } from "lucide-react";
 import { ProductOrg } from "@/app/components/productcard/productType";
 import { CountdownTimer } from "@/app/components/productcard/CountdownTimer";
@@ -11,19 +13,27 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   // Safe fallback values
   const firstTag = product.tags?.[0]?.name ?? "Product";
   const rating = product.reviews?.[0]?.rating ?? "5.0";
   const price = Number(product.sellingPrice) || 0;
 
+  const handleCardClick = () => {
+    const targetPath = `/product/${product.id}`;
+    if (pathname === targetPath) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      router.push(targetPath);
+    }
+  };
+
   return (
     <div
       key={product.id}
-      onClick={() => {
-        window.location.href = `/product/${product.id}`;
-      }}
-      className="flex-shrink-0 w-72 group relative overflow-hidden shadow-sm hover:shadow-lg transition-shadow"
+      onClick={handleCardClick}
+      className="flex-shrink-0 w-72 group relative overflow-hidden cursor-pointer shadow-sm hover:shadow-lg transition-shadow"
     >
       {/* Product Image */}
       <div className="relative aspect-[4/5] overflow-hidden bg-[#F6F6F6]">
@@ -53,7 +63,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/product/${product.id}`, { scroll: false });
+              handleCardClick();
             }}
             className="h-8 w-8 bg-white/90 hover:bg-white rounded-md flex items-center justify-center transition-colors"
           >

@@ -1,41 +1,26 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import { ProductOrg } from "./productcard/productType";
 import ProductCard from "./productcard/ProductCard";
-import { fetchTopSellProducts } from "../api/products/productsApi";
-import { RootState } from "@/redux/store";
 import { ProductSkeletonRow } from "./skeletons/ProductSkeleton";
+import { useGetTopSellProductsQuery } from "@/redux/modules/products/products.api";
 
 const categories = ["All", "Women", "Men"];
 
 function ProductShowcase() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [error, setError] = useState("");
 
-  const hasFetchedRef = useRef(false);
+  const {
+    data: products = [],
+    isLoading: loading,
+    error: apiError,
+    refetch,
+  } = useGetTopSellProductsQuery();
 
-  const topSellState = useSelector(
-    (state: RootState) => (state as any).topSellProducts,
-  );
-  const products: ProductOrg[] = topSellState?.items || [];
-  const loading = topSellState?.loading ?? true;
-
-  const loadTopProducts = async () => {
-    setError("");
-    try {
-      await fetchTopSellProducts();
-    } catch (err: any) {
-      setError(err?.message || "Something went wrong while fetching products");
-    }
-  };
-  useEffect(() => {
-    if (products.length > 0) return;
-    if (hasFetchedRef.current) return;
-    hasFetchedRef.current = true;
-    loadTopProducts();
-  }, [products.length]);
+  const errorMessage = apiError
+    ? "Something went wrong while fetching products"
+    : "";
 
   return (
     <div className="h-full w-full text-black md:pt-[10vh]">
@@ -69,9 +54,9 @@ function ProductShowcase() {
         <ProductGrid
           products={products}
           loading={loading}
-          error={error}
+          error={errorMessage}
           activeCategory={activeCategory}
-          onRetry={loadTopProducts}
+          onRetry={() => refetch()}
         />
       </div>
     </div>
@@ -96,12 +81,6 @@ function ProductGrid({
   if (loading) return <ProductSkeletonRow count={4} />;
 
   if (error) {
-    const isTechnicalError =
-      /prisma|findmany|enotfound|fatal|database|sql/i.test(error);
-    const displayMessage = isTechnicalError
-      ? "Unable to load top seller products right now."
-      : error;
-
     return (
       <div className="py-12 px-6 flex flex-col items-center justify-center text-center">
         <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center mb-3">
@@ -119,9 +98,7 @@ function ProductGrid({
             />
           </svg>
         </div>
-        <p className="text-gray-700 text-sm font-medium mb-3">
-          {displayMessage}
-        </p>
+        <p className="text-gray-700 text-sm font-medium mb-3">{error}</p>
         {onRetry && (
           <button
             onClick={onRetry}
@@ -134,7 +111,6 @@ function ProductGrid({
     );
   }
 
-  // 👇 Filter products based on category
   const filteredProducts =
     activeCategory === "All"
       ? products

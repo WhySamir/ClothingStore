@@ -25,7 +25,11 @@ export async function POST(req: NextRequest) {
     });
 
     if (existing) {
-      return ApiError(409, "Item already in cart");
+      const updated = await prisma.cart.update({
+        where: { id: existing.id },
+        data: { itemQty: existing.itemQty + itemQty },
+      });
+      return ApiResponds(200, "Cart item quantity updated", updated);
     }
 
     const cartItem = await prisma.cart.create({

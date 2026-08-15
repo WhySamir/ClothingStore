@@ -1,50 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Star } from "lucide-react";
 import AddtoCart from "@/app/components/buttons/AddtoCart";
 import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
 import { useParams, useRouter } from "next/navigation";
 import { AddToWishlistButton } from "@/app/components/buttons/AddtoWishlist";
-import { RootState, Actions } from "@/redux/store";
-import ProductsApi from "@/app/api/products/productsApi";
+import { useGetProductByIdQuery } from "@/redux/modules/products/products.api";
 
 export default function ProductDetails() {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { productId } = useParams<{ productId: string }>();
 
-  // Get product details from Redux
-  const productState = useSelector((state: RootState) => state.productById);
-  const product = productState?.data;
-  const isLoading = productState?.loading || false;
-  const isError = false;
+  const {
+    data: product,
+    isLoading,
+    error: isError,
+  } = useGetProductByIdQuery(productId as string, {
+    skip: !productId,
+  });
 
-  // Fetch product details on mount
   useEffect(() => {
     if (!productId) {
       router.push("/404");
-      return;
     }
-
-    const fetchProduct = async () => {
-      try {
-        await ProductsApi.fetchProductById(productId as string);
-      } catch (err) {
-        // console.error("Error fetching product details:", err);
-        dispatch(
-          Actions.set("productById", {
-            data: null,
-            loading: false,
-            loadingState: true,
-          }),
-        );
-      }
-    };
-
-    fetchProduct();
-  }, [productId, dispatch, router]);
+  }, [productId, router]);
 
   const [selectedColor, setSelectedColor] = useState({
     id: "",
@@ -79,7 +59,7 @@ export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
 
   const sizes = ["S", "M", "L", "XL", "XXL"];
-  const handleQuantityChange = (productId: string, newQty: number) => {
+  const handleQuantityChange = (_productId: string, newQty: number) => {
     setQuantity(newQty);
   };
 
@@ -124,11 +104,11 @@ export default function ProductDetails() {
           </div>
         </div>
       ) : isError ? (
-        "Error fetching product description"
+        <div>Error fetching product description</div>
       ) : (
         <div>
           <p className="text-sm text-gray-600 my-2">
-            {product?.tags.map((tag: any) => tag.name).join(" ")}
+            {product?.tags?.map((tag: any) => tag.name).join(" ")}
           </p>
           <h1 className="text-3xl font-semibold text-gray-900 mb-4">
             {product?.name}
@@ -145,7 +125,7 @@ export default function ProductDetails() {
               ))}
             </div>
             <span className="text-sm font-medium tracking-wider">
-              {product?.reviews.length} Reviews
+              {product?.reviews?.length ?? 0} Reviews
             </span>
           </div>
 
@@ -161,7 +141,7 @@ export default function ProductDetails() {
           </div>
 
           {/* Description */}
-          <p className="text-gray-600 mb-6  line-clamp-2">
+          <p className="text-gray-600 mb-6 line-clamp-2">
             {product?.description}
           </p>
         </div>
@@ -174,7 +154,7 @@ export default function ProductDetails() {
           <span className="capitalize">{selectedColor.name}</span>
         </div>
         <div className="flex gap-2">
-          {product?.colors.map((color: any, idx: number) => (
+          {product?.colors?.map((color: any, idx: number) => (
             <button
               key={color.hexCode + idx}
               onClick={() =>
@@ -185,15 +165,15 @@ export default function ProductDetails() {
                   idx,
                 })
               }
-              className={`w-8 h-8 flex items-center justify-center rounded-full   border-2  ${
+              className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${
                 selectedColor.name === color.color
-                  ? `border-${color.hexCode}`
+                  ? `border-gray-950`
                   : "border-gray-200"
               }`}
             >
               <div
                 style={{ backgroundColor: color.hexCode }}
-                className={`color w-6 h-6 rounded-full flex items-center justify-center } `}
+                className={`color w-6 h-6 rounded-full flex items-center justify-center`}
               ></div>
             </button>
           ))}
@@ -208,8 +188,7 @@ export default function ProductDetails() {
         </div>
         <div className="flex gap-2 mb-2 w-full flex-wrap">
           {sizes.map((size) => {
-            // check if this size is available in the product
-            const isAvailable = product?.sizes.some(
+            const isAvailable = product?.sizes?.some(
               (s: any) => s.size === size,
             );
 
@@ -225,13 +204,13 @@ export default function ProductDetails() {
                     name: size,
                   })
                 }
-                disabled={!isAvailable} // disable if not available
+                disabled={!isAvailable}
                 className={`px-4 py-2 border rounded-md ${
                   selectedSize.name === size
                     ? "bg-yellow-200 border-yellow-200 text-black"
                     : isAvailable
                       ? "border-gray-300 hover:border-gray-400"
-                      : "border-gray-300 text-gray-400 cursor-not-allowed" // style disabled sizes
+                      : "border-gray-300 text-gray-400 cursor-not-allowed"
                 }`}
               >
                 {size}
@@ -256,9 +235,9 @@ export default function ProductDetails() {
       </div>
 
       {/* Quantity and Actions */}
-      <div className="flex-wrap flex flex-col md:flex-row  md:items-center gap-4">
+      <div className="flex-wrap flex flex-col md:flex-row md:items-center gap-4">
         <ItemsAddDel
-          id={productId}
+          id={productId || ""}
           value={quantity}
           onChange={(id: string, qty: number) => handleQuantityChange(id, qty)}
         />
@@ -268,10 +247,6 @@ export default function ProductDetails() {
           size={selectedSize}
           quantity={quantity}
         />
-
-        {/* <button className="bg-yellow-200 border border-yellow-200  py-2 text-black px-8">
-          Buy Now
-        </button> */}
 
         {product && (
           <AddToWishlistButton productId={product.id} product={product} />
@@ -287,18 +262,9 @@ export default function ProductDetails() {
         <div className="flex gap-2">
           <span className="font-medium">Tags :</span>
           <span className="text-gray-600">
-            {product?.features.map((feature: any) => feature.value).join(", ")}
+            {product?.features?.map((feature: any) => feature.value).join(", ")}
           </span>
         </div>
-        {/* <div className="flex items-center gap-2">
-          <span className="font-medium">Share :</span>
-          <div className="flex gap-2">
-            <Facebook className="w-5 h-5 text-gray-600 hover:text-blue-600 cursor-pointer" />
-            <Instagram className="w-5 h-5 text-gray-600 hover:text-pink-600 cursor-pointer" />
-            <Linkedin className="w-5 h-5 text-gray-600 hover:text-blue-700 cursor-pointer" />
-            <Twitter className="w-5 h-5 text-gray-600 hover:text-blue-400 cursor-pointer" />
-          </div>
-        </div> */}
       </div>
     </div>
   );

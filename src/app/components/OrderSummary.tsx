@@ -1,7 +1,8 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import Payment from "@/app/api/payment/payment";
+import { useDispatch, useSelector } from "react-redux";
+import { setPaymentError } from "@/redux/modules/payment/payment.slice";
+import type { RootState } from "@/redux/store";
 
 interface OrderSummaryProps {
   totalItems: number;
@@ -20,6 +21,7 @@ const OrderSummary = ({
 }: OrderSummaryProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useDispatch();
 
   let buttonLabel = "Proceed";
   let buttonPath = "/";
@@ -36,7 +38,7 @@ const OrderSummary = ({
   }
 
   const payment = useSelector(
-    (state: any) =>
+    (state: RootState) =>
       state.payment?.data || {
         amount: "",
         productName: "",
@@ -94,17 +96,17 @@ const OrderSummary = ({
       <button
         onClick={async () => {
           if (pathname === "/payment") {
-            if (totalItems === 0) return; //  check
+            if (totalItems === 0) return;
             if (!payment.productName || payment.productName.trim().length < 3) {
-              Payment.setPaymentError(
-                "Please enter valid remarks (min 3 characters).",
+              dispatch(
+                setPaymentError(
+                  "Please enter valid remarks (min 3 characters).",
+                ),
               );
-
               return;
             }
-            Payment.setPaymentError("");
+            dispatch(setPaymentError(""));
             try {
-              // INITIATE PAYMENT
               const res = await fetch("/api/initiate-payment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -123,16 +125,17 @@ const OrderSummary = ({
               if (!data.khaltiPaymentUrl)
                 throw new Error("No payment URL returned");
 
-              // Redirect user to Khalti page
               window.location.href = data.khaltiPaymentUrl;
-            } catch (err) {
-              Payment.setPaymentError("Payment initiation failed. Try again.");
+            } catch {
+              dispatch(
+                setPaymentError("Payment initiation failed. Try again."),
+              );
             }
           } else {
             router.push(buttonPath);
           }
         }}
-        disabled={totalItems === 0} // disable if no items
+        disabled={totalItems === 0}
         className={`w-full mt-6 text-white py-3 text-base font-medium ${
           totalItems === 0
             ? "bg-gray-300 cursor-not-allowed"

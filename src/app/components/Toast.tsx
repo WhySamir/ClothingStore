@@ -1,6 +1,8 @@
 "use client";
+
 import { X, Check, Heart } from "lucide-react";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface AddToCartToastProps {
   isOpen: boolean;
@@ -9,29 +11,28 @@ interface AddToCartToastProps {
     name: string;
     price: string | number;
   };
-  color: {
-    id: string;
+  color?: {
     name: string;
   };
-  size: {
-    id: string;
+  size?: {
     name: string;
   };
-  bagCount: number;
-  type: string;
-  image: string;
+  image?: string;
+  type?: "Cart" | "Wishlist";
+  bagCount?: number;
 }
 
 export function AddToCartToast({
   isOpen,
   onClose,
   product,
-  bagCount,
   color,
   size,
-  type,
   image,
+  bagCount = 1,
 }: AddToCartToastProps) {
+  const router = useRouter();
+
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
@@ -55,7 +56,7 @@ export function AddToCartToast({
           <div className="w-5 h-5 bg-[#441306] rounded-full flex items-center justify-center">
             <Check className="w-3 h-3 text-white" />
           </div>
-          <span className="font-medium text-gray-900">Added to {type}</span>
+          <span className="font-medium text-gray-900">Added to Bag</span>
         </div>
         <button
           onClick={onClose}
@@ -79,9 +80,13 @@ export function AddToCartToast({
             <h3 className="font-medium text-gray-900 truncate">
               {product.name}
             </h3>
-            <p className="text-sm text-gray-600 mt-1">{color.name}</p>
-            <p className="text-sm text-gray-600">{size.name}</p>
-            <p className="font-medium text-gray-900 mt-1">${product.price}</p>
+            <p className="text-sm text-gray-500 mt-0.5">
+              {color?.name ? `Color: ${color.name}` : ""}{" "}
+              {size?.name ? `| Size: ${size.name}` : ""}
+            </p>
+            <p className="font-medium text-gray-900 mt-1">
+              ${Number(product.price).toFixed(2)}
+            </p>
           </div>
         </div>
       </div>
@@ -89,7 +94,10 @@ export function AddToCartToast({
       {/* Actions */}
       <div className="p-4 pt-0 space-y-3">
         <button
-          onClick={() => (window.location.href = "/carts")}
+          onClick={() => {
+            onClose();
+            router.push("/carts");
+          }}
           className="w-full py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 bg-transparent transition-colors flex items-center justify-center"
         >
           View Bag ({bagCount})
@@ -117,6 +125,8 @@ export function AddToWishlistToast({
   image,
   wishlistCount = 0,
 }: AddToWishlistToastProps) {
+  const router = useRouter();
+
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
@@ -174,7 +184,10 @@ export function AddToWishlistToast({
       {/* Actions */}
       <div className="p-4 pt-0 space-y-3">
         <button
-          onClick={() => (window.location.href = "/wishlists")}
+          onClick={() => {
+            onClose();
+            router.push("/wishlists");
+          }}
           className="w-full py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 bg-transparent transition-colors flex items-center justify-center cursor-pointer"
         >
           View Wishlist {wishlistCount > 0 ? `(${wishlistCount})` : ""}

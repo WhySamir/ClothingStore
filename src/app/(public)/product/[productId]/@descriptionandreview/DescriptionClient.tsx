@@ -3,9 +3,11 @@
 import Review from "@/app/components/Review";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, Actions } from "@/redux/store";
-import ProductsApi from "@/app/api/products/productsApi";
+import {
+  useGetProductByIdQuery,
+  useGetProductAdditionalDetailsQuery,
+  useGetProductReviewsQuery,
+} from "@/redux/modules/products/products.api";
 
 export default function DescriptionClient({
     initialDescription,
@@ -14,50 +16,31 @@ export default function DescriptionClient({
     initialDescription: any,
     initialAdditionalInfo: any
 }) {
-    const dispatch = useDispatch();
     const [select, setSelect] = useState<number>(0);
     const [lineStyle, setLineStyle] = useState({ width: 0, left: 0 });
     const tabRefs = useRef<HTMLHeadingElement[]>([]);
     const { productId } = useParams<{ productId: string }>();
 
-    // Get data from Redux for each tab
-    const descriptionState = useSelector(
-        (state: RootState) => state.productDescription,
-    );
-    const additionalDetailsState = useSelector(
-        (state: RootState) => state.productAdditionalDetails,
-    );
-    const reviewsState = useSelector((state: RootState) => state.productReviews);
+    // RTK Query hooks
+    const { data: fetchedDescription } = useGetProductByIdQuery(productId as string, {
+        skip: !productId,
+    });
 
-    useEffect(() => {
-        if (initialDescription && !descriptionState?.data) {
-            dispatch(Actions.set("productDescription", { data: initialDescription, loading: false, loadingState: true }));
-        }
-        if (initialAdditionalInfo && !additionalDetailsState?.data) {
-            dispatch(Actions.set("productAdditionalDetails", { data: initialAdditionalInfo, loading: false, loadingState: true }));
-        }
-    }, [initialDescription, initialAdditionalInfo, dispatch, descriptionState?.data, additionalDetailsState?.data]);
+    const { data: fetchedAdditionalInfo } = useGetProductAdditionalDetailsQuery(productId as string, {
+        skip: !productId || select !== 1,
+    });
 
-    const description = descriptionState?.data || initialDescription;
-    const additionalDetails = additionalDetailsState?.data || initialAdditionalInfo;
-    const reviews = reviewsState?.items || [];
+    const { data: reviews = [], isLoading: isReviewsLoading } = useGetProductReviewsQuery(productId as string, {
+        skip: !productId || select !== 2,
+    });
+
+    const description = fetchedDescription || initialDescription;
+    const additionalDetails = fetchedAdditionalInfo || initialAdditionalInfo;
 
     const tabs = ["Description", "Additional Information", "Review"];
 
-    // Lazy load reviews when tab is clicked
-    const handleTabClick = async (tabIndex: number) => {
+    const handleTabClick = (tabIndex: number) => {
         setSelect(tabIndex);
-
-        if (tabIndex === 2 && reviews.length === 0) {
-            try {
-                dispatch(
-                    Actions.set("productReviews", { loading: true, loadingState: true }),
-                );
-                await ProductsApi.fetchProductReviews(productId as string);
-            } catch (err) {
-                console.error("Error fetching reviews:", err);
-            }
-        }
     };
 
     useEffect(() => {
@@ -166,7 +149,7 @@ export default function DescriptionClient({
             {/* reviews */}
             {select === 2 && (
                 <div className="my-8">
-                    {reviewsState?.loading ? "Loading reviews..." : <Review />}
+                    {isReviewsLoading ? "Loading reviews..." : <Review />}
                 </div>
             )}
         </div>

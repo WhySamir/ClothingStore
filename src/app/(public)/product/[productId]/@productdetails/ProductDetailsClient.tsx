@@ -1,60 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Star } from "lucide-react";
 import AddtoCart from "@/app/components/buttons/AddtoCart";
 import { ItemsAddDel } from "@/app/components/buttons/ItemsAddDel";
 import { useParams } from "next/navigation";
 import { AddToWishlistButton } from "@/app/components/buttons/AddtoWishlist";
-import { RootState, Actions } from "@/redux/store";
-import ProductsApi from "@/app/api/products/productsApi";
+import { useGetProductByIdQuery } from "@/redux/modules/products/products.api";
 
-export default function ProductDetailsClient({ initialProduct }: { initialProduct: any }) {
-    const dispatch = useDispatch();
+export default function ProductDetailsClient({ initialProduct }: { initialProduct?: any }) {
     const { productId } = useParams<{ productId: string }>();
 
-    // Get product details from Redux
-    const productState = useSelector((state: RootState) => state.productById);
+    const {
+        data: fetchedProduct,
+        isLoading: isFetching,
+        error: isError,
+    } = useGetProductByIdQuery(productId as string, {
+        skip: !productId,
+    });
 
-    // Initialize Redux with initialProduct if empty
-    useEffect(() => {
-        if (initialProduct && (!productState?.data)) {
-            dispatch(
-                Actions.set("productById", {
-                    data: initialProduct,
-                    loading: false,
-                    loadingState: true,
-                }),
-            );
-        }
-    }, [initialProduct, dispatch, productState?.data]);
-
-    const product = productState?.data || initialProduct;
-    const isLoading = productState?.loading && !product;
-    const isError = false;
-
-    // Fetch updated product details on mount (optional)
-    useEffect(() => {
-        if (!productId) return;
-        const fetchProduct = async () => {
-            try {
-                if (!product) {
-                    dispatch(Actions.set("productById", { loading: true, loadingState: true }));
-                }
-                await ProductsApi.fetchProductById(productId as string);
-            } catch (err) {
-                console.error("Error fetching product details:", err);
-            }
-        };
-        fetchProduct();
-    }, [productId, dispatch, product]);
+    const product = fetchedProduct || initialProduct;
+    const isLoading = isFetching && !product;
 
     const [selectedColor, setSelectedColor] = useState({
         id: "",
         name: "",
         idx: 0,
         borderClass: "",
+    });
+
+    const [selectedSize, setSelectedSize] = useState({
+        id: "",
+        name: "",
     });
 
     useEffect(() => {
@@ -76,14 +53,9 @@ export default function ProductDetailsClient({ initialProduct }: { initialProduc
         }
     }, [product]);
 
-    const [selectedSize, setSelectedSize] = useState({
-        id: "",
-        name: "",
-    });
     const [quantity, setQuantity] = useState(1);
 
-    const sizes = ["S", "m", "M", "L", "XL", "XXL"]; // Some may be lowercase in DB? matched current logic
-    const handleQuantityChange = (productId: string, newQty: number) => {
+    const handleQuantityChange = (_id: string, newQty: number) => {
         setQuantity(newQty);
     };
 
@@ -119,7 +91,7 @@ export default function ProductDetailsClient({ initialProduct }: { initialProduc
                     </div>
                 </div>
             ) : isError ? (
-                "Error fetching product description"
+                <div>Error fetching product description</div>
             ) : (
                 <div>
                     <p className="text-sm text-gray-600 my-2">

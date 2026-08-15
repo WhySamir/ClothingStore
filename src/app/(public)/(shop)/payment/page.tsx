@@ -2,35 +2,42 @@
 
 import DisableScrollRestoration from "@/app/components/DisableScroll";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import Payment from "@/app/api/payment/payment";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setPaymentProductName,
+  setPaymentError,
+} from "@/redux/modules/payment/payment.slice";
+import type { RootState } from "@/redux/store";
 
 export default function PaymentPage() {
-  const payment = useSelector((state: any) => state.payment?.data || {
-    productName: "",
-    paymentError: "",
-  });
+  const dispatch = useDispatch();
+  const payment = useSelector(
+    (state: RootState) =>
+      state.payment?.data || {
+        productName: "",
+        paymentError: "",
+      },
+  );
 
   const [remarks, setRemarks] = useState(payment.productName || "");
 
-  //  debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       if (remarks.length >= 3) {
-        Payment.setPaymentProductName(remarks);
+        dispatch(setPaymentProductName(remarks));
       }
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [remarks]);
+  }, [remarks, dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setRemarks(value);
 
     if (value.length < 3)
-      Payment.setPaymentError("Remarks must be at least 3 characters.");
-    else Payment.setPaymentError("");
+      dispatch(setPaymentError("Remarks must be at least 3 characters."));
+    else dispatch(setPaymentError(""));
   };
 
   return (

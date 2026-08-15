@@ -1,13 +1,17 @@
 "use client";
-import { useSelector } from "react-redux";
+
+import { useDispatch } from "react-redux";
 import DisableScrollRestoration from "../../components/DisableScroll";
 import OrderSummary from "../../components/OrderSummary";
 import PageHeader from "../../components/PageHeader";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/app/auth-context";
-import Cart from "@/app/api/cart/cart";
-import Payment from "@/app/api/payment/payment";
+import { useGetCartQuery } from "@/redux/modules/cart/cart.api";
+import {
+  setPaymentAmount,
+  regeneratePaymentTransactionId,
+} from "@/redux/modules/payment/payment.slice";
 
 export default function ShopLayout({
   children,
@@ -15,7 +19,12 @@ export default function ShopLayout({
   children: React.ReactNode;
 }) {
   const { user } = useAuth();
-  const cartItems = useSelector((state: any) => state.cartItems?.items || []);
+  const dispatch = useDispatch();
+
+  // RTK Query: fetch cart (only when logged in)
+  const { data: cartItems = [] } = useGetCartQuery(undefined, {
+    skip: !user,
+  });
 
   const totalItems = cartItems.reduce(
     (sum: number, item: any) => sum + item.itemQty,
@@ -31,26 +40,12 @@ export default function ShopLayout({
   const total = subtotal + taxes - couponDiscount;
 
   useEffect(() => {
-    async function fetchCart() {
-      if (!user) return;
-
-      try {
-        await Cart.fetchCart();
-      } catch (err) {
-        // console.log("Cart fetch failed", err);
-      }
-    }
-
-    fetchCart();
-  }, [user]);
-
-  useEffect(() => {
     // update amount
-    Payment.setPaymentAmount(String(Math.round(total * 141.81)));
+    dispatch(setPaymentAmount(String(Math.round(total * 141.81))));
 
     // generate transactionId only on first load
-    Payment.regeneratePaymentTransactionId();
-  }, [total]);
+    dispatch(regeneratePaymentTransactionId());
+  }, [total, dispatch]);
 
   const pathname = usePathname();
 

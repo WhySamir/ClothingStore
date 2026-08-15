@@ -1,51 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { ItemsAddDel } from "../../../components/buttons/ItemsAddDel";
 import DisableScrollRestoration from "@/app/components/DisableScroll";
-import { useSelector } from "react-redux";
 import { useAuth } from "@/app/auth-context";
-import Cart from "@/app/api/cart/cart";
+import {
+  useGetCartQuery,
+  useDeleteCartItemMutation,
+  useUpdateCartItemMutation,
+} from "@/redux/modules/cart/cart.api";
 
 export default function ShoppingCart() {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const cartItems = useSelector((state: any) => state.cartItems?.items || []);
 
-  useEffect(() => {
-    async function fetchCartItems() {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-      try {
-        await Cart.fetchCart();
-      } catch (err) {
-        // console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
+  // RTK Query: fetch cart items
+  const {
+    data: cartItems = [],
+    isLoading: loading,
+  } = useGetCartQuery(undefined, {
+    skip: !user,
+  });
 
-    fetchCartItems();
-  }, [user]);
+  // RTK Query: mutations
+  const [deleteCartItem] = useDeleteCartItemMutation();
+  const [updateCartItem] = useUpdateCartItemMutation();
 
-  const handleRemoveProduct = async (cartId: string) => {
-    try {
-      await Cart.deleteCartItem(cartId);
-    } catch (err) {
-      // console.error(err);
-    }
+  const handleRemoveProduct = (cartId: string) => {
+    deleteCartItem({ cartId }).catch(() => {});
   };
 
-  const handleQuantityChange = async (cartId: string, newQty: number) => {
-    try {
-      await Cart.updateCartItem(cartId, newQty);
-    } catch (err) {
-      // console.error(err);
-    }
+  const handleQuantityChange = (cartId: string, newQty: number) => {
+    updateCartItem({ cartId, itemQty: newQty }).catch(() => {});
   };
 
   return (

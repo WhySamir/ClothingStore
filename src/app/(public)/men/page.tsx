@@ -1,14 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import { FilterSidebar } from "@/app/components/shop/filter-sidebar";
 import ProductCard from "@/app/components/productcard/ProductCard";
 import { ActiveFilters } from "../../components/shop/activefilters";
 import { ProductOrg } from "@/app/components/productcard/productType";
 import { Filters } from "@/types/FilterTypes";
-import { RootState } from "@/redux/store";
-import ProductsApi from "@/app/api/products/productsApi";
 import { ProductSkeletonGrid } from "@/app/components/skeletons/ProductSkeleton";
+import { useGetMenProductsQuery } from "@/redux/modules/products/products.api";
 
 export default function Men() {
   const [filters, setFilters] = useState<Filters>({
@@ -17,29 +15,15 @@ export default function Men() {
     color: null,
     size: null,
   });
-  const [error, setError] = useState<string>("");
 
-  // Get men products from Redux
-  const menProductsState = useSelector((state: RootState) => state.menProducts);
-  const products: ProductOrg[] =
-    menProductsState?.items ||
-    (Array.isArray(menProductsState) ? (menProductsState as any) : []);
-  const loading = menProductsState?.loading ?? true;
+  const {
+    data: products = [],
+    isLoading: loading,
+    error: apiError,
+    refetch,
+  } = useGetMenProductsQuery();
 
-  const fetchProducts = async () => {
-    setError("");
-    try {
-      await ProductsApi.fetchMenProducts();
-    } catch (err: any) {
-      // console.error("Men products fetch error:", err);
-      setError(err?.message || "Unable to fetch men products right now.");
-    }
-  };
-
-  // Fetch men products on mount
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const errorMessage = apiError ? "Unable to fetch men products right now." : "";
 
   const filteredProducts = products?.filter((product: ProductOrg) => {
     const matchesPrice =
@@ -99,7 +83,7 @@ export default function Men() {
           <p className="text-muted-foreground">
             {loading
               ? "Loading..."
-              : error
+              : errorMessage
                 ? "Error fetching products"
                 : `Showing ${filteredProducts?.length ?? 0} results`}
           </p>
@@ -107,7 +91,7 @@ export default function Men() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filter Sidebar */}
           <div className="lg:w-64 hidden lg:block flex-shrink-0">
-            <div className="sticky top-4    max-h-[calc(90svh)] scrollbar-clean overflow-y-auto">
+            <div className="sticky top-4 max-h-[calc(90svh)] scrollbar-clean overflow-y-auto">
               <FilterSidebar
                 filters={filters}
                 onFiltersChange={updateFilters}
@@ -125,10 +109,9 @@ export default function Men() {
             />
 
             {/* Product Grid */}
-
             {loading ? (
               <ProductSkeletonGrid count={6} />
-            ) : error ? (
+            ) : errorMessage ? (
               <div className="py-12 px-6 flex flex-col items-center justify-center text-center">
                 <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center mb-3">
                   <svg
@@ -146,12 +129,10 @@ export default function Men() {
                   </svg>
                 </div>
                 <p className="text-gray-700 text-sm font-medium mb-3">
-                  {/prisma|findmany|enotfound|fatal|database|sql/i.test(error)
-                    ? "Unable to load men products right now."
-                    : error}
+                  {errorMessage}
                 </p>
                 <button
-                  onClick={fetchProducts}
+                  onClick={() => refetch()}
                   className="px-4 py-1.5 text-md font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
                 >
                   Try again
@@ -167,7 +148,7 @@ export default function Men() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2  place-items-center  lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 place-items-center lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredProducts.map((product: ProductOrg) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

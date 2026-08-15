@@ -1,12 +1,11 @@
 "use client";
 import { useState } from "react";
-import Wishlist from "@/app/api/wishlist/wishlist";
 import { useAuth } from "@/app/auth-context";
 import Image from "next/image";
-import { useDispatch, useSelector } from "react-redux";
-import { Actions, RootState } from "@/redux/store";
 import { AddToWishlistToast } from "../Toast";
 import { useOptionalProductImage } from "@/app/ProductImageContext";
+import { useAddToWishlistMutation, useGetWishlistQuery } from "@/redux/modules/wishlist/wishlist.api";
+import { toast } from "react-toastify";
 
 interface AddToWishlistButtonProps {
   productId: string | number;
@@ -24,14 +23,17 @@ export const AddToWishlistButton = ({
   product,
 }: AddToWishlistButtonProps) => {
   const { user } = useAuth();
-  const dispatch = useDispatch();
   const [showToast, setShowToast] = useState(false);
   const imageCtx = useOptionalProductImage();
 
-  const wishlistState = useSelector(
-    (state: RootState) => (state as any).wishlistItems,
-  );
-  const wishlistCount = wishlistState?.items?.length || 0;
+  // RTK Query: get current wishlist count (skip if not logged in)
+  const { data: wishlistItems = [] } = useGetWishlistQuery(undefined, {
+    skip: !user,
+  });
+  const wishlistCount = wishlistItems.length;
+
+  // RTK Query: add to wishlist mutation
+  const [addToWishlist] = useAddToWishlistMutation();
 
   const handleAddToWishlist = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -40,18 +42,14 @@ export const AddToWishlistButton = ({
       return;
     }
     try {
-      const response = await Wishlist.addToWishlist({
-        productId: String(productId),
-        customerId: user.id,
-      });
-
-      if (response) {
-        // Dispatch to Redux to update wishlist state
-        dispatch(Actions.append("wishlistItems", response));
-        setShowToast(true);
+      await addToWishlist({ productId: String(productId) }).unwrap();
+      setShowToast(true);
+    } catch (error: any) {
+      const message: string = error?.data?.message ?? error?.message ?? "";
+      if (message.toLowerCase().includes("already in wishlist")) {
+        toast.warning("Already in wishlist");
       }
-    } catch (error) {
-      //console.error("Error adding to wishlist:", error);
+      // other errors are silently ignored (matching old behaviour)
     }
   };
 
@@ -80,4 +78,3 @@ export const AddToWishlistButton = ({
     </>
   );
 };
-

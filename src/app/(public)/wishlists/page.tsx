@@ -5,52 +5,36 @@ import PageHeader from "../../components/PageHeader";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/app/auth-context";
 import NoUser from "@/app/components/NoUser";
-import Wishlist from "@/app/api/wishlist/wishlist";
-import { useSelector, useDispatch } from "react-redux";
-import { Select, Actions } from "@/redux/store";
-import { RootState } from "@/redux/store";
+import {
+  useGetWishlistQuery,
+  useRemoveFromWishlistMutation,
+} from "@/redux/modules/wishlist/wishlist.api";
 
 export default function Page() {
   const { user } = useAuth();
-  const dispatch = useDispatch();
-
-  // Get wishlist items from Redux
-  const wishlistState = useSelector((state: RootState) =>
-    Select.wishlistItems(state),
-  );
-  const wishlist = wishlistState?.items || [];
-  const isWishlistLoading = wishlistState?.loading ?? true;
-
   const [authChecked, setAuthChecked] = useState(false);
 
-  // wait for user from context
+  // Wait for user from context before making API calls
   useEffect(() => {
     const timer = setTimeout(() => {
       setAuthChecked(true);
     }, 300);
-
     return () => clearTimeout(timer);
   }, []);
 
-  // Fetch wishlist items on mount ONLY if not already loaded in Redux
-  useEffect(() => {
-    if (!user) return;
+  // RTK Query: fetch wishlist (only when we know the user is logged in)
+  const {
+    data: wishlist = [],
+    isLoading: isWishlistLoading,
+  } = useGetWishlistQuery(undefined, {
+    skip: !user || !authChecked,
+  });
 
-    if (wishlistState?.loading) {
-      Wishlist.fetchWishlist().catch(() => {
-        dispatch(Actions.set("wishlistItems", []));
-      });
-    }
-  }, [user, wishlistState?.loading, dispatch]);
+  // RTK Query: remove item mutation
+  const [removeFromWishlist] = useRemoveFromWishlistMutation();
 
-  const handleRemoveitem = async (itemId: string | number) => {
-    try {
-      await Wishlist.removeFromWishlist(String(itemId));
-      // Remove from Redux
-      dispatch(Actions.remove("wishlistItems", itemId));
-    } catch (err) {
-      // console.error("Error removing from wishlist:", error);
-    }
+  const handleRemoveitem = (itemId: string | number) => {
+    removeFromWishlist({ wishlistId: String(itemId) }).catch(() => {});
   };
 
   if (!authChecked) {

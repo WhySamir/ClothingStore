@@ -1,9 +1,14 @@
 "use client";
+
 import { useState } from "react";
 import { AddToCartToast } from "../Toast";
 import { useProductImage } from "@/app/ProductImageContext";
 import { useAuth } from "@/app/auth-context";
-import Cart from "@/app/api/cart/cart";
+import {
+  useAddToCartMutation,
+  useGetCartQuery,
+} from "@/redux/modules/cart/cart.api";
+import { toast } from "react-toastify";
 
 interface sizeType {
   id: string;
@@ -28,36 +33,43 @@ const AddtoCart = ({
 }) => {
   const { user } = useAuth();
   const [showToast, setShowToast] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  const addToCart = async () => {
+  // RTK Query: fetch cart to get current item count
+  const { data: cartItems = [] } = useGetCartQuery(undefined, {
+    skip: !user,
+  });
+  const bagCount = cartItems.reduce(
+    (sum: number, item: any) => sum + item.itemQty,
+    0,
+  );
+
+  // RTK Query mutation
+  const [addToCart, { isLoading: loading }] = useAddToCartMutation();
+
+  const handleAddToCart = async () => {
     if (!user) {
-      alert("Please login before adding to card");
+      alert("Please login before adding to cart");
       setShowToast(false);
       return;
     }
     try {
-      setLoading(true);
-
-      const payload = {
+      await addToCart({
         productId: productCart.id,
         colorId: color.id,
         sizeId: size.id,
         itemQty: Number(quantity),
-      };
-      const data = Cart.addToCart(payload);
+      }).unwrap();
 
       setShowToast(true);
-    } catch (error) {
-      //console.error("Error adding to cart:", error);
-    } finally {
-      setLoading(false);
+    } catch (error: any) {
+      const message = error?.data?.message || error?.message;
+      if (message && message.toLowerCase().includes("already in cart")) {
+        toast.info("Item already in cart");
+      } else {
+        toast.error(message || "Failed to add to cart");
+      }
     }
   };
-
-  // addToCart();
-  // }, []);
 
   const { mainImgUrl, images } = useProductImage();
   let image = "";
@@ -69,10 +81,11 @@ const AddtoCart = ({
   return (
     <>
       <button
-        onClick={addToCart}
-        className="bg-orange-950 cursor-pointer text-white py-2  px-5 md:px-8"
+        onClick={handleAddToCart}
+        disabled={loading}
+        className="bg-orange-950 cursor-pointer text-white py-2 px-5 md:px-8 disabled:opacity-60"
       >
-        Add To Cart
+        {loading ? "Adding..." : "Add To Cart"}
       </button>
       <AddToCartToast
         isOpen={showToast}
@@ -81,7 +94,7 @@ const AddtoCart = ({
         size={size}
         product={productCart}
         image={image}
-        bagCount={3}
+        bagCount={bagCount}
         type="Cart"
       />
     </>

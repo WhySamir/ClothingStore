@@ -4,36 +4,38 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
 import { useProductImage } from "@/app/ProductImageContext";
-import { RootState, Actions } from "@/redux/store";
-import ProductsApi from "@/app/api/products/productsApi";
+import { useGetProductImagesQuery } from "@/redux/modules/products/products.api";
 
 export default function ImageGalleryClient({ initialData }: { initialData: any }) {
     const { productId } = useParams<{ productId: string }>();
-    const dispatch = useDispatch();
 
     const [selectedImage, setSelectedImage] = useState(0);
     const { setImages, setMainImgUrl } = useProductImage();
 
-    // Get product images from Redux
-    const imagesState = useSelector((state: RootState) => state.productImages);
+    const {
+        data: fetchedImages,
+        isLoading: isFetching,
+        error: isError,
+    } = useGetProductImagesQuery(productId as string, {
+        skip: !productId,
+    });
 
     useEffect(() => {
-        if (initialData && (!imagesState?.items || imagesState.items.length === 0)) {
-            const merged = [initialData.mainImgUrl, ...initialData.images.map((img: any) => img.url)];
-            setImages(initialData.images.map((img: any) => img.url));
-            setMainImgUrl(initialData.mainImgUrl);
-            dispatch(Actions.set("productImages", merged));
+        if (fetchedImages && fetchedImages.length > 0) {
+            setMainImgUrl(fetchedImages[0]);
+            setImages(fetchedImages.slice(1));
+        } else if (initialData) {
+            setMainImgUrl(initialData.mainImgUrl || "");
+            setImages(initialData.images?.map((img: any) => img.url) || []);
         }
-    }, [initialData, dispatch, setImages, setMainImgUrl, imagesState?.items]);
+    }, [fetchedImages, initialData, setImages, setMainImgUrl]);
 
-    const productImages = imagesState?.items && imagesState.items.length > 0
-        ? imagesState.items
-        : initialData ? [initialData.mainImgUrl, ...initialData.images.map((img: any) => img.url)] : [];
+    const productImages = fetchedImages && fetchedImages.length > 0
+        ? fetchedImages
+        : initialData ? [initialData.mainImgUrl, ...(initialData.images?.map((img: any) => img.url) || [])] : [];
 
-    const isLoading = imagesState?.loading && productImages.length === 0;
-    const isError = false;
+    const isLoading = isFetching && productImages.length === 0;
 
     const nextImage = () => {
         if (productImages.length === 0) return;
@@ -54,7 +56,7 @@ export default function ImageGalleryClient({ initialData }: { initialData: any }
                 {isLoading ? (
                     <div className="w-full h-full bg-gray-200 animate-pulse"></div>
                 ) : isError ? (
-                    "Error fetching product image"
+                    <div>Error fetching product image</div>
                 ) : (
                     <Image
                         src={productImages[selectedImage] || "/placeholder.svg"}
@@ -90,7 +92,7 @@ export default function ImageGalleryClient({ initialData }: { initialData: any }
                         ))}
                     </div>
                 ) : isError ? (
-                    "Error fetching product images"
+                    <div>Error fetching product images</div>
                 ) : (
                     productImages.map((url: string, index: number) => (
                         <button
